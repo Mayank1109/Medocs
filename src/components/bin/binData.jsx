@@ -1,0 +1,51 @@
+export const binData = [
+  {
+    id: "t1",
+    name: "qwerty",
+    date: "12/12/2023",
+    lab: "Dr. Path Labs",
+    doctor: "Dr. Roshan",
+  },
+  {
+    id: "t2",
+    name: "qwerty",
+    date: "12/12/2023",
+    lab: "Dr. Path Labs",
+    doctor: "Dr. Roshan",
+  },
+  {
+    id: "t3",
+    name: "qwerty",
+    date: "12/12/2023",
+    lab: "Dr. Path Labs",
+    doctor: "Dr. Roshan",
+  },
+  {
+    id: "t4",
+    name: "qwerty",
+    date: "12/12/2023",
+    lab: "Dr. Path Labs",
+    doctor: "Dr. Roshan",
+  },
+  {
+    id: "t5",
+    name: "qwerty",
+    date: "12/12/2023",
+    lab: "Dr. Path Labs",
+    doctor: "Dr. Roshan",
+  },
+  {
+    id: "t6",
+    name: "qwerty",
+    date: "12/12/2023",
+    lab: "Dr. Path Labs",
+    doctor: "Dr. Roshan",
+  },
+  {
+    id: "t7",
+    name: "qwerty",
+    date: "12/12/2023",
+    lab: "Dr. Path Labs",
+    doctor: "Dr. Roshan",
+  },
+];
