@@ -1,0 +1,122 @@
+.footer {
+  background-color: var(--container-color);
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.footer__container {
+  padding: 3rem 0 3rem;
+}
+
+.footer__data {
+  grid-template-columns: repeat(2, 1fr);
+  margin-bottom: var(--mb-3);
+}
+
+.ftr__container {
+  width: 100%;
+  /* grid-template-columns: 300px repeat(1, 1fr); */
+  align-items: start;
+  column-gap: 4rem;
+}
+
+.footer__title,
+.footer__link {
+  color: var(--title-color);
+}
+
+.footer__title {
+  text-align: left;
+  color: var(--container-color);
+  font-size: var(--mb-2-5);
+  /* margin-bottom: var(--mb-2); */
+}
+
+.footer__link:hover {
+  color: var(--title-color);
+}
+
+.footer__list {
+  display: flex;
+  justify-content: center;
+  column-gap: 1.5rem;
+  margin-bottom: var(--mb-2);
+}
+
+.footer__social {
+  display: flex;
+  justify-content: flex-end;
+  column-gap: 2.25rem;
+  align-items: center;
+}
+
+.footer__social-link {
+  background-color: var(--title-color);
+  color: var(--container-color);
+  font-size: 1.125rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: 0.5rem;
+  display: inline-flex;
+}
+
+.footer__social-link:hover {
+  background-color: var(--title-color-dark);
+}
+
+.footer__info {
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin-bottom: var(--mb-2);
+}
+
+.footer__box {
+  /* color: var(--container-color); */
+  text-align: left;
+  line-height: var(--mb-2);
+  padding: 1rem 1.25rem;
+}
+
+.footer__box h3 {
+  font-size: var(--h3-font-size);
+  font-weight: var(--font-medium);
+  color: var(--container-color);
+}
+
+.footer__box ul {
+  font-weight: var(--font-normal);
+}
+
+.footer__box li:hover {
+  transition: 0.2s all ease-in-out;
+  color: var(--higlight-color);
+}
+
+/*=============== BREAKPOINTS ===============*/
+/* For large devices */
+@media screen and (max-width: 992px) {
+  .footer__social-link {
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 1rem;
+  }
+
+  .footer__info {
+    display: none;
+  }
+
+  .footer__social {
+    display: flex;
+    justify-content: center;
+    column-gap: 1.25rem;
+  }
+
+  .footer__title {
+    text-align: center;
+    margin-bottom: var(--mb-2);
+  }
+
+  .ftr__container {
+    grid-template-columns: repeat(1, 1fr);
+    align-items: start;
+    column-gap: 4rem;
+  }
+}

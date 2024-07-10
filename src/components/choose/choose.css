@@ -1,0 +1,84 @@
+.options-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  width: 200px;
+  position: absolute;
+  top: 50%;
+  left: 44%;
+  transform: translate(-100%, 0%);
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 1rem;
+  z-index: 1000;
+}
+
+.options-modal .modal__btn-close {
+  align-self: flex-end;
+  padding: 0.3rem 0.6rem;
+  background: #eee;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.options-modal ul {
+  list-style: none;
+  padding: 1rem;
+  margin: 0;
+}
+
+.options-modal li {
+  margin: 0.5rem 0;
+  border-radius: 5px;
+}
+
+.options-modal p {
+  padding: 0.2rem;
+  margin-left: 0.5rem;
+}
+
+.options-modal li:hover,
+.options-modal li:active {
+  background-color: var(--title-color-dark);
+  color: var(--container-color);
+  transition: 0.2s all ease-in-out;
+}
+
+.options-modal a {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.overlay__choose {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  /* backdrop-filter: blur(3px); */
+  z-index: 1;
+}
+
+.options-container {
+  position: relative;
+  top: 160%;
+  left: -145%;
+  display: flex;
+  flex-direction: column;
+  margin-left: 10px; /* Adjust this value based on your design */
+  z-index: 3; /* Ensure the options appear above the table */
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+/* border: 1px solid #ddd; */
+
+/* 
+  padding: 0.5rem; */

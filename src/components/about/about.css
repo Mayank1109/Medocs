@@ -1,0 +1,118 @@
+.about {
+  padding: 2rem 0 2rem;
+}
+
+.about__container {
+  grid-template-columns: 250px 1fr;
+
+  column-gap: 3rem;
+}
+
+/* .about__img {
+  width: 350px;
+  border-radius: 1.5rem;
+  justify-self: center;
+} */
+
+.disp_spn {
+  display: flex;
+  justify-content: space-between;
+}
+
+.about__info {
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--title-color);
+  margin-bottom: var(--mb-0-75);
+}
+
+.about__box {
+  background-color: var(--body-color);
+  text-align: left;
+  padding: 2rem 2rem 2rem 0rem;
+}
+
+.about__icon {
+  font-size: 1.5rem;
+  color: var(--title-color);
+  margin-bottom: var(--mb-0-5);
+  height: 35px;
+}
+
+.about__title {
+  font-size: var(--small-font-size);
+  font-weight: var(--font-medium);
+}
+
+.about__button {
+  background-color: var(--higlight-color);
+  color: var(--container-color);
+  padding: 5px var(--mb-1-5);
+  border-radius: var(--mb-2);
+  margin-bottom: var(--mb-1-5);
+  font-size: var(--small-font-size);
+}
+
+.about__subtitle {
+  font-size: var(--smaller-font-size);
+  color: var(--title-color);
+  font-weight: var(--font-medium);
+}
+
+.about__description {
+  padding: 0 4rem 0 0;
+  margin-bottom: var(--mb-2-5);
+}
+
+/*=============== BREAKPOINTS ===============*/
+/* For large devices */
+@media screen and (max-width: 992px) {
+  .about__container {
+    grid-template-columns: 1fr;
+    row-gap: 2.5rem;
+  }
+
+  .second {
+    margin: auto;
+  }
+
+  .about__img {
+    display: none;
+    width: 220px;
+  }
+
+  .about__box {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .about__data {
+    text-align: center;
+  }
+
+  .about__info {
+    justify-content: center;
+  }
+
+  .about__description {
+    padding: 0 5rem;
+    margin-bottom: 2rem;
+  }
+}
+
+/* For medium devices */
+
+@media screen and (max-width: 576px) {
+  .about__info {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .about__description {
+    padding: 0;
+  }
+}
+
+/* For small devices */
+@media screen and (max-width: 350px) {
+  .about__info {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
