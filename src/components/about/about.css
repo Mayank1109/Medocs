@@ -8,12 +8,6 @@
   column-gap: 3rem;
 }
 
-/* .about__img {
-  width: 350px;
-  border-radius: 1.5rem;
-  justify-self: center;
-} */
-
 .disp_spn {
   display: flex;
   justify-content: space-between;
@@ -27,9 +21,9 @@
 }
 
 .about__box {
-  background-color: var(--body-color);
+  /* background-color: var(--body-color); */
   text-align: left;
-  padding: 2rem 2rem 2rem 0rem;
+  padding: 1rem 1rem 1rem 0rem;
 }
 
 .about__icon {
@@ -48,7 +42,7 @@
   background-color: var(--higlight-color);
   color: var(--container-color);
   padding: 5px var(--mb-1-5);
-  border-radius: var(--mb-2);
+  border-radius: var(--mb-0-5);
   margin-bottom: var(--mb-1-5);
   font-size: var(--small-font-size);
 }
@@ -115,4 +109,83 @@
   .about__info {
     grid-template-columns: repeat(2, 1fr);
   }
+}
+
+.accordions {
+  /* width: 90%; */
+  /* max-width: 60ch; */
+  margin: 0 auto;
+}
+
+.accordion {
+  border-bottom: 1px solid var(--title-color-dark);
+  /* margin-bottom: 1rem; */
+  overflow: hidden;
+  transition: border-color 0.5s ease-in-out;
+  background-color: var(--container-color);
+}
+
+.accordion:hover {
+  border-color: var(--title-color-dark);
+}
+
+.accordion__header {
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding: 1rem;
+  color: var(--title-color-dark);
+}
+.accordion__header:after,
+.accordion__header:before {
+  content: "";
+  position: absolute;
+  right: 1.5em;
+  width: 2px;
+  height: 0.75em;
+  background-color: var(--title-color-dark);
+  transition: all 0.2s;
+}
+.accordion__header:after {
+  transform: rotate(90deg);
+}
+
+.accordion:has(input:checked) .accordion__header {
+  color: #000;
+}
+
+.accordion__content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease;
+  * {
+    padding: 0 1em 1em;
+  }
+}
+
+.accordion input {
+  display: none;
+}
+
+.accordion:has(input:checked) {
+  border-color: var(--higlight-color);
+  background-color: var(--body-color);
+  box-shadow: rgba(33, 35, 38, 0.1) 0px 10px 10px -10px;
+}
+
+.accordion input:checked ~ .accordion__header:before {
+  transform: rotate(270deg) !important;
+  background-color: var(--higlight-color);
+}
+
+.accordion input:checked ~ .accordion__header:after {
+  transform: rotate(270deg) !important;
+  background-color: var(--higlight-color);
+}
+
+.accordion input:checked ~ .accordion__content {
+  max-height: 1000px; /* Adjust based on content length */
 }

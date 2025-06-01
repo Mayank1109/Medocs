@@ -1,19 +1,20 @@
 import React from "react";
 
-const Arrow = () => {
+const Arrow2 = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="42"
-      height="32"
+      width="2em"
+      height="1.5em"
       viewBox="0 0 24 24"
     >
       <path
+        transform="rotate(5 12 12)"
         fill="currentColor"
-        d="m14 18l-1.4-1.45L16.15 13H4v-2h12.15L12.6 7.45L14 6l6 6z"
+        d="M5 17.59L15.59 7H9V5h10v10h-2V8.41L6.41 19z"
       />
     </svg>
   );
 };
 
-export default Arrow;
+export default Arrow2;

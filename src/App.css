@@ -85,7 +85,7 @@ textarea {
 }
 
 body {
-  background-color: var(--body-color);
+  background-color: var(--container-color);
   color: var(--text-color);
 }
 
@@ -117,7 +117,7 @@ img {
 
 /*=============== REUSABLE CSS CLASSES ===============*/
 .section {
-  padding: 6rem 0 2rem;
+  padding: 4rem 0 2rem;
 }
 
 .spn {
@@ -173,7 +173,7 @@ img {
 
 /*=============== LAYOUT ===============*/
 .container {
-  max-width: 968px;
+  max-width: 1111px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -188,8 +188,8 @@ img {
   display: inline-block;
   background-color: var(--higlight-color);
   color: var(--container-color);
-  padding: 1rem 1.75rem;
-  border-radius: 2rem;
+  padding: 0.5rem 1.5rem;
+  border-radius: 0.5rem;
   font-weight: var(--font-medium);
 }
 
@@ -208,7 +208,7 @@ img {
 
 /*=============== BREAKPOINTS ===============*/
 /* For large devices */
-@media screen and (max-width: 992px) {
+@media screen and (max-width: 1150px) {
   .container {
     margin-left: var(--mb-1-5);
     margin-right: var(--mb-1-5);
