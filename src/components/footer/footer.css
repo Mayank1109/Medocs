@@ -13,7 +13,7 @@
 }
 
 .ftr__container {
-  width: 100%;
+  /* width: 100%; */
   /* grid-template-columns: 300px repeat(1, 1fr); */
   align-items: start;
   column-gap: 4rem;
@@ -100,7 +100,7 @@
   }
 
   .footer__info {
-    display: none;
+    grid-template-columns: 1fr 1fr;
   }
 
   .footer__social {
@@ -118,5 +118,15 @@
     grid-template-columns: repeat(1, 1fr);
     align-items: start;
     column-gap: 4rem;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .footer__data {
+    grid-template-columns: 1fr;
+  }
+
+  .footer__info {
+    grid-template-columns: 1fr;
   }
 }

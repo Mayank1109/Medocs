@@ -8,10 +8,19 @@
 
 .home__content {
   grid-template-columns: repeat(2, 1fr);
-  padding-top: 1.5rem;
-  height: 41rem;
+  /* padding-top: 1.5rem; */
+  height: 47rem;
   column-gap: 1rem;
   align-items: center;
+}
+
+.home__grid {
+  color: var(--title-color-dark);
+  margin-top: var(--mb-1-5);
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  align-items: center;
+  gap: 1rem;
 }
 
 .home__title {
@@ -54,7 +63,7 @@
 }
 
 .home__img {
-  background: url(../../assets/homepic.png);
+  background: url(../../assets/homepic2.png);
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
