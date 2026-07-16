@@ -1,0 +1,702 @@
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin: 1.5rem 0rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.page-header__subtitle {
+  font-size: var(--small-font-size);
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+}
+
+/*----- Vitals row -----*/
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+/*----- Health timeline / Ask AI row -----*/
+.panels-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.75fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.timeline-card__view-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.timeline-card__view-all svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.panel-header__link {
+  font-size: var(--smaller-font-size);
+  font-weight: var(--font-semi-bold);
+  color: var(--highlight-color);
+}
+
+/* Last timeline item in a card shouldn't leave trailing margin */
+.card .timeline-item:last-child {
+  margin-bottom: 0;
+}
+
+.timeline-item .badge {
+  margin-top: 0.375rem;
+  display: inline-block;
+}
+
+/*----- Ask AI panel -----*/
+.ask-ai {
+  display: flex;
+  flex-direction: column;
+}
+
+.ask-ai__suggestions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* Suggestions need to be full-width, stacked buttons rather than the
+   inline chip default — everything else about .chip (color, border,
+   radius) is reused as-is. */
+.chip--block {
+  display: flex;
+  width: 100%;
+  text-align: left;
+}
+
+.chip--block svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.ask-ai__input-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: auto;
+}
+
+.ask-ai__input-row .input {
+  flex: 1;
+}
+
+.icon-button {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--highlight-color);
+  color: #ffffff;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.icon-button:hover {
+  opacity: 0.88;
+}
+
+.icon-button svg {
+  width: 16px;
+  height: 16px;
+}
+
+.page-header__title {
+  display: flex;
+  align-items: center;
+  margin: 0px;
+  gap: 0.5rem;
+}
+
+.page-header__sun {
+  display: inline-flex;
+  color: var(--warning);
+}
+
+.page-header__sun svg {
+  width: 20px;
+  height: 20px;
+}
+
+.page-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.icon-button--ghost {
+  position: relative;
+  background-color: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+
+.icon-button--ghost:hover {
+  color: var(--text-color);
+  border-color: var(--border-strong);
+  opacity: 1;
+}
+
+.icon-button__dot {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--highlight-color);
+}
+
+/*----- Health score + AI summary card -----*/
+.score-card {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  padding: 1.5rem 1.75rem;
+}
+
+.score-card__eyebrow {
+  display: block;
+  font-size: var(--tiny-font-size);
+  font-weight: var(--font-bold);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--highlight-color);
+  margin-bottom: 0.875rem;
+}
+
+.score-card__ring-col {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.score-card__summary-col {
+  flex: 1;
+  min-width: 0;
+}
+
+.score-card__heading {
+  font-size: 1.375rem;
+  margin-bottom: 0.875rem;
+}
+
+.score-card__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.score-card__list-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: var(--small-font-size);
+  color: var(--text-color);
+}
+
+.score-card__list-item svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.score-card__list-item--good svg {
+  color: var(--success);
+}
+
+.score-card__list-item--warn svg {
+  color: var(--warning);
+}
+
+.score-card__cta {
+  align-self: flex-end;
+  white-space: nowrap;
+}
+
+/*----- Score ring -----*/
+.score-ring {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.score-ring__label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: baseline;
+  margin-top: 3rem;
+  justify-content: center;
+  gap: 2px;
+}
+
+.score-ring__value {
+  font-family: var(--heading-font);
+  font-size: 2.25rem;
+  font-weight: var(--font-extra-bold);
+  color: var(--title-color);
+  letter-spacing: -1px;
+}
+
+.score-ring__max {
+  font-size: var(--small-font-size);
+  color: var(--text-muted);
+  font-weight: var(--font-medium);
+}
+
+/*----- Health timeline (connected variant with date + doc icon) -----*/
+.timeline-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.timeline-card__list {
+  flex: 1;
+}
+
+.timeline-item--connected {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
+  padding-bottom: 1rem;
+}
+
+.timeline-item--connected.last {
+  padding-bottom: 0;
+}
+
+/* Vertical connecting line between dots */
+.timeline-item--connected::before {
+  content: "";
+  position: absolute;
+  left: 68px;
+  top: 14px;
+  bottom: 0;
+  width: 1px;
+  background-color: var(--border);
+}
+
+.timeline-item--connected.last::before {
+  display: none;
+}
+
+.timeline-date--stacked {
+  display: flex;
+  flex-direction: column;
+  min-width: 52px;
+  font-size: var(--tiny-font-size);
+  color: var(--text-muted);
+  font-weight: var(--font-medium);
+  line-height: 1.4;
+  padding-top: 2px;
+}
+
+.timeline-item--connected .timeline-dot {
+  margin-top: 5px;
+  position: relative;
+  z-index: 1;
+}
+
+.timeline-item__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.timeline-item__doc {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.timeline-item__doc svg {
+  width: 15px;
+  height: 15px;
+}
+
+.timeline-item__doc--success {
+  background-color: var(--success-light);
+  color: var(--success);
+}
+.timeline-item__doc--info {
+  background-color: var(--info-light);
+  color: var(--info);
+}
+.timeline-item__doc--warn {
+  background-color: var(--warning-light);
+  color: var(--warning);
+}
+
+.timeline-card__view-all {
+  width: 100%;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+/*----- Health trend chart -----*/
+.trend-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.trend-card__subtitle {
+  font-size: var(--small-font-size);
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.trend-chart {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.trend-chart__svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  cursor: crosshair;
+}
+
+.trend-chart__tick {
+  font-size: 9px;
+  fill: var(--text-muted);
+  font-family: var(--body-font);
+}
+
+.trend-chart__tooltip {
+  position: absolute;
+  transform: translate(-50%, -125%);
+  background-color: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  padding: 0.5rem 0.6875rem;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+}
+
+.trend-chart__tooltip-date {
+  font-size: var(--tiny-font-size);
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+.trend-chart__tooltip-value {
+  font-size: var(--small-font-size);
+  font-weight: var(--font-bold);
+  color: var(--title-color);
+}
+
+.trend-card__insight {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  background-color: var(--success-light);
+  border: 1px solid var(--highlight-mid);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 0.875rem;
+  font-size: var(--small-font-size);
+  color: var(--text-color);
+  margin-top: 1.2rem;
+}
+
+.trend-card__insight-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: var(--success);
+  flex-shrink: 0;
+  position: relative;
+}
+
+.trend-card__insight-dot::after {
+  content: "✓";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: var(--font-bold);
+}
+
+/*----- Metric dropdown -----*/
+.metric-select {
+  position: relative;
+}
+
+.metric-select__button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0.4375rem 0.75rem;
+  font-size: var(--smaller-font-size);
+  font-weight: var(--font-semi-bold);
+  color: var(--title-color);
+}
+
+.metric-select__button svg {
+  width: 13px;
+  height: 13px;
+  color: var(--text-muted);
+}
+
+.metric-select__menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: var(--z-fixed);
+  background-color: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  min-width: 150px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+}
+
+.metric-select__option {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  font-size: var(--smaller-font-size);
+  color: var(--text-color);
+}
+
+.metric-select__option:hover {
+  background-color: var(--surface-2);
+}
+
+.metric-select__option.active {
+  color: var(--highlight-color);
+  font-weight: var(--font-semi-bold);
+  background-color: var(--highlight-light);
+}
+
+/*----- Panel header with leading icon (Recent reports) -----*/
+.panel-header__with-icon {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.panel-header__with-icon svg {
+  width: 17px;
+  height: 17px;
+  color: var(--highlight-color);
+}
+
+/*----- Recent reports strip -----*/
+.reports-card {
+  margin-top: 1.5rem;
+}
+
+.reports-strip {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  gap: 0.75rem;
+}
+
+.reports-strip__scroller {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding-bottom: 4px;
+}
+
+.reports-strip__scroller::-webkit-scrollbar {
+  height: 0;
+}
+
+.report-card {
+  flex: 0 0 200px;
+  background-color: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 0.875rem;
+}
+
+.report-card__icon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.625rem;
+}
+
+.report-card__icon svg {
+  width: 15px;
+  height: 15px;
+}
+
+.report-card__icon--pdf {
+  background-color: var(--danger-light);
+  color: var(--danger);
+}
+
+.report-card__icon--image {
+  background-color: rgba(124, 92, 255, 0.14);
+  color: #7c5cff;
+}
+
+.report-card__name {
+  font-size: var(--small-font-size);
+  font-weight: var(--font-semi-bold);
+  color: var(--title-color);
+  margin-bottom: 2px;
+  line-height: 1.3;
+}
+
+.report-card__date {
+  font-size: var(--tiny-font-size);
+  color: var(--text-muted);
+  margin-bottom: 0.625rem;
+}
+
+.report-card__status {
+  display: inline-block;
+  font-size: var(--tiny-font-size);
+  font-weight: var(--font-semi-bold);
+  padding: 0.1875rem 0.5rem;
+  border-radius: 5px;
+}
+
+.report-card__status--success {
+  background-color: var(--success-light);
+  color: var(--success);
+}
+.report-card__status--neutral {
+  background-color: var(--surface);
+  color: var(--text-muted);
+}
+.report-card__status--warn {
+  background-color: var(--warning-light);
+  color: var(--warning);
+}
+
+.reports-strip__scroll-btn {
+  flex-shrink: 0;
+  width: 34px;
+  align-self: center;
+  height: 34px;
+  border-radius: 50%;
+  background-color: var(--surface-2);
+  border: 1px solid var(--border-strong);
+  color: var(--text-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reports-strip__scroll-btn svg {
+  width: 15px;
+  height: 15px;
+}
+
+/*----- Sidebar additions (notifications dot, profile link) -----*/
+.sidebar__unread-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--highlight-color);
+  margin-left: auto;
+}
+
+.sidebar__user {
+  text-decoration: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.sidebar__user-link {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 10px;
+  margin-top: -8px;
+  color: var(--text-muted);
+}
+
+.sidebar__user-link svg {
+  width: 11px;
+  height: 11px;
+}
+@media screen and (max-width: 1100px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .panels-grid {
+    grid-template-columns: 1fr;
+  }
+  .score-card {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.25rem;
+  }
+  .score-card__ring-col {
+    align-items: flex-start;
+  }
+  .score-card__cta {
+    align-self: flex-start;
+  }
+}
+
+@media screen and (max-width: 560px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
