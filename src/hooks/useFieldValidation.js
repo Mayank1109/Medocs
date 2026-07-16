@@ -1,5 +1,5 @@
 import { useToast } from "./useToast";
-import { validateField } from "../utility/validation";
+import { validateField, validateFields } from "../utility/validation";
 
 export function useFieldValidation() {
   const { showToast } = useToast();
@@ -17,5 +17,15 @@ export function useFieldValidation() {
     return !valid;
   };
 
-  return { validateInputHandler };
+  const validateFormHandler = (fields) => {
+    const { valid, errors } = validateFields(fields);
+    if (!valid) {
+      Object.values(errors).forEach((message) => {
+        showToast("error", message, { title: "Check this field" });
+      });
+    }
+    return valid;
+  };
+
+  return { validateInputHandler, validateFormHandler };
 }

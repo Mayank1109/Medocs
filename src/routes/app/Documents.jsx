@@ -1,4 +1,5 @@
-import { useState, useMemo } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { useSelector } from "react-redux";
 import Sidebar from "../../components/layout/Sidebar";
 import DocumentCategories from "../../components/documents/DocumentCategories";
 import DocumentRow from "../../components/documents/DocumentRow";
@@ -11,7 +12,8 @@ import {
   IconGridView,
   IconInboxCheck,
 } from "../../icons/AppIcons";
-import { DOCUMENTS, getAccent } from "../../data/documents";
+import { getAccent } from "../../data/documents";
+import { useDocumentList } from "../../hooks/useDocumentList";
 import "./Documents.css";
 
 export default function DocumentsPage() {
@@ -21,34 +23,60 @@ export default function DocumentsPage() {
   const [view, setView] = useState("list");
   const [starred, setStarred] = useState({});
 
-  const totalCount = DOCUMENTS.length;
-  const aiAvailableCount = DOCUMENTS.filter(
-    (d) => d.aiStatus === "available",
-  ).length;
+  const { userDocs, page, totalPages, loading, refresh } = useSelector(
+    (s) => s.doc,
+  );
+  const { fetchPage } = useDocumentList();
+  const sentinelRef = useRef(null);
 
-  const groups = useMemo(() => {
-    let filtered = DOCUMENTS.filter((d) => {
-      const matchesCategory =
-        activeCategory === "all" || d.category === activeCategory;
-      const matchesSearch = d.name.toLowerCase().includes(search.toLowerCase());
-      return matchesCategory && matchesSearch;
-    });
+  // fresh load whenever category or refresh flag changes
+  useEffect(() => {
+    fetchPage({ page: 1, category: activeCategory, append: false });
+  }, [activeCategory, refresh, fetchPage]);
 
-    filtered = [...filtered].sort((a, b) =>
-      sortNewestFirst ? b.sortDate - a.sortDate : a.sortDate - b.sortDate,
+  // infinite scroll — observe a sentinel div at the bottom of the list
+  const loadMore = useCallback(() => {
+    if (loading || page >= totalPages) return;
+    fetchPage({ page: page + 1, category: activeCategory, append: true });
+  }, [loading, page, totalPages, activeCategory, fetchPage]);
+
+  useEffect(() => {
+    const node = sentinelRef.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) loadMore();
+      },
+      { rootMargin: "200px" },
     );
-
-    const byGroup = new Map();
-    filtered.forEach((doc) => {
-      if (!byGroup.has(doc.monthGroup)) byGroup.set(doc.monthGroup, []);
-      byGroup.get(doc.monthGroup).push(doc);
-    });
-    return Array.from(byGroup.entries());
-  }, [activeCategory, search, sortNewestFirst]);
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [loadMore]);
 
   function toggleStar(id) {
     setStarred((s) => ({ ...s, [id]: !s[id] }));
   }
+
+  // client-side search + sort over what's currently loaded
+  const filtered = userDocs
+    .filter((d) => d.name.toLowerCase().includes(search.toLowerCase()))
+    .sort((a, b) =>
+      sortNewestFirst ? b.sortDate - a.sortDate : a.sortDate - b.sortDate,
+    );
+
+  const groups = [];
+  const byGroup = new Map();
+  filtered.forEach((doc) => {
+    if (!byGroup.has(doc.monthGroup)) byGroup.set(doc.monthGroup, []);
+    byGroup.get(doc.monthGroup).push(doc);
+  });
+  byGroup.forEach((docs, monthLabel) => groups.push([monthLabel, docs]));
+
+  const totalCount = userDocs.length;
+  const aiAvailableCount = userDocs.filter(
+    (d) => d.aiStatus === "available",
+  ).length;
+  const reachedEnd = page >= totalPages && userDocs.length > 0;
 
   return (
     <div className="app-shell">
@@ -130,13 +158,12 @@ export default function DocumentsPage() {
           </div>
         </div>
 
-        {groups.length === 0 ? (
+        {groups.length === 0 && !loading ? (
           <div className="docs-empty">No documents match your search.</div>
         ) : (
           groups.map(([monthLabel, docs]) => (
             <div className="docs-group" key={monthLabel}>
               <h2 className="docs-group__title">{monthLabel}</h2>
-
               <div className={view === "grid" ? "docs-grid" : "docs-list"}>
                 {docs.map((doc) => (
                   <DocumentRow
@@ -153,13 +180,19 @@ export default function DocumentsPage() {
           ))
         )}
 
-        <div className="docs-end">
-          <IconInboxCheck />
-          <div>
-            <div className="docs-end__title">You've reached the end</div>
-            <div className="docs-end__sub">No more documents to show</div>
+        {loading && <div className="docs-loading">Loading documents…</div>}
+
+        <div ref={sentinelRef} style={{ height: 1 }} />
+
+        {reachedEnd && (
+          <div className="docs-end">
+            <IconInboxCheck />
+            <div>
+              <div className="docs-end__title">You've reached the end</div>
+              <div className="docs-end__sub">No more documents to show</div>
+            </div>
           </div>
-        </div>
+        )}
       </main>
     </div>
   );

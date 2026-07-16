@@ -1,4 +1,5 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import {
   IconFolder,
@@ -6,49 +7,22 @@ import {
   IconFilePdf,
   IconFileImage,
 } from "../../icons/HeroIcons";
-
-const REPORTS = [
-  {
-    name: "Blood Test - Full Panel",
-    date: "Jun 7, 2026",
-    type: "pdf",
-    status: "Analysed",
-    tone: "success",
-  },
-  {
-    name: "Prescription - Dr. Sharma",
-    date: "Apr 28, 2026",
-    type: "pdf",
-    status: "Viewed",
-    tone: "neutral",
-  },
-  {
-    name: "Blood Pressure Check",
-    date: "Feb 15, 2026",
-    type: "pdf",
-    status: "Reviewed",
-    tone: "warn",
-  },
-  {
-    name: "Lipid Profile Report",
-    date: "Jan 10, 2026",
-    type: "image",
-    status: "Analysed",
-    tone: "success",
-  },
-  {
-    name: "Thyroid Report",
-    date: "Dec 28, 2025",
-    type: "image",
-    status: "Viewed",
-    tone: "neutral",
-  },
-];
+import { useDocumentList } from "../../hooks/useDocumentList";
 
 const STATUS_ICON = { success: "✓", neutral: "◷", warn: "⚠" };
 
 export default function RecentReports() {
   const scrollerRef = useRef(null);
+  const { userDocs, refresh } = useSelector((s) => s.doc);
+  const { fetchPage } = useDocumentList();
+
+  useEffect(() => {
+    fetchPage({ page: 1, append: false });
+  }, [refresh, fetchPage]);
+
+  const recent = [...userDocs]
+    .sort((a, b) => b.sortDate - a.sortDate)
+    .slice(0, 5);
 
   function scrollRight() {
     scrollerRef.current?.scrollBy({ left: 240, behavior: "smooth" });
@@ -68,22 +42,32 @@ export default function RecentReports() {
 
       <div className="reports-strip">
         <div className="reports-strip__scroller" ref={scrollerRef}>
-          {REPORTS.map((r) => (
-            <div className="report-card" key={r.name}>
-              <span
-                className={`report-card__icon report-card__icon--${r.type}`}
-              >
-                {r.type === "image" ? <IconFileImage /> : <IconFilePdf />}
-              </span>
-              <div className="report-card__name">{r.name}</div>
-              <div className="report-card__date">{r.date}</div>
-              <span
-                className={`report-card__status report-card__status--${r.tone}`}
-              >
-                {STATUS_ICON[r.tone]} {r.status}
-              </span>
-            </div>
-          ))}
+          {recent.length === 0 ? (
+            <p className="reports-strip__empty">No documents uploaded yet.</p>
+          ) : (
+            recent.map((doc) => (
+              <div className="report-card" key={doc.id}>
+                <span
+                  className={`report-card__icon report-card__icon--${doc.fileType === "JPG" || doc.fileType === "PNG" ? "image" : "pdf"}`}
+                >
+                  {doc.fileType === "JPG" || doc.fileType === "PNG" ? (
+                    <IconFileImage />
+                  ) : (
+                    <IconFilePdf />
+                  )}
+                </span>
+                <div className="report-card__name">{doc.name}</div>
+                <div className="report-card__date">{doc.date}</div>
+                <span
+                  className={`report-card__status report-card__status--${doc.aiStatus === "available" ? "success" : "neutral"}`}
+                >
+                  {doc.aiStatus === "available"
+                    ? `${STATUS_ICON.success} Analysed`
+                    : `${STATUS_ICON.neutral} Uploaded`}
+                </span>
+              </div>
+            ))
+          )}
         </div>
 
         <button

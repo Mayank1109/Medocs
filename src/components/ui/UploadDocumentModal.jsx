@@ -42,6 +42,9 @@ export default function UploadDocumentModal({ isOpen, onClose, onUploaded }) {
   const [description, setDescription] = useState("");
   const [success, setSuccess] = useState(false);
   const inputRef = useRef(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
+
   const { validateInputHandler, validateFormHandler } = useFieldValidation();
 
   useEffect(() => {
@@ -97,27 +100,32 @@ export default function UploadDocumentModal({ isOpen, onClose, onUploaded }) {
     validateAndSetFile(f);
   }
 
-  function handleUpload() {
+  async function handleUpload() {
     const isValid = validateFormHandler({
       fileName: docName,
       description,
     });
     if (!isValid) return;
-    console.log("handleUpload fired", {
-      file,
-      docName,
-      category,
-      docDate,
-      description,
-    });
-    setSuccess(true);
-    onUploaded?.({
-      file,
-      name: docName,
-      category,
-      date: docDate,
-      description,
-    });
+
+    setUploading(true);
+    setUploadError("");
+
+    try {
+      await onUploaded?.({
+        file,
+        name: docName,
+        category,
+        date: docDate,
+        description,
+      });
+      setSuccess(true);
+    } catch (err) {
+      setUploadError(
+        err.response?.data?.message || "Upload failed. Please try again.",
+      );
+    } finally {
+      setUploading(false);
+    }
   }
 
   const accent = getFileAccent({

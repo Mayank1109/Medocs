@@ -106,38 +106,39 @@ export const useDocumentActions = () => {
   };
 
   const submitHandler = async (uploadDetails) => {
-    console.log("submit handler called");
-    console.log(uploadDetails);
     const formData = new FormData();
     formData.append("file", uploadDetails.file);
-    formData.append("fileName", uploadDetails.name); // matches req.body.fileName
-    formData.append("documentDate", uploadDetails.date); // matches req.body.documentDate
+    formData.append("fileName", uploadDetails.name);
+    formData.append("documentDate", uploadDetails.date);
     formData.append("description", uploadDetails.description);
     formData.append("category", uploadDetails.category);
 
     try {
-      let response = await uploadDocument(formData, onprogress);
-      response = response.data;
+      const response = await uploadDocument(formData, onprogress);
+      const data = response.data;
+
+      if (data.messageType !== "Success") {
+        throw new Error(data.message || "Upload failed");
+      }
+
       dispatch(
         popupActions.display({
-          message:
-            response.messageType === "Success"
-              ? "Document Uploaded Successfully"
-              : "Failed to upload document",
-          status: response.messageType === "Success" ? "success" : "error",
+          message: "Document Uploaded Successfully",
+          status: "success",
         }),
       );
       dispatch(docActions.setRefresh());
+      return data;
     } catch (error) {
       dispatch(
         popupActions.display({
-          message: "Could not Upload document. Try again later.",
+          message:
+            error.response?.data?.message ||
+            "Could not upload document. Try again later.",
           status: "error",
         }),
       );
-    } finally {
-      console.log("will set loading here ....once finished will show a popup");
-      dispatch(modalActions.hide());
+      throw error; // ← re-throw so handleUpload's own catch fires and setSuccess never runs
     }
   };
 
