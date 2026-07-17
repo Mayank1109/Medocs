@@ -15,6 +15,7 @@ import {
 import { getAccent } from "../../data/documents";
 import { useDocumentList } from "../../hooks/useDocumentList";
 import "./Documents.css";
+import { modalDisplayHandler } from "../../utility/Functions";
 
 export default function DocumentsPage() {
   const [activeCategory, setActiveCategory] = useState("all");
@@ -106,7 +107,11 @@ export default function DocumentsPage() {
               )}
             </p>
           </div>
-          <button type="button" className="button doc-header__button">
+          <button
+            type="button"
+            className="button doc-header__button"
+            onClick={(event) => modalDisplayHandler(event, "Upload")}
+          >
             <IconUpload />
             Upload document
           </button>

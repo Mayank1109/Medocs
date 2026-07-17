@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { authActions } from "../../store/authSlice";
 import api from "../../api/api";
+import LoadingScreen from "../../components/ui/LoadingScreen";
 
 const OAuthSuccess = () => {
   const navigate = useNavigate();
@@ -44,7 +45,7 @@ const OAuthSuccess = () => {
     authenticate();
   }, []);
 
-  return <p>Please wait...</p>;
+  return <LoadingScreen message="Signing you in…" />;
 };
 
 export default OAuthSuccess;

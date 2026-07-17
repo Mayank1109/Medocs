@@ -289,16 +289,10 @@ export default function AuthPage() {
 
         <button
           type="submit"
-          className="button auth__submit"
+          className={`button auth__submit${loading ? " button--loading" : ""}`}
           disabled={loading}
         >
-          {loading ? (
-            isLogin ? (
-              "Signing in..."
-            ) : (
-              "Creating account..."
-            )
-          ) : isLogin ? (
+          {isLogin ? (
             <>
               Sign in <IconArrowRight style={{ height: "1.5rem" }} />
             </>

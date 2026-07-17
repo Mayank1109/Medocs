@@ -14,7 +14,9 @@ import { OptionsProvider } from "./hooks/useOptions";
 import { useSelector } from "react-redux";
 import AuthPage from "./routes/auth/AuthPage";
 import OAuthSuccess from "./routes/auth/OAuthSuccess";
-import ToastContainer from "./components/ui/Toast";
+import { ToastProvider } from "./components/ui/ToastProvider";
+import "./components/ui/LoadingStates.css";
+import Options from "./components/ui/Options";
 
 const Router = createBrowserRouter([
   {
@@ -40,11 +42,13 @@ function App() {
   const [count, setCount] = useState(0);
 
   return (
-    <OptionsProvider>
-      <RouterProvider router={Router} />
-      {isModalVisible && <Modal />}
-      <ToastContainer />
-    </OptionsProvider>
+    <ToastProvider>
+      <OptionsProvider>
+        <RouterProvider router={Router} />
+        {isModalVisible && <Modal />}
+        <Options />
+      </OptionsProvider>
+    </ToastProvider>
   );
 }
 

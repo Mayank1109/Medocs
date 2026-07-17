@@ -1,8 +1,8 @@
-import { useToast } from "./useToast";
 import { validateField, validateFields } from "../utility/validation";
+import { useToast } from "./useToast";
 
 export function useFieldValidation() {
-  const { showToast } = useToast();
+  const toast = useToast();
 
   const validateInputHandler = (e) => {
     const { name, value, style } = e.target;
@@ -11,7 +11,7 @@ export function useFieldValidation() {
     style.border = valid ? "1px solid #ddd" : "2px solid #d26466";
 
     if (!valid) {
-      showToast("error", message, { title: "Check this field" });
+      toast.error("Check this field", message);
     }
 
     return !valid;
@@ -21,7 +21,7 @@ export function useFieldValidation() {
     const { valid, errors } = validateFields(fields);
     if (!valid) {
       Object.values(errors).forEach((message) => {
-        showToast("error", message, { title: "Check this field" });
+        toast.error("Check this field", message);
       });
     }
     return valid;

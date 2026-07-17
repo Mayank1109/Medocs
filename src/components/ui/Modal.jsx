@@ -4,6 +4,8 @@ import { useEffect } from "react";
 import ReactDOM from "react-dom";
 import UploadDocumentModal from "./UploadDocumentModal";
 import { useOptions } from "../../hooks/useOptions";
+import DeleteDocumentModal from "../../../../../Downloads/DeleteDocumentModal";
+import PreviewDocumentModal from "./PreviewDocumentModal";
 
 const Modal = () => {
   const {
@@ -38,9 +40,7 @@ const Modal = () => {
       break;
 
     case "Delete":
-      //   modalContent = (
-
-      //   );
+      modalContent = <DeleteDocumentModal />;
       break;
 
     case "Edit":
@@ -53,9 +53,7 @@ const Modal = () => {
     case "Preview":
       console.log("modalData: ", modalData);
       console.log("actionType: ", actionType);
-      //   modalContent = (
-
-      //   );
+      modalContent = <PreviewDocumentModal />;
       break;
 
     default:

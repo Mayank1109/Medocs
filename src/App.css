@@ -645,7 +645,7 @@ body:not([data-theme="light"]) .sidebar__nav-item.active {
 
 .toast__msg {
   font-size: var(--tiny-font-size);
-  color: var(--text-muted);
+  /* color: var(--text-muted); */
   line-height: 1.5;
 }
 
@@ -653,7 +653,7 @@ body:not([data-theme="light"]) .sidebar__nav-item.active {
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background-color: rgba(9, 56, 42, 0.45);
+  background-color: rgb(2 36 26 / 45%);
   display: flex;
   align-items: center;
   justify-content: center;

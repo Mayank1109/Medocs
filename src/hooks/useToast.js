@@ -1,14 +1,9 @@
-import { useDispatch } from "react-redux";
-import { popupActions } from "../store/componentSlice";
+import { createContext, useContext } from "react";
+
+export const ToastContext = createContext(null);
 
 export function useToast() {
-  const dispatch = useDispatch();
-
-  const showToast = (status, message, options = {}) => {
-    dispatch(popupActions.display({ status, message, ...options }));
-  };
-
-  const dismissToast = (id) => dispatch(popupActions.dismiss(id));
-
-  return { showToast, dismissToast };
+  const ctx = useContext(ToastContext);
+  if (!ctx) throw new Error("useToast must be used inside <ToastProvider>");
+  return ctx;
 }

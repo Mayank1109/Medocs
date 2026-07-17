@@ -430,7 +430,12 @@ export default function UploadDocumentModal({ isOpen, onClose, onUploaded }) {
                 Next →
               </button>
             ) : (
-              <button type="button" className="button" onClick={handleUpload}>
+              <button
+                type="button"
+                className={`button${uploading ? " button--loading" : ""}`}
+                onClick={handleUpload}
+                disabled={uploading}
+              >
                 <IconUploadCloud /> Upload document
               </button>
             )}

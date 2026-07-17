@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { modalDisplayHandler } from "../utility/Functions";
+
 import {
   deleteDocument,
   editDocument,
@@ -8,14 +9,16 @@ import {
   uploadDocument,
 } from "../services/documentService";
 import { docActions } from "../store/docSlice";
-import { popupActions } from "../store/componentSlice";
 import { modalActions } from "../store/modalSlice";
 import { useOptions } from "./useOptions";
+import { useToast } from "./useToast";
 
 export const useDocumentActions = () => {
   const { payload } = useOptions();
   const dispatch = useDispatch();
   const { closeOptions } = useOptions();
+  const [deletingId, setDeletingId] = useState(null);
+  const toast = useToast();
 
   const handleActionClick = async (event, actionType) => {
     event.preventDefault();
@@ -32,15 +35,11 @@ export const useDocumentActions = () => {
   };
 
   const handleDeleteScenario = (messageType) => {
-    dispatch(
-      popupActions.display({
-        message:
-          messageType === "Success"
-            ? "Document moved to bin"
-            : "Failed to delete document",
-        status: messageType === "Success" ? "success" : "error",
-      }),
-    );
+    if (messageType === "Success") {
+      toast.success("Document deleted", "Document moved to bin.");
+    } else {
+      toast.error("Delete failed", "Failed to delete document.");
+    }
     dispatch(docActions.setRefresh());
   };
 
@@ -72,23 +71,23 @@ export const useDocumentActions = () => {
   const deleteDocHandler = async (event) => {
     event.preventDefault();
     const idToDelete = payload?._id;
-    console.log("Document ID to delete:", idToDelete);
+
+    if (!idToDelete) {
+      console.error("No document ID provided for deletion.");
+      return;
+    }
+
+    setDeletingId(idToDelete);
     try {
-      if (!idToDelete) {
-        console.error("No document ID provided for deletion.");
-        return;
-      }
       const response = await deleteDocument(idToDelete);
-      console.log(response.data);
       handleDeleteScenario(response.data.messageType);
     } catch (err) {
-      dispatch(
-        popupActions.display({
-          message: "Could not delete document. Try again later.",
-          status: "error",
-        }),
+      toast.error(
+        "Delete failed",
+        "Could not delete document. Try again later.",
       );
     } finally {
+      setDeletingId(null);
       dispatch(modalActions.hide());
     }
   };
@@ -121,24 +120,20 @@ export const useDocumentActions = () => {
         throw new Error(data.message || "Upload failed");
       }
 
-      dispatch(
-        popupActions.display({
-          message: "Document Uploaded Successfully",
-          status: "success",
-        }),
+      toast.success(
+        "Document uploaded",
+        `${uploadDetails.name} was added successfully.`,
       );
+
       dispatch(docActions.setRefresh());
       return data;
     } catch (error) {
-      dispatch(
-        popupActions.display({
-          message:
-            error.response?.data?.message ||
-            "Could not upload document. Try again later.",
-          status: "error",
-        }),
+      toast.error(
+        "Upload failed",
+        error.response?.data?.message ||
+          "Could not upload document. Try again later.",
       );
-      throw error; // ← re-throw so handleUpload's own catch fires and setSuccess never runs
+      throw error;
     }
   };
 
@@ -157,22 +152,16 @@ export const useDocumentActions = () => {
         documentDate: editdata.documentDate,
       });
       response = response.data;
-      dispatch(
-        popupActions.display({
-          message:
-            response.messageType === "Success"
-              ? "Document Updated Successfully"
-              : "Failed to update document",
-          status: response.messageType === "Success" ? "success" : "error",
-        }),
-      );
+      if (response.messageType === "Success") {
+        toast.success("Document updated", "Your changes were saved.");
+      } else {
+        toast.error("Update failed", "Failed to update document.");
+      }
       dispatch(docActions.setRefresh());
     } catch (error) {
-      dispatch(
-        popupActions.display({
-          message: "Could not update document. Try again later.",
-          status: "error",
-        }),
+      toast.error(
+        "Update failed",
+        "Could not update document. Try again later.",
       );
     } finally {
       console.log("will set loading here ....once finished will show a popup");
@@ -196,5 +185,6 @@ export const useDocumentActions = () => {
     editDocHandler,
     downloadDocHandler,
     printDocHandler,
+    deletingId,
   };
 };

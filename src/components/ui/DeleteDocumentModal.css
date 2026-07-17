@@ -1,0 +1,72 @@
+/*=============== DELETE MODAL ===============*/
+.delete-modal {
+  max-width: 400px;
+}
+
+.delete-modal .modal__header {
+  padding: 1.25rem 1.25rem 0;
+  border-bottom: none;
+}
+
+.delete-modal .modal__title {
+  font-size: var(--h2-font-size);
+}
+
+.delete-modal .modal__body {
+  padding: 1rem 1.25rem 1.25rem;
+}
+
+.delete-modal__icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-lg);
+  background-color: var(--danger-light);
+  color: var(--danger);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.delete-modal__icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.delete-modal__heading {
+  font-size: var(--h2-font-size);
+  margin-bottom: 0.5rem;
+}
+
+.delete-modal__sub {
+  font-size: var(--small-font-size);
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+}
+
+.file-card--static {
+  margin-bottom: 0;
+  cursor: default;
+}
+
+.delete-modal__footer {
+  padding: 0 1.25rem 1.25rem;
+  border-top: none;
+  background-color: transparent;
+}
+
+.delete-modal__footer .button--danger svg {
+  width: 15px;
+  height: 15px;
+}
+
+/*----- Success state -----*/
+.delete-success {
+  max-width: 400px;
+}
+
+.delete-success__view-btn {
+  width: 100%;
+  justify-content: center;
+}

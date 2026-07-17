@@ -5,10 +5,14 @@ import {
   IconFilePdf,
   IconEye,
   IconShare,
+  IconEdit,
   IconDownload,
   IconMoreVertical,
+  IconFolder,
+  IconTrash,
   IconSparkleSmall,
 } from "../../icons/AppIcons";
+import { useOptions } from "../../hooks/useOptions";
 
 export default function DocumentRow({
   doc,
@@ -17,10 +21,28 @@ export default function DocumentRow({
   onToggleStar,
   getAccent,
 }) {
+  const { openOptions } = useOptions();
   const accent = getAccent(doc);
   const isImage = ["JPG", "JPEG", "PNG", "GIF", "WEBP"].includes(
     doc.fileType.toUpperCase(),
   );
+
+  function handleMoreClick(e) {
+    openOptions(e, doc, [
+      { type: "Preview", label: "Preview", icon: IconEye },
+      { type: "Download", label: "Download", icon: IconDownload },
+      { type: "Share", label: "Share", icon: IconShare },
+      { type: "Edit", label: "Rename", icon: IconEdit },
+      { type: "Move", label: "Move to folder", icon: IconFolder },
+      { type: "Favorite", label: "Add to favorites", icon: IconStar },
+      {
+        type: "Delete",
+        label: "Move to bin",
+        icon: IconTrash,
+        dividerBefore: true,
+      },
+    ]);
+  }
 
   return (
     <div className={`doc-row-v2 doc-row-v2--${view}`} key={doc.id}>
@@ -72,6 +94,7 @@ export default function DocumentRow({
         type="button"
         className="doc-row-v2__more"
         aria-label="More options"
+        onClick={handleMoreClick}
       >
         <IconMoreVertical />
       </button>
