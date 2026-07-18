@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import ReactDOM from "react-dom";
 import UploadDocumentModal from "./UploadDocumentModal";
 import { useOptions } from "../../hooks/useOptions";
-import DeleteDocumentModal from "../../../../../Downloads/DeleteDocumentModal";
+import DeleteDocumentModal from "./DeleteDocumentModal";
 import PreviewDocumentModal from "./PreviewDocumentModal";
 
 const Modal = () => {
@@ -22,6 +22,7 @@ const Modal = () => {
   const { payload } = useOptions();
 
   let modalContent = null;
+  const activeDoc = payload || modalData;
   console.log(
     "switch actionType:",
     JSON.stringify(actionType),
@@ -40,7 +41,14 @@ const Modal = () => {
       break;
 
     case "Delete":
-      modalContent = <DeleteDocumentModal />;
+      modalContent = (
+        <DeleteDocumentModal
+          isOpen={isModalVisible}
+          onClose={modalCloseHandler}
+          onConfirm={deleteDocHandler}
+          document={activeDoc}
+        />
+      );
       break;
 
     case "Edit":
@@ -53,7 +61,13 @@ const Modal = () => {
     case "Preview":
       console.log("modalData: ", modalData);
       console.log("actionType: ", actionType);
-      modalContent = <PreviewDocumentModal />;
+      modalContent = (
+        <PreviewDocumentModal
+          isOpen={isModalVisible}
+          onClose={modalCloseHandler}
+          document={activeDoc}
+        />
+      );
       break;
 
     default:

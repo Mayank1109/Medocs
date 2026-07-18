@@ -13,6 +13,7 @@ import {
   IconSparkleSmall,
 } from "../../icons/AppIcons";
 import { useOptions } from "../../hooks/useOptions";
+import { useDocumentActions } from "../../hooks/useDocuments";
 
 export default function DocumentRow({
   doc,
@@ -22,13 +23,22 @@ export default function DocumentRow({
   getAccent,
 }) {
   const { openOptions } = useOptions();
+  const { handleActionClick } = useDocumentActions();
   const accent = getAccent(doc);
+  const { setDocPayload } = useOptions();
   const isImage = ["JPG", "JPEG", "PNG", "GIF", "WEBP"].includes(
     doc.fileType.toUpperCase(),
   );
 
   function handleMoreClick(e) {
-    openOptions(e, doc, [
+    const rect = e.currentTarget.getBoundingClientRect();
+    const positionedEvent = {
+      ...e,
+      clientX: rect.left,
+      clientY: rect.bottom + 4,
+      stopPropagation: () => e.stopPropagation(),
+    };
+    openOptions(positionedEvent, doc, [
       { type: "Preview", label: "Preview", icon: IconEye },
       { type: "Download", label: "Download", icon: IconDownload },
       { type: "Share", label: "Share", icon: IconShare },
@@ -42,6 +52,12 @@ export default function DocumentRow({
         dividerBefore: true,
       },
     ]);
+  }
+
+  function handlePreviewClick(e) {
+    e.preventDefault();
+    setDocPayload(doc);
+    handleActionClick(e, "Preview");
   }
 
   return (
@@ -78,7 +94,11 @@ export default function DocumentRow({
 
       {view === "list" && (
         <div className="doc-row-v2__actions">
-          <button type="button" className="doc-row-v2__action">
+          <button
+            type="button"
+            className="doc-row-v2__action"
+            onClick={handlePreviewClick}
+          >
             <IconEye /> Preview
           </button>
           <button type="button" className="doc-row-v2__action">

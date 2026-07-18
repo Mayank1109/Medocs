@@ -17,6 +17,7 @@ import OAuthSuccess from "./routes/auth/OAuthSuccess";
 import { ToastProvider } from "./components/ui/ToastProvider";
 import "./components/ui/LoadingStates.css";
 import Options from "./components/ui/Options";
+import WorkInProgress from "./routes/app/WorkInProgress";
 
 const Router = createBrowserRouter([
   {
@@ -28,11 +29,19 @@ const Router = createBrowserRouter([
       { path: "/auth", element: <AuthPage /> },
       { path: "/oauth-success", element: <OAuthSuccess /> },
       { path: "/dashboard", element: <DashboardPage /> },
-      // { path: "/profile", element: <ProfilePage /> },
-      // { path: "/settings", element: <SettingsPage /> },
       { path: "/documents", element: <DocumentsPage /> },
       { path: "/ai-assistant", element: <AIAssistantPage /> },
-      // { path: "/about", element: <AboutPage /> },
+      { path: "/vitals", element: <WorkInProgress title="Vitals" /> },
+      {
+        path: "/share-profile",
+        element: <WorkInProgress title="Share profile" />,
+      },
+      {
+        path: "/notifications",
+        element: <WorkInProgress title="Notifications" />,
+      },
+      { path: "/settings", element: <WorkInProgress title="Settings" /> },
+      { path: "/profile", element: <WorkInProgress title="Profile" /> },
     ],
   },
 ]);

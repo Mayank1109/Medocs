@@ -16,6 +16,8 @@ import { getAccent } from "../../data/documents";
 import { useDocumentList } from "../../hooks/useDocumentList";
 import "./Documents.css";
 import { modalDisplayHandler } from "../../utility/Functions";
+import DocumentListSkeleton from "../../components/ui/DocumentListSkeleton";
+import LoadingScreen from "../../components/ui/LoadingScreen";
 
 export default function DocumentsPage() {
   const [activeCategory, setActiveCategory] = useState("all");
@@ -162,30 +164,37 @@ export default function DocumentsPage() {
             </button>
           </div>
         </div>
-
-        {groups.length === 0 && !loading ? (
-          <div className="docs-empty">No documents match your search.</div>
+        {loading && userDocs.length === 0 ? (
+          <DocumentListSkeleton count={3} view={view} />
         ) : (
-          groups.map(([monthLabel, docs]) => (
-            <div className="docs-group" key={monthLabel}>
-              <h2 className="docs-group__title">{monthLabel}</h2>
-              <div className={view === "grid" ? "docs-grid" : "docs-list"}>
-                {docs.map((doc) => (
-                  <DocumentRow
-                    key={doc.id}
-                    doc={doc}
-                    view={view}
-                    isStarred={!!starred[doc.id]}
-                    onToggleStar={toggleStar}
-                    getAccent={getAccent}
-                  />
-                ))}
-              </div>
-            </div>
-          ))
-        )}
+          <>
+            {groups.length === 0 && !loading ? (
+              <div className="docs-empty">No documents match your search.</div>
+            ) : (
+              groups.map(([monthLabel, docs]) => (
+                <div className="docs-group" key={monthLabel}>
+                  <h2 className="docs-group__title">{monthLabel}</h2>
+                  <div className={view === "grid" ? "docs-grid" : "docs-list"}>
+                    {docs.map((doc) => (
+                      <DocumentRow
+                        key={doc.id}
+                        doc={doc}
+                        view={view}
+                        isStarred={!!starred[doc.id]}
+                        onToggleStar={toggleStar}
+                        getAccent={getAccent}
+                      />
+                    ))}
+                  </div>
+                </div>
+              ))
+            )}
 
-        {loading && <div className="docs-loading">Loading documents…</div>}
+            {loading && userDocs.length > 0 && (
+              <LoadingScreen message="Loading more documents…" />
+            )}
+          </>
+        )}
 
         <div ref={sentinelRef} style={{ height: 1 }} />
 

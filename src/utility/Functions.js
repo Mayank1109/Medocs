@@ -29,11 +29,11 @@ const profileCompletionPercentage = createSelector(
   },
 );
 
-const modalDisplayHandler = (event, actionType) => {
+const modalDisplayHandler = (event, actionType, payload = null) => {
   event.preventDefault();
   console.log("modal handler called");
   console.log("actionType:", actionType);
-  store.dispatch(modalActions.display({ actionType }));
+  store.dispatch(modalActions.display({ actionType, payload }));
 };
 
 // const optionsHandler = (event, id, openOptions) => {

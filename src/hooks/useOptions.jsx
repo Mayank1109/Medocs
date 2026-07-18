@@ -49,9 +49,13 @@ export const OptionsProvider = ({ children }) => {
     }));
   };
 
+  const setDocPayload = (payload) => {
+    setOptionsState((prev) => ({ ...prev, payload }));
+  };
+
   return (
     <OptionsContext.Provider
-      value={{ ...optionsState, openOptions, closeOptions }}
+      value={{ ...optionsState, openOptions, closeOptions, setDocPayload }}
     >
       {children}
     </OptionsContext.Provider>

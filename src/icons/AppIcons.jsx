@@ -362,6 +362,71 @@ export function IconAlertTriangle() {
   );
 }
 
+export function IconZoomIn() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="10.5" cy="10.5" r="7" />
+      <path d="M21 21l-4.35-4.35" />
+      <path d="M10.5 7.5v6M7.5 10.5h6" />
+    </svg>
+  );
+}
+
+export function IconZoomOut() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="10.5" cy="10.5" r="7" />
+      <path d="M21 21l-4.35-4.35" />
+      <path d="M7.5 10.5h6" />
+    </svg>
+  );
+}
+
+export function IconMaximize() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M8 3H4v4M16 3h4v4M8 21H4v-4M16 21h4v-4" />
+    </svg>
+  );
+}
+
+export function IconInfo() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="12" cy="12" r="9.5" />
+      <path d="M12 11v6M12 7.5v.01" />
+    </svg>
+  );
+}
+
 export function IconSearch() {
   return (
     <svg

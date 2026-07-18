@@ -16,6 +16,7 @@ export function useDocumentList() {
       setError("");
       try {
         const params = category && category !== "all" ? category : undefined;
+
         const response = await getDocuments(page, PAGE_LIMIT, params);
         const { data, pagination } = response.data;
         const mapped = data.map(mapDocument);

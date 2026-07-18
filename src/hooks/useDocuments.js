@@ -30,7 +30,7 @@ export const useDocumentActions = () => {
       return;
     }
 
-    modalDisplayHandler(event, actionType);
+    modalDisplayHandler(event, actionType, payload);
     closeOptions();
   };
 
@@ -69,26 +69,31 @@ export const useDocumentActions = () => {
   };
 
   const deleteDocHandler = async (event) => {
-    event.preventDefault();
-    const idToDelete = payload?._id;
+    event?.preventDefault();
+    const idToDelete = payload?.id;
 
     if (!idToDelete) {
-      console.error("No document ID provided for deletion.");
-      return;
+      const err = new Error("No document ID provided for deletion.");
+      toast.error("Delete failed", "Something went wrong. Try again.");
+      throw err;
     }
 
     setDeletingId(idToDelete);
     try {
+      await new Promise((resolve) => setTimeout(resolve, 1500));
       const response = await deleteDocument(idToDelete);
+      if (response.data.messageType !== "Success") {
+        throw new Error(response.data.message || "Delete failed");
+      }
       handleDeleteScenario(response.data.messageType);
     } catch (err) {
       toast.error(
         "Delete failed",
         "Could not delete document. Try again later.",
       );
+      throw err;
     } finally {
       setDeletingId(null);
-      dispatch(modalActions.hide());
     }
   };
 

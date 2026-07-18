@@ -15,7 +15,7 @@ const Options = () => {
 
   if (!isOpen) return null;
 
-  const isDeleting = payload?._id && payload._id === deletingId;
+  const isDeleting = payload?.id && payload.id === deletingId;
 
   return ReactDOM.createPortal(
     <>
