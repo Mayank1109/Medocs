@@ -11,37 +11,21 @@ export const OptionsProvider = ({ children }) => {
   });
 
   const openOptions = (event, payload, options) => {
-    console.log(
-      "opening options:",
-      options,
-      "with positions: ",
-      event.clientX,
-      event.clientY,
-    );
     event.stopPropagation();
-
-    let x = event.clientX;
-    let y = event.clientY;
-
-    const menuWidth = 180;
-    const menuHeight = 150;
-
-    if (window.innerWidth - x < menuWidth) {
-      x = x - menuWidth;
-    }
-
-    if (window.innerHeight - y < menuHeight) {
-      y = y - menuHeight;
-    }
+    const rect = event.currentTarget?.getBoundingClientRect?.() ?? {
+      top: event.clientY,
+      bottom: event.clientY,
+      left: event.clientX,
+      right: event.clientX,
+    };
 
     setOptionsState({
       isOpen: true,
-      anchorposition: { x, y },
+      anchorposition: rect,
       payload,
       options,
     });
   };
-
   const closeOptions = () => {
     setOptionsState((prev) => ({
       ...prev,

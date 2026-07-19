@@ -1,14 +1,13 @@
-import { IconSparkleSmall } from "./DashboardIcons";
+import { IconSparkleSmall } from "../../icons/AppIcons"; // adjust path
 
-/**
- * Shown in the chat thread while waiting for the AI's response to
- * start streaming. `subtext` describes what's happening behind the
- * scenes (e.g. "Analysing your report", "Reading your documents").
- */
-export default function AIThinkingIndicator({ subtext = "Analysing your report" }) {
+export default function AIThinkingIndicator({
+  subtext = "Analysing your report",
+}) {
   return (
     <div className="chat-row chat-row--ai">
-      <span className="chat-avatar"><IconSparkleSmall /></span>
+      <span className="chat-avatar">
+        <IconSparkleSmall />
+      </span>
       <div className="thinking-bubble">
         <div className="thinking-bubble__row">
           <span className="thinking-bubble__label">AI is thinking…</span>

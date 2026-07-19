@@ -34,6 +34,7 @@ const modalDisplayHandler = (event, actionType, payload = null) => {
   console.log("modal handler called");
   console.log("actionType:", actionType);
   store.dispatch(modalActions.display({ actionType, payload }));
+  console.log("dispatch call completed");
 };
 
 // const optionsHandler = (event, id, openOptions) => {

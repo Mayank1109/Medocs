@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { modalDisplayHandler } from "../utility/Functions";
-
+import { mapDocument } from "../utility/mapDocument";
 import {
   deleteDocument,
   editDocument,
@@ -131,7 +131,7 @@ export const useDocumentActions = () => {
       );
 
       dispatch(docActions.setRefresh());
-      return data;
+      return mapDocument(data.data);
     } catch (error) {
       toast.error(
         "Upload failed",

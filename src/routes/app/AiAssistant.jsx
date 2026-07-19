@@ -185,53 +185,56 @@ export default function AIAssistantPage() {
       </Sidebar>
 
       <main className="main-content ai-page">
-        <div className="page-header">
-          <div>
-            <h1 className="page-header__title">
-              AI Assistant{" "}
-              <span className="page-header__sparkle">
-                <IconSparkleSmall />
-              </span>
-            </h1>
-            <p className="page-header__subtitle">
-              Ask questions about your health records
-            </p>
-          </div>
-          <button
-            type="button"
-            className="button button--secondary"
-            onClick={handleClear}
-          >
-            <IconTrash />
-            Clear chat history
-          </button>
-        </div>
-
-        {contextDocs.length > 0 && (
-          <div className="context-bar">
-            <span className="context-bar__label">Context:</span>
-            {contextDocs.map((doc) => (
-              <div className="context-chip" key={doc.id}>
-                <span
-                  className={`doc-icon-v2 doc-icon-v2--sm doc-icon-v2--${doc.accent}`}
-                >
-                  {doc.type === "image" ? <IconFileImage /> : <IconFilePdf />}
+        <div className="chat-header-group">
+          <div className="page-header">
+            <div>
+              <h1 className="page-header__title">
+                AI Assistant{" "}
+                <span className="page-header__sparkle">
+                  <IconSparkleSmall />
                 </span>
-                <div>
-                  <div className="context-chip__name">{doc.name}</div>
-                  <div className="context-chip__meta">{doc.meta}</div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => removeContextDoc(doc.id)}
-                  aria-label="Remove from context"
-                >
-                  <IconX />
-                </button>
-              </div>
-            ))}
+              </h1>
+              <p className="page-header__subtitle">
+                Ask questions about your health records
+              </p>
+            </div>
+            <button
+              type="button"
+              className="button button--secondary"
+              onClick={handleClear}
+              style={{ width: "11rem" }}
+            >
+              <IconTrash size="1.5rem" />
+              Clear chat history
+            </button>
           </div>
-        )}
+
+          {contextDocs.length > 0 && (
+            <div className="context-bar">
+              <span className="context-bar__label">Context:</span>
+              {contextDocs.map((doc) => (
+                <div className="context-chip" key={doc.id}>
+                  <span
+                    className={`doc-icon-v2 doc-icon-v2--sm doc-icon-v2--${doc.accent}`}
+                  >
+                    {doc.type === "image" ? <IconFileImage /> : <IconFilePdf />}
+                  </span>
+                  <div>
+                    <div className="context-chip__name">{doc.name}</div>
+                    <div className="context-chip__meta">{doc.meta}</div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => removeContextDoc(doc.id)}
+                    aria-label="Remove from context"
+                  >
+                    <IconX />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
         <div className="chat-thread">
           {messages.length === 0 ? (
@@ -242,63 +245,64 @@ export default function AIAssistantPage() {
             messages.map((m, i) => <ChatMessage key={i} {...m} />)
           )}
         </div>
+        <div className="chat-footer">
+          <div className="chat-suggestions">
+            {suggestions.map((s) => (
+              <button
+                type="button"
+                className="chip chat-suggestion"
+                key={s.text}
+                onClick={() => setInputValue(s.text)}
+              >
+                {s.icon}
+                {s.text}
+              </button>
+            ))}
+          </div>
 
-        <div className="chat-suggestions">
-          {suggestions.map((s) => (
+          <div className="chat-input">
             <button
               type="button"
-              className="chip chat-suggestion"
-              key={s.text}
-              onClick={() => setInputValue(s.text)}
+              className="chat-input__icon-btn"
+              aria-label="Attach file"
             >
-              {s.icon}
-              {s.text}
+              <IconPaperclip />
             </button>
-          ))}
-        </div>
+            <button
+              type="button"
+              className="chat-input__icon-btn chat-input__icon-btn--box"
+              aria-label="Add"
+            >
+              <IconPlusSmall />
+            </button>
+            <input
+              type="text"
+              placeholder="Ask anything about your health…"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSend()}
+            />
+            <button
+              type="button"
+              className="chat-input__icon-btn"
+              aria-label="Voice input"
+            >
+              <IconMic />
+            </button>
+            <button
+              type="button"
+              className="chat-input__send"
+              onClick={handleSend}
+              aria-label="Send"
+            >
+              <IconSend />
+            </button>
+          </div>
 
-        <div className="chat-input">
-          <button
-            type="button"
-            className="chat-input__icon-btn"
-            aria-label="Attach file"
-          >
-            <IconPaperclip />
-          </button>
-          <button
-            type="button"
-            className="chat-input__icon-btn chat-input__icon-btn--box"
-            aria-label="Add"
-          >
-            <IconPlusSmall />
-          </button>
-          <input
-            type="text"
-            placeholder="Ask anything about your health…"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSend()}
-          />
-          <button
-            type="button"
-            className="chat-input__icon-btn"
-            aria-label="Voice input"
-          >
-            <IconMic />
-          </button>
-          <button
-            type="button"
-            className="chat-input__send"
-            onClick={handleSend}
-            aria-label="Send"
-          >
-            <IconSend />
-          </button>
+          <p className="chat-disclaimer">
+            Medocs AI can make mistakes. Please verify important information.
+          </p>
         </div>
-
-        <p className="chat-disclaimer">
-          Medocs AI can make mistakes. Please verify important information.
-        </p>
       </main>
     </div>
   );

@@ -10,13 +10,15 @@ import {
   IconSparkleSmall,
 } from "../../icons/AppIcons";
 import { IconCheck, IconEye } from "../../icons/AuthIcons";
-import { getFileAccent } from "../../utility/Functions";
+import { getFileAccent, modalDisplayHandler } from "../../utility/Functions";
 import "./UploadDocumentModal.css";
 import { ACCEPTED_TYPES, CATEGORIES, MAX_SIZE_MB } from "../../data/modalData";
 import { useFieldValidation } from "../../hooks/useFieldValidation";
 
+import { useDocumentActions } from "../../hooks/useDocuments";
+
 function formatSize(bytes) {
-  return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+  return (bytes / (1024 * 1024)).toFixed(1) + " MBUpload ";
 }
 
 function extOf(filename) {
@@ -44,7 +46,7 @@ export default function UploadDocumentModal({ isOpen, onClose, onUploaded }) {
   const inputRef = useRef(null);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState("");
-
+  const [uploadedDoc, setUploadedDoc] = useState(null);
   const { validateInputHandler, validateFormHandler } = useFieldValidation();
 
   useEffect(() => {
@@ -57,6 +59,7 @@ export default function UploadDocumentModal({ isOpen, onClose, onUploaded }) {
       setDocDate(todayFormatted());
       setDescription("");
       setSuccess(false);
+      setUploadedDoc(null);
     }
   }, [isOpen]);
 
@@ -101,23 +104,21 @@ export default function UploadDocumentModal({ isOpen, onClose, onUploaded }) {
   }
 
   async function handleUpload() {
-    const isValid = validateFormHandler({
-      fileName: docName,
-      description,
-    });
+    const isValid = validateFormHandler({ fileName: docName, description });
     if (!isValid) return;
 
     setUploading(true);
     setUploadError("");
 
     try {
-      await onUploaded?.({
+      const mappedDoc = await onUploaded?.({
         file,
         name: docName,
         category,
         date: docDate,
         description,
       });
+      setUploadedDoc(mappedDoc);
       setSuccess(true);
     } catch (err) {
       setUploadError(
@@ -126,6 +127,14 @@ export default function UploadDocumentModal({ isOpen, onClose, onUploaded }) {
     } finally {
       setUploading(false);
     }
+  }
+
+  function handleAskAI(event) {
+    // onClose?.();
+    event.stopPropagation();
+    console.log("Now we will open preview Modal");
+    console.log(uploadedDoc);
+    modalDisplayHandler(event, "Preview", uploadedDoc);
   }
 
   const accent = getFileAccent({
@@ -137,7 +146,7 @@ export default function UploadDocumentModal({ isOpen, onClose, onUploaded }) {
   return (
     <div className="modal-backdrop" onClick={onClose}>
       {success ? (
-        <div className="upload-success" onClick={(e) => onClose(e)}>
+        <div className="upload-success">
           <button
             type="button"
             className="upload-modal__close"
@@ -183,11 +192,15 @@ export default function UploadDocumentModal({ isOpen, onClose, onUploaded }) {
           </div>
 
           <div className="upload-success__actions">
-            <button type="button" className="button button--secondary">
+            <button
+              type="button"
+              className="button button--secondary"
+              onClick={(e) => e.stopPropagation()}
+            >
               <IconEye /> View document
             </button>
-            <button type="button" className="button">
-              <IconSparkleSmall /> Ask AI about this report
+            <button type="button" className="button" onClick={handleAskAI}>
+              <IconSparkleSmall /> Ask AI
             </button>
           </div>
         </div>

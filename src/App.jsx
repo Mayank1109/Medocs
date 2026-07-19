@@ -10,6 +10,7 @@ import DashboardPage from "./routes/app/Dashboard";
 import DocumentsPage from "./routes/app/Documents";
 import AIAssistantPage from "./routes/app/AiAssistant";
 import Modal from "./components/ui/Modal";
+import NotificationsPage from "./routes/app/NotificationsPage";
 import { OptionsProvider } from "./hooks/useOptions";
 import { useSelector } from "react-redux";
 import AuthPage from "./routes/auth/AuthPage";
@@ -18,6 +19,9 @@ import { ToastProvider } from "./components/ui/ToastProvider";
 import "./components/ui/LoadingStates.css";
 import Options from "./components/ui/Options";
 import WorkInProgress from "./routes/app/WorkInProgress";
+import SettingsPage from "./routes/app/SettingsPage";
+import ProfilePage from "./routes/app/ProfilePage";
+import AccountPage from "./routes/app/AccountPage";
 
 const Router = createBrowserRouter([
   {
@@ -38,16 +42,17 @@ const Router = createBrowserRouter([
       },
       {
         path: "/notifications",
-        element: <WorkInProgress title="Notifications" />,
+        element: <NotificationsPage />,
       },
-      { path: "/settings", element: <WorkInProgress title="Settings" /> },
-      { path: "/profile", element: <WorkInProgress title="Profile" /> },
+      { path: "/settings", element: <SettingsPage /> },
+      { path: "/profile", element: <AccountPage /> },
     ],
   },
 ]);
 
 function App() {
   const isModalVisible = useSelector((state) => state.modal.isModalVisible);
+  console.log("App.jsx isModalVisible:", isModalVisible);
   const [count, setCount] = useState(0);
 
   return (

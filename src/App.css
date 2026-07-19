@@ -4,7 +4,6 @@
 /*=============== VARIABLES CSS ===============*/
 :root {
   --header-height: 3rem;
-
   /*========== DARK THEME (default) ==========*/
   --bg: #0a1a1a;
   --surface: #111f1f;
@@ -247,7 +246,7 @@ img {
 }
 .main-content {
   flex: 1;
-  padding: 1.75rem 1.5rem;
+  padding: 0rem 1.5rem;
   overflow-y: auto;
   height: 100vh;
 }
@@ -392,6 +391,7 @@ body:not([data-theme="light"]) .sidebar__nav-item.active {
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
   padding: 1.125rem;
+  text-align: left;
 }
 
 .card--vital {

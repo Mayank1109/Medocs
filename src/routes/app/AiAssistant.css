@@ -1,3 +1,27 @@
+.ai-page {
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-header-group {
+  position: sticky;
+  top: -30px;
+  z-index: 2;
+  background-color: var(--bg);
+  padding-bottom: 0.75rem;
+}
+
+.chat-footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  background-color: var(--bg);
+  padding-top: 0.5rem;
+}
+
+.chat-disclaimer {
+  padding-bottom: 0.5rem;
+}
 /*=============== HEADER ===============*/
 .page-header__title {
   display: flex;
@@ -225,6 +249,8 @@
   line-height: 1.6;
   flex-direction: column;
   align-items: flex-start;
+  min-width: 500px;
+  max-width: 800px;
 }
 
 .ai-message p {

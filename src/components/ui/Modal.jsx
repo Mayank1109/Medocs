@@ -8,6 +8,7 @@ import DeleteDocumentModal from "./DeleteDocumentModal";
 import PreviewDocumentModal from "./PreviewDocumentModal";
 
 const Modal = () => {
+  console.log("Modal component function called");
   const {
     submitHandler,
     deleteDocHandler,
@@ -24,9 +25,12 @@ const Modal = () => {
   let modalContent = null;
   const activeDoc = payload || modalData;
   console.log(
-    "switch actionType:",
-    JSON.stringify(actionType),
-    typeof actionType,
+    "activeDoc:",
+    activeDoc,
+    "| payload:",
+    payload,
+    "| modalData:",
+    modalData,
   );
 
   switch (actionType) {

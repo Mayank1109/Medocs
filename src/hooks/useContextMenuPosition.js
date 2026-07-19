@@ -1,35 +1,39 @@
 import { useEffect, useState } from "react";
 
-const useContextMenuPosition = (ref, anchorPosition, isOpen) => {
+const useContextMenuPosition = (ref, anchorRect, isOpen) => {
   const [position, setPosition] = useState({ top: 0, left: 0 });
 
   useEffect(() => {
-    if (!ref.current || !anchorPosition || !isOpen) return;
+    if (!ref.current || !anchorRect || !isOpen) return;
 
-    const rect = ref.current.getBoundingClientRect();
+    function calculate() {
+      const rect = ref.current.getBoundingClientRect();
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      const GAP = 6;
 
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
+      let top = anchorRect.bottom + GAP;
+      let left = anchorRect.right - rect.width;
 
-    let top = anchorPosition.y;
-    let left = anchorPosition.x;
+      if (top + rect.height > viewportHeight) {
+        top = anchorRect.top - rect.height - GAP;
+      }
 
-    // Flip horizontally
-    if (left + rect.width > viewportWidth) {
-      left = anchorPosition.x - rect.width;
+      left = Math.min(left, viewportWidth - rect.width - 10);
+      left = Math.max(10, left);
+      top = Math.max(10, top);
+
+      setPosition({ top, left });
     }
 
-    // Flip vertically
-    if (top + rect.height > viewportHeight) {
-      top = anchorPosition.y - rect.height;
-    }
-
-    // Safety padding
-    top = Math.max(10, top);
-    left = Math.max(10, left);
-
-    setPosition({ top, left });
-  }, [anchorPosition, isOpen, ref]);
+    calculate();
+    window.addEventListener("resize", calculate);
+    window.addEventListener("scroll", calculate, true);
+    return () => {
+      window.removeEventListener("resize", calculate);
+      window.removeEventListener("scroll", calculate, true);
+    };
+  }, [anchorRect, isOpen, ref]);
 
   return position;
 };

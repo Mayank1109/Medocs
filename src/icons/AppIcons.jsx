@@ -678,7 +678,7 @@ export function IconInboxCheck() {
   );
 }
 
-export function IconTrash() {
+export function IconTrash({ size }) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -686,6 +686,7 @@ export function IconTrash() {
       stroke="currentColor"
       strokeWidth="2"
       strokeLinecap="round"
+      width={size}
       strokeLinejoin="round"
     >
       <path d="M3 6.5h18" />
@@ -917,6 +918,347 @@ export function IconEdit() {
     >
       <path d="M12 20h9" />
       <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" />
+    </svg>
+  );
+}
+
+export function IconLink() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M9.5 14.5l5-5" />
+      <path d="M11 6.5l1-1a3.5 3.5 0 0 1 5 5l-1 1" />
+      <path d="M13 17.5l-1 1a3.5 3.5 0 0 1-5-5l1-1" />
+    </svg>
+  );
+}
+
+export function IconDatabase() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <ellipse cx="12" cy="5.5" rx="8" ry="3" />
+      <path d="M4 5.5V12c0 1.7 3.6 3 8 3s8-1.3 8-3V5.5" />
+      <path d="M4 12v6.5c0 1.7 3.6 3 8 3s8-1.3 8-3V12" />
+    </svg>
+  );
+}
+
+export function IconGoogleColor() {
+  return (
+    <svg viewBox="0 0 24 24">
+      <path
+        fill="#4285F4"
+        d="M23.5 12.3c0-.85-.08-1.66-.22-2.45H12v4.63h6.46a5.53 5.53 0 0 1-2.4 3.63v3h3.87c2.27-2.09 3.57-5.17 3.57-8.81z"
+      />
+      <path
+        fill="#34A853"
+        d="M12 24c3.24 0 5.96-1.07 7.94-2.9l-3.87-3c-1.08.72-2.46 1.15-4.07 1.15-3.13 0-5.78-2.11-6.73-4.96H1.27v3.1A12 12 0 0 0 12 24z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M5.27 14.29A7.2 7.2 0 0 1 4.89 12c0-.8.14-1.57.38-2.29v-3.1H1.27A12 12 0 0 0 0 12c0 1.94.46 3.77 1.27 5.39z"
+      />
+      <path
+        fill="#EA4335"
+        d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.44-3.44C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.27 6.61l4 3.1C6.22 6.86 8.87 4.75 12 4.75z"
+      />
+    </svg>
+  );
+}
+
+export function IconApple() {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor">
+      <path d="M16.5 1.2c.1 1-.3 2-.9 2.7-.6.7-1.6 1.3-2.6 1.2-.1-1 .4-2 1-2.7.6-.7 1.7-1.2 2.5-1.2zM20.8 17c-.5 1.1-.7 1.6-1.4 2.6-.9 1.4-2.2 3.1-3.8 3.1-1.4 0-1.8-.9-3.7-.9s-2.4.9-3.7.9c-1.6 0-2.8-1.5-3.7-2.9C2 16.9 1.6 12.6 3.2 10.3c1.1-1.6 2.9-2.6 4.5-2.6 1.6 0 2.7 1 4 1 1.3 0 2.1-1 4-1 1.3 0 2.7.7 3.7 1.9-3.2 1.8-2.7 6.4.4 7.4z" />
+    </svg>
+  );
+}
+
+export function IconMonitor() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect x="2.5" y="4" width="19" height="13" rx="2" />
+      <path d="M8 21h8M12 17v4" />
+    </svg>
+  );
+}
+
+export function IconMoon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M20.5 14.5A8.5 8.5 0 1 1 9.5 3.5a7 7 0 0 0 11 11z" />
+    </svg>
+  );
+}
+
+export function IconCheckSquare() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect x="3" y="3" width="18" height="18" rx="4" />
+      <path d="M7.5 12l3 3 6-6.5" />
+    </svg>
+  );
+}
+
+export function IconCheck() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M20 6L9 17l-5-5" />
+    </svg>
+  );
+}
+
+export function IconPencil({ size }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      height={size}
+    >
+      <path d="M4 20l.9-4.2L15.5 5.2a2 2 0 0 1 2.8 0l1.5 1.5a2 2 0 0 1 0 2.8L9.2 20H4z" />
+      <path d="M13.5 6.5l4 4" />
+    </svg>
+  );
+}
+
+export function IconHeart() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M12 20.5S3 14.8 3 8.8A4.8 4.8 0 0 1 12 6a4.8 4.8 0 0 1 9 2.8c0 6-9 11.7-9 11.7z" />
+    </svg>
+  );
+}
+
+export function IconDroplet() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M12 2.5S5 11 5 15.5a7 7 0 0 0 14 0C19 11 12 2.5 12 2.5z" />
+    </svg>
+  );
+}
+
+export function IconShieldBadge() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5z" />
+    </svg>
+  );
+}
+
+export function IconBriefcase() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect x="2.5" y="7" width="19" height="13" rx="2" />
+      <path d="M8 7V5.5A1.5 1.5 0 0 1 9.5 4h5A1.5 1.5 0 0 1 16 5.5V7" />
+      <path d="M2.5 12.5h19" />
+    </svg>
+  );
+}
+
+export function IconMapPin() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M12 21.5S19 15 19 9.5a7 7 0 0 0-14 0C5 15 12 21.5 12 21.5z" />
+      <circle cx="12" cy="9.5" r="2.5" />
+    </svg>
+  );
+}
+
+export function IconRuler() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect
+        x="3"
+        y="7"
+        width="18"
+        height="10"
+        rx="1.5"
+        transform="rotate(-8 12 12)"
+      />
+      <path d="M6.5 9.5l.6 1.6M9.7 9l.6 1.6M12.9 8.5l.6 1.6M16.1 8l.6 1.6" />
+    </svg>
+  );
+}
+
+export function IconScale() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="12" cy="12" r="9.5" />
+      <path d="M8.5 13a3.5 3.5 0 0 0 7 0" />
+      <path d="M12 8v2" />
+    </svg>
+  );
+}
+
+export function IconCamera() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M4 8.5A1.5 1.5 0 0 1 5.5 7h2l1-2h7l1 2h2A1.5 1.5 0 0 1 20 8.5v9A1.5 1.5 0 0 1 18.5 19h-13A1.5 1.5 0 0 1 4 17.5z" />
+      <circle cx="12" cy="12.5" r="3.5" />
+    </svg>
+  );
+}
+
+export function IconCrown() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M3 8l4 3 5-6 5 6 4-3-1.5 10h-15z" />
+      <path d="M6.5 18h11" />
+    </svg>
+  );
+}
+
+export function IconPhone() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M6.5 3.5h3l1.5 4-2 1.5a11 11 0 0 0 5 5l1.5-2 4 1.5v3a1.5 1.5 0 0 1-1.6 1.5A16.5 16.5 0 0 1 5 6.1 1.5 1.5 0 0 1 6.5 3.5z" />
+    </svg>
+  );
+}
+
+export function IconLock() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect x="4" y="11" width="16" height="10" rx="2" />
+      <path d="M7.5 11V7.5a4.5 4.5 0 0 1 9 0V11" />
+    </svg>
+  );
+}
+
+export function IconMail() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect x="2" y="4" width="20" height="16" rx="2.5" />
+      <path d="M2.5 6l9.5 7 9.5-7" />
     </svg>
   );
 }

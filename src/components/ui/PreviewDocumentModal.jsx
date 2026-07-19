@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   IconX,
   IconDownload,
@@ -7,26 +7,23 @@ import {
   IconFilePdf,
   IconFileImage,
   IconSend,
+  IconSparkleSmall,
 } from "../../icons/AppIcons";
+import ReactMarkdown from "react-markdown";
 import { getAccent } from "../../data/documents";
+import { useDocumentAnalysis } from "../../hooks/useDocumentAnalysis";
 import "./PreviewDocumentModal.css";
-
-const SEED_MESSAGES = [
-  {
-    role: "ai",
-    text: "Ask me anything about this document once you've had a look — I can help summarize or explain what's in it.",
-  },
-];
-
-const SUGGESTIONS = [
-  "Summarize this document",
-  "What are the key values?",
-  "Explain this in plain language",
-];
+import AIThinkingIndicator from "./AIThinkingIndicator";
 
 export default function PreviewDocumentModal({ isOpen, onClose, document }) {
-  const [messages, setMessages] = useState(SEED_MESSAGES);
+  const { messages, loading, quotaReached, summarize, ask, reset } =
+    useDocumentAnalysis();
   const [input, setInput] = useState("");
+
+  useEffect(() => {
+    reset();
+    setInput("");
+  }, [document?.id]);
 
   if (!isOpen || !document) return null;
 
@@ -34,12 +31,11 @@ export default function PreviewDocumentModal({ isOpen, onClose, document }) {
   const isPdf = document.fileType === "PDF";
   const accent = getAccent(document);
 
-  function sendMessage(text) {
-    const value = text ?? input;
-    if (!value.trim()) return;
-    setMessages((m) => [...m, { role: "user", text: value }]);
+  function handleSend() {
+    const value = input.trim();
+    if (!value || loading || quotaReached) return;
     setInput("");
-    // Note: this thread is still a static mock — no real AI call wired yet.
+    ask(document.id, value);
   }
 
   return (
@@ -125,44 +121,69 @@ export default function PreviewDocumentModal({ isOpen, onClose, document }) {
             </div>
 
             <div className="preview-chat__thread">
+              {messages.length === 0 && !loading && (
+                <div className="preview-chat__ai chat-bubble--ai">
+                  Get an AI summary, or ask a question about this document.
+                </div>
+              )}
               {messages.map((m, i) =>
                 m.role === "user" ? (
                   <div className="chat-bubble--user preview-chat__user" key={i}>
                     {m.text}
                   </div>
                 ) : (
-                  <div className="chat-bubble--ai preview-chat__ai" key={i}>
-                    {m.text}
+                  <div
+                    className={`chat-bubble--ai preview-chat__ai${m.isError ? " preview-chat__ai--error" : ""}`}
+                    key={i}
+                  >
+                    <ReactMarkdown>{m.text}</ReactMarkdown>
                   </div>
                 ),
               )}
+              {loading && (
+                <AIThinkingIndicator subtext="Reading your document…" />
+              )}
             </div>
 
-            <div className="preview-chat__suggestions">
-              {SUGGESTIONS.map((s) => (
+            {messages.length === 0 && (
+              <div className="preview-chat__suggestions">
                 <button
                   type="button"
-                  className="chip preview-chat__suggestion"
-                  key={s}
-                  onClick={() => sendMessage(s)}
+                  className={`chip preview-chat__suggestion${loading ? " button--loading" : ""}`}
+                  onClick={() => summarize(document.id)}
+                  disabled={loading || quotaReached}
                 >
-                  {s}
+                  <IconSparkleSmall /> Summarize this document
                 </button>
-              ))}
-            </div>
+              </div>
+            )}
+
+            {quotaReached && (
+              <div className="preview-chat__quota-banner">
+                <IconInfo />
+                You've reached today's AI usage limit. Please try again
+                tomorrow.
+              </div>
+            )}
 
             <div className="preview-chat__input-row">
               <input
                 type="text"
-                placeholder="Ask anything about your report…"
+                placeholder={
+                  quotaReached
+                    ? "Daily limit reached"
+                    : "Ask anything about your report…"
+                }
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+                onKeyDown={(e) => e.key === "Enter" && handleSend()}
+                disabled={loading || quotaReached}
               />
               <button
                 type="button"
                 className="preview-chat__send"
-                onClick={() => sendMessage()}
+                onClick={handleSend}
+                disabled={loading || quotaReached}
                 aria-label="Send"
               >
                 <IconSend />

@@ -14,6 +14,8 @@ const DOCUMENT_URI = {
   LIST: "/dashboard/documents",
   DELETE: (id) => `/dashboard/documents/${id}`,
   EDIT: (id) => `/dashboard/documents/${id}`,
+  ANALYZE: (id) => `/dashboard/documents/${id}/analyze`,
+  ASK: (id) => `/dashboard/documents/${id}/ask`,
 };
 
 export { BASE_URI, AUTH_URI, DOCUMENT_URI, VIEW_URI };

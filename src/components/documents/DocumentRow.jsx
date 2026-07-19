@@ -31,14 +31,7 @@ export default function DocumentRow({
   );
 
   function handleMoreClick(e) {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const positionedEvent = {
-      ...e,
-      clientX: rect.left,
-      clientY: rect.bottom + 4,
-      stopPropagation: () => e.stopPropagation(),
-    };
-    openOptions(positionedEvent, doc, [
+    openOptions(e, doc, [
       { type: "Preview", label: "Preview", icon: IconEye },
       { type: "Download", label: "Download", icon: IconDownload },
       { type: "Share", label: "Share", icon: IconShare },

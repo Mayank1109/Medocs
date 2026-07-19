@@ -1,33 +1,20 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
-const path = require("path");
-const fs = require("fs");
-const crypto = require("crypto");
 const authMiddleware = require("../middleware/authMiddleware");
 const Document = require("../models/documentModel");
 const DocumentAnalysis = require("../models/documentAnalysisModel");
 const multer = require("multer");
+const {
+  analyzeDocument,
+  askAboutDocument,
+  isQuotaError,
+  uploadToCloudinary,
+  deleteFromCloudinary,
+} = require("../services/geminiService");
+const { AI_ERRORS } = require("../constants/errorMessages");
+
 router.use(authMiddleware);
-
-const { v2: cloudinary } = require("cloudinary");
-const streamifier = require("streamifier");
-
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
-
-function uploadToCloudinary(buffer) {
-  return new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream(
-      { folder: "medocs", resource_type: "auto" },
-      (error, result) => (error ? reject(error) : resolve(result)),
-    );
-    streamifier.createReadStream(buffer).pipe(stream);
-  });
-}
 
 const MAX_UPLOAD_SIZE_BYTES =
   Number(process.env.MAX_UPLOAD_SIZE_BYTES) || 10 * 1024 * 1024;
@@ -53,73 +40,13 @@ const upload = multer({
   },
 });
 
-function getAnalysisInput(document, fileBuffer) {
-  const base64 = fileBuffer.toString("base64");
-  if (document.fileType === "application/pdf") {
-    return {
-      type: "input_file",
-      filename: document.fileName,
-      file_data: `data:application/pdf;base64,${base64}`,
-      detail: "low",
-    };
-  }
-
-  return {
-    type: "input_image",
-    image_url: `data:${document.fileType};base64,${base64}`,
-    detail: "high",
-  };
-}
-
-async function analyzeDocument(document, storedFile) {
-  const fileBuffer = await fs.promises.readFile(storedFile);
-  const response = await fetch("https://api.openai.com/v1/responses", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: process.env.OPENAI_MODEL,
-      input: [
-        {
-          role: "user",
-          content: [
-            getAnalysisInput(document, fileBuffer),
-            {
-              type: "input_text",
-              text: "Summarize this medical document in plain language. List notable values, dates, medications, and follow-up questions when present. Do not diagnose, and state clearly when information is uncertain.",
-            },
-          ],
-        },
-      ],
-    }),
-  });
-
-  const payload = await response.json();
-  if (!response.ok) {
-    throw new Error(payload.error?.message || "AI provider request failed");
-  }
-
-  if (!payload.output_text) {
-    throw new Error("AI provider returned no analysis text");
-  }
-
-  return payload.output_text;
-}
-
 router.get("/documents", async (req, res) => {
   try {
     const page = Math.max(Number(req.query.page) || 1, 1);
     const limit = Math.min(Math.max(Number(req.query.limit) || 20, 1), 100);
     const { category } = req.query;
-    const filter = {
-      ownerId: req.user._id,
-    };
-
-    if (category) {
-      filter.category = category;
-    }
+    const filter = { ownerId: req.user._id };
+    if (category) filter.category = category;
     const skip = (page - 1) * limit;
 
     const [docs, total] = await Promise.all([
@@ -129,7 +56,6 @@ router.get("/documents", async (req, res) => {
         .sort({ documentDate: -1 })
         .skip(skip)
         .limit(limit),
-
       Document.countDocuments(filter),
     ]);
 
@@ -167,13 +93,7 @@ router.delete("/documents/:id", async (req, res) => {
       });
     }
 
-    if (deletedDoc.cloudinaryId) {
-      await cloudinary.uploader
-        .destroy(deletedDoc.cloudinaryId)
-        .catch((err) => {
-          console.error("Cloudinary delete failed:", err);
-        });
-    }
+    await deleteFromCloudinary(deletedDoc.cloudinaryId);
 
     return res.status(200).json({
       messageType: "Success",
@@ -301,15 +221,11 @@ router.get("/documents/:id/download", async (req, res) => {
     if (!document)
       return res.status(404).json({ message: "Document not found" });
 
-    const storedFile = path.join(
-      UPLOAD_DIR,
-      path.basename(document.storagePath || ""),
-    );
-    if (!fs.existsSync(storedFile)) {
-      return res.status(404).json({ message: "Document file not found" });
+    if (!document.storagePath) {
+      return res.status(404).json({ message: AI_ERRORS.FILE_NOT_FOUND });
     }
 
-    return res.download(storedFile, document.fileName);
+    return res.redirect(document.storagePath);
   } catch (err) {
     return res.status(500).json({ message: "Unable to download document" });
   }
@@ -329,43 +245,83 @@ router.post("/documents/:id/analyze", async (req, res) => {
     if (!document)
       return res.status(404).json({ message: "Document not found" });
 
-    if (!process.env.OPENAI_API_KEY || !process.env.OPENAI_MODEL) {
-      return res.status(503).json({
-        message: "AI analysis is not configured on this server.",
-      });
+    if (!process.env.GEMINI_API_KEY || !process.env.GEMINI_MODEL) {
+      return res.status(503).json({ message: AI_ERRORS.NOT_CONFIGURED });
     }
 
-    const storedFile = path.join(
-      UPLOAD_DIR,
-      path.basename(document.storagePath || ""),
-    );
-    if (!fs.existsSync(storedFile)) {
-      return res.status(404).json({ message: "Document file not found" });
+    if (!document.storagePath) {
+      return res.status(404).json({ message: AI_ERRORS.FILE_NOT_FOUND });
     }
 
     const analysis = await DocumentAnalysis.create({
       documentId: document._id,
       ownerId: req.user._id,
       status: "processing",
-      provider: "openai",
-      model: process.env.OPENAI_MODEL,
+      provider: "gemini",
+      model: process.env.GEMINI_MODEL,
     });
 
     try {
-      analysis.summary = await analyzeDocument(document, storedFile);
+      analysis.summary = await analyzeDocument(document);
       analysis.status = "completed";
       await analysis.save();
       return res
         .status(201)
         .json({ message: "Document analysis completed.", data: analysis });
     } catch (error) {
+      console.error("Analysis failed:", error.message);
       analysis.status = "failed";
       analysis.error = error.message;
       await analysis.save();
-      return res.status(502).json({ message: "Document analysis failed." });
+      if (isQuotaError(error)) {
+        return res.status(429).json({ message: AI_ERRORS.QUOTA_EXCEEDED });
+      }
+      return res.status(502).json({ message: AI_ERRORS.ANALYSIS_FAILED });
     }
   } catch (err) {
     return res.status(500).json({ message: "Unable to analyze document" });
+  }
+});
+
+router.post("/documents/:id/ask", async (req, res) => {
+  try {
+    const docId = req.params.id;
+    if (!mongoose.Types.ObjectId.isValid(docId)) {
+      return res.status(400).json({ message: "Invalid document ID" });
+    }
+
+    const { question } = req.body;
+    if (!question?.trim()) {
+      return res.status(400).json({ message: AI_ERRORS.QUESTION_REQUIRED });
+    }
+
+    const document = await Document.findOne({
+      _id: docId,
+      ownerId: req.user._id,
+    });
+    if (!document)
+      return res.status(404).json({ message: "Document not found" });
+
+    if (!process.env.GEMINI_API_KEY || !process.env.GEMINI_MODEL) {
+      return res.status(503).json({ message: AI_ERRORS.NOT_CONFIGURED });
+    }
+
+    if (!document.storagePath) {
+      return res.status(404).json({ message: AI_ERRORS.FILE_NOT_FOUND });
+    }
+
+    try {
+      const answer = await askAboutDocument(document, question.trim());
+      return res.status(200).json({ message: "Answered.", data: { answer } });
+    } catch (error) {
+      console.error("Ask failed:", error.message);
+      if (isQuotaError(error)) {
+        return res.status(429).json({ message: AI_ERRORS.QUOTA_EXCEEDED });
+      }
+      return res.status(502).json({ message: AI_ERRORS.ASK_FAILED });
+    }
+  } catch (err) {
+    return res.status(500).json({ message: "Unable to process the question" });
   }
 });
 
@@ -383,14 +339,12 @@ router.get("/documents/grouped", async (req, res) => {
 
     const groupedDocs = await Document.aggregate([
       { $match: matchStage },
-
       {
         $addFields: {
           year: { $year: "$documentDate" },
           month: { $month: "$documentDate" },
         },
       },
-
       {
         $group: {
           _id: { year: "$year", month: "$month" },
@@ -407,14 +361,12 @@ router.get("/documents/grouped", async (req, res) => {
           },
         },
       },
-
       {
         $sort: {
           "_id.year": -1,
           "_id.month": -1,
         },
       },
-
       {
         $project: {
           _id: 0,

@@ -19,9 +19,13 @@ const Options = () => {
 
   return ReactDOM.createPortal(
     <>
-      <div ref={modalRef} className="options-modal">
+      <div
+        ref={modalRef}
+        className="options-modal"
+        style={{ top: position.top, left: position.left }}
+      >
         <button
-          className="modal__btn-close"
+          className="options-modal__close"
           onClick={() => closeOptions()}
           aria-label="Close"
         >
@@ -29,7 +33,7 @@ const Options = () => {
         </button>
 
         <ul>
-          {options.map((option, index) => {
+          {options.map((option) => {
             const Icon = option.icon;
             const isDanger = option.type === "Delete";
             const showDivider = option.dividerBefore;
@@ -38,33 +42,20 @@ const Options = () => {
             return (
               <div key={option.type}>
                 {showDivider && (
-                  <li
-                    className="options-modal__divider"
-                    aria-hidden="true"
-                    style={{
-                      listStyle: "none",
-                      height: "1px",
-                      backgroundColor: "var(--border)",
-                      margin: "6px 4px",
-                    }}
-                  />
+                  <li className="options-modal__divider" aria-hidden="true" />
                 )}
-                <li
-                  onClick={(event) => {
-                    if (disabled) return;
-                    handleActionClick(event, option.type);
-                  }}
-                  className={`flex${isDanger ? " options-modal__item--danger" : ""}${disabled ? " options-modal__item--loading" : ""}`}
-                >
-                  {Icon && (
-                    <Icon
-                      height="18"
-                      width="18"
-                      fill="none"
-                      stroke={isDanger ? "var(--danger)" : "var(--text-color)"}
-                    />
-                  )}
-                  <p>{disabled ? "Moving to bin…" : option.label}</p>
+                <li>
+                  <button
+                    type="button"
+                    className={`options-modal__item${isDanger ? " options-modal__item--danger" : ""}${disabled ? " options-modal__item--loading" : ""}`}
+                    onClick={(event) => {
+                      if (disabled) return;
+                      handleActionClick(event, option.type);
+                    }}
+                  >
+                    {Icon && <Icon />}
+                    {disabled ? "Moving to bin…" : option.label}
+                  </button>
                 </li>
               </div>
             );

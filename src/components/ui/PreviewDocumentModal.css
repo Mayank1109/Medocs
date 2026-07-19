@@ -5,7 +5,7 @@
   border-radius: var(--radius-2xl);
   width: 100%;
   max-width: 1200px;
-  height: 65vh;
+  height: 83vh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -97,7 +97,7 @@
 
 /*----- Right: Ask AI sidebar -----*/
 .preview-modal__sidebar {
-  width: 340px;
+  width: 500px;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
@@ -157,6 +157,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  width: 55%;
   padding: 0 1.125rem 0.875rem;
   flex-shrink: 0;
 }
@@ -165,6 +166,10 @@
   display: flex;
   width: 100%;
   text-align: left;
+
+  svg {
+    height: 1.5rem;
+  }
 }
 
 .preview-chat__input-row {
@@ -250,4 +255,68 @@
   .preview-modal__sidebar {
     width: 100%;
   }
+}
+
+.preview-chat__ai h1,
+.preview-chat__ai h2,
+.preview-chat__ai h3 {
+  font-size: 0.8125rem;
+  font-weight: var(--font-bold);
+  color: var(--title-color);
+  margin: 0.75rem 0 0.375rem;
+}
+
+.preview-chat__ai h3:first-child {
+  margin-top: 0;
+}
+
+.preview-chat__ai p {
+  margin: 0 0 0.5rem;
+  line-height: 1.5;
+}
+
+.preview-chat__ai ul,
+.preview-chat__ai ol {
+  margin: 0 0 0.5rem;
+  padding-left: 1.125rem;
+}
+
+.preview-chat__ai li {
+  margin-bottom: 0.25rem;
+  line-height: 1.45;
+}
+
+.preview-chat__ai strong {
+  font-weight: var(--font-bold);
+  color: var(--title-color);
+}
+
+.preview-chat__ai hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 0.75rem 0;
+}
+
+.preview-chat__ai > *:last-child {
+  margin-bottom: 0;
+}
+
+.preview-chat__quota-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 1.125rem 0.75rem;
+  padding: 0.625rem 0.75rem;
+  background-color: var(--info-light);
+  border: 1px solid rgba(55, 138, 221, 0.35);
+  border-radius: var(--radius-md);
+  font-size: var(--tiny-font-size);
+  color: var(--info);
+  line-height: 1.4;
+}
+
+.preview-chat__quota-banner svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
 }
