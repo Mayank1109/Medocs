@@ -420,6 +420,10 @@
   cursor: not-allowed;
 }
 
+.upload-modal__footer .button svg {
+  height: 1rem;
+}
+
 /*=============== SUCCESS MODAL ===============*/
 .upload-success {
   position: relative;

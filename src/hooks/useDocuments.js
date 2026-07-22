@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { modalDisplayHandler } from "../utility/Functions";
+import { modalDisplayHandler, notImplementedToast } from "../utility/Functions";
 import { mapDocument } from "../utility/mapDocument";
 import {
   deleteDocument,
@@ -143,43 +143,45 @@ export const useDocumentActions = () => {
   };
 
   const editDocHandler = async (event, editdata) => {
-    event.preventDefault();
-    console.log("edit document handler called with data:", {
-      ...editdata,
-      id: payload?._id,
-    });
-    console.log("payload in edit handler:", payload);
+    event?.preventDefault();
+
     try {
-      let response = await editDocument(payload._id, {
+      const response = await editDocument(payload.id, {
         fileName: editdata.fileName,
         fileDescription: editdata.description,
-        category: editdata.fileType,
+        category: editdata.category,
         documentDate: editdata.documentDate,
       });
-      response = response.data;
-      if (response.messageType === "Success") {
-        toast.success("Document updated", "Your changes were saved.");
-      } else {
-        toast.error("Update failed", "Failed to update document.");
+
+      if (response.data.messageType !== "Success") {
+        throw new Error(response.data.message || "Update failed");
       }
+
+      toast.success("Document updated", "Your changes were saved.");
       dispatch(docActions.setRefresh());
+      return response.data;
     } catch (error) {
       toast.error(
         "Update failed",
-        "Could not update document. Try again later.",
+        error.response?.data?.message ||
+          "Could not update document. Try again later.",
       );
-    } finally {
-      console.log("will set loading here ....once finished will show a popup");
-      dispatch(modalActions.hide());
+      throw error;
     }
   };
 
-  const downloadDocHandler = (event) => {
-    event.preventDefault();
+  const downloadDocHandler = (e) => {
+    e?.preventDefault();
   };
 
-  const printDocHandler = (event) => {
-    event.preventDefault();
+  const printDocHandler = (e) => {
+    e?.preventDefault();
+    notImplementedToast(toast, "Printing");
+  };
+
+  const shareDocHandler = (e) => {
+    e?.preventDefault();
+    notImplementedToast(toast, "Sharing");
   };
 
   return {

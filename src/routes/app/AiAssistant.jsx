@@ -21,6 +21,8 @@ import {
   IconSend,
 } from "../../icons/AppIcons";
 import "./AiAssistant.css";
+import { notImplementedToast } from "../../utility/Functions";
+import { useToast } from "../../hooks/useToast";
 
 const LDL_CONTENT = [
   {
@@ -147,8 +149,9 @@ export default function AIAssistantPage() {
     return initial;
   });
   const [inputValue, setInputValue] = useState("");
-
+  const [hasWarnedNoBackend, setHasWarnedNoBackend] = useState(false);
   const activeConvo = SEEDED_CONVERSATIONS[activeId];
+  const toast = useToast();
   const messages =
     messagesById[activeId] ||
     PLACEHOLDER_CONTENT.map((c) => ({ role: "ai", content: [c] }));
@@ -158,6 +161,11 @@ export default function AIAssistantPage() {
 
   function handleSend() {
     if (!inputValue.trim()) return;
+    if (!inputValue.trim()) return;
+    if (!hasWarnedNoBackend) {
+      notImplementedToast(toast, "AI Assistant chat");
+      setHasWarnedNoBackend(true);
+    }
     setMessagesById((prev) => ({
       ...prev,
       [activeId]: [

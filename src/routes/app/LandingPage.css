@@ -27,17 +27,12 @@
   --info-light: rgba(55, 138, 221, 0.12);
   --success: #1d9e75;
   --success-light: rgba(29, 158, 117, 0.12);
-
-  /* --big-font-size isn't used anywhere outside this hero, so it's safe
-     to scale up here without affecting the dashboard. */
   --big-font-size: 3.25rem;
   --cta-title-size: 2.25rem;
 
   background-color: var(--bg);
   color: var(--text-color);
-  /* Cancels App.css's `body { margin-bottom: var(--header-height) }` on
-     mobile, which exists only to clear the dashboard's fixed bottom nav
-     and shouldn't apply here since the landing page has no bottom nav. */
+  zoom: 80%;
 }
 
 @media screen and (max-width: 768px) {
@@ -143,6 +138,8 @@
   align-items: flex-start;
   gap: 2.5rem;
   margin-bottom: 1.5rem;
+  justify-content: space-evenly;
+  text-align: center;
 }
 
 .hero__inner {
@@ -174,7 +171,7 @@
   font-size: var(--normal-font-size);
   line-height: 1.6;
   color: var(--text-color);
-  max-width: 440px;
+  /* max-width: 440px; */
   margin-bottom: 1.75rem;
 }
 
@@ -220,8 +217,10 @@
   position: relative;
   display: flex;
   align-items: flex-start;
-  justify-content: flex-end;
+  justify-content: center;
   pointer-events: none;
+  overflow: hidden;
+  zoom: 90%;
 }
 
 .hero__visual::before {
@@ -248,9 +247,9 @@
 }
 
 .hero__mockup-outer {
-  width: 100%;
-  max-width: 800px;
-  filter: drop-shadow(0 30px 60px rgba(0, 0, 0, 0.45));
+  width: 800px;
+  flex-shrink: 0;
+  transform-origin: top right;
 }
 
 .hero__mockup {
@@ -662,7 +661,8 @@
 
 .hero__insight {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  flex-wrap: nowrap;
   gap: 0.75rem;
   background-color: var(--highlight-light);
   border: 1px solid var(--highlight-mid);
@@ -677,6 +677,7 @@
   border-radius: 50%;
   background-color: var(--highlight-color);
   flex-shrink: 0;
+  margin-top: 6px;
 }
 
 .hero__insight-text {
@@ -933,6 +934,30 @@
 }
 
 /*----- Responsive -----*/
+@media screen and (max-width: 1300px) {
+  .hero__mockup-outer {
+    zoom: 90%;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .hero__mockup-outer {
+    zoom: 78%;
+  }
+}
+
+@media screen and (max-width: 1100px) {
+  .hero__mockup-outer {
+    zoom: 65%;
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  .hero__mockup-outer {
+    zoom: 55%;
+  }
+}
+
 @media screen and (max-width: 992px) {
   .hero__visual {
     display: none;

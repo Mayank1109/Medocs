@@ -14,7 +14,8 @@ import {
 } from "../../icons/AppIcons";
 import { useOptions } from "../../hooks/useOptions";
 import { useDocumentActions } from "../../hooks/useDocuments";
-
+import { notImplementedToast } from "../../utility/Functions";
+import { useToast } from "../../hooks/useToast";
 export default function DocumentRow({
   doc,
   view,
@@ -29,13 +30,14 @@ export default function DocumentRow({
   const isImage = ["JPG", "JPEG", "PNG", "GIF", "WEBP"].includes(
     doc.fileType.toUpperCase(),
   );
+  const toast = useToast();
 
   function handleMoreClick(e) {
     openOptions(e, doc, [
       { type: "Preview", label: "Preview", icon: IconEye },
       { type: "Download", label: "Download", icon: IconDownload },
       { type: "Share", label: "Share", icon: IconShare },
-      { type: "Edit", label: "Rename", icon: IconEdit },
+      { type: "Edit", label: "Edit", icon: IconEdit },
       { type: "Move", label: "Move to folder", icon: IconFolder },
       { type: "Favorite", label: "Add to favorites", icon: IconStar },
       {
@@ -45,6 +47,11 @@ export default function DocumentRow({
         dividerBefore: true,
       },
     ]);
+  }
+
+  function handleShareClick(e) {
+    e.preventDefault();
+    notImplementedToast(toast, "Sharing");
   }
 
   function handlePreviewClick(e) {
@@ -94,7 +101,11 @@ export default function DocumentRow({
           >
             <IconEye /> Preview
           </button>
-          <button type="button" className="doc-row-v2__action">
+          <button
+            type="button"
+            className="doc-row-v2__action"
+            onClick={handleShareClick}
+          >
             <IconShare /> Share
           </button>
           <button type="button" className="doc-row-v2__action">

@@ -242,7 +242,7 @@
 @media screen and (max-width: 980px) {
   .preview-modal {
     max-width: 100%;
-    height: 100vh;
+    height: 125vh;
     border-radius: 0;
   }
   .preview-modal__body {

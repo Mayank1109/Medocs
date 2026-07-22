@@ -14,12 +14,13 @@ import { getAccent } from "../../data/documents";
 import { useDocumentAnalysis } from "../../hooks/useDocumentAnalysis";
 import "./PreviewDocumentModal.css";
 import AIThinkingIndicator from "./AIThinkingIndicator";
-
+import { notImplementedToast } from "../../utility/Functions";
+import { useToast } from "../../hooks/useToast";
 export default function PreviewDocumentModal({ isOpen, onClose, document }) {
   const { messages, loading, quotaReached, summarize, ask, reset } =
     useDocumentAnalysis();
   const [input, setInput] = useState("");
-
+  const toast = useToast();
   useEffect(() => {
     reset();
     setInput("");
@@ -36,6 +37,11 @@ export default function PreviewDocumentModal({ isOpen, onClose, document }) {
     if (!value || loading || quotaReached) return;
     setInput("");
     ask(document.id, value);
+  }
+
+  function handleShareClick(e) {
+    e.preventDefault();
+    notImplementedToast(toast, "Sharing");
   }
 
   return (
@@ -64,7 +70,11 @@ export default function PreviewDocumentModal({ isOpen, onClose, document }) {
             >
               <IconDownload /> Download
             </a>
-            <button type="button" className="preview-header-btn">
+            <button
+              type="button"
+              className="preview-header-btn"
+              onClick={handleShareClick}
+            >
               <IconShare /> Share
             </button>
             <button

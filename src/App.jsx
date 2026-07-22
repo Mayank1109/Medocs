@@ -22,6 +22,7 @@ import WorkInProgress from "./routes/app/WorkInProgress";
 import SettingsPage from "./routes/app/SettingsPage";
 import ProfilePage from "./routes/app/ProfilePage";
 import AccountPage from "./routes/app/AccountPage";
+import { SidebarProvider } from "./hooks/useSidebar";
 
 const Router = createBrowserRouter([
   {
@@ -57,11 +58,13 @@ function App() {
 
   return (
     <ToastProvider>
-      <OptionsProvider>
-        <RouterProvider router={Router} />
-        {isModalVisible && <Modal />}
-        <Options />
-      </OptionsProvider>
+      <SidebarProvider>
+        <OptionsProvider>
+          <RouterProvider router={Router} />
+          {isModalVisible && <Modal />}
+          <Options />
+        </OptionsProvider>
+      </SidebarProvider>
     </ToastProvider>
   );
 }

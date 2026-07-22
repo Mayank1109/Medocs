@@ -50,9 +50,17 @@ function getFileAccent({ fileType, category }) {
   return "red";
 }
 
+function notImplementedToast(toast, feature = "This feature") {
+  toast.info(
+    "Coming soon",
+    `${feature} isn't available yet — we're actively working on it.`,
+  );
+}
+
 export {
   modalDisplayHandler,
   profileCompletionPercentage,
   showMessage,
   getFileAccent,
+  notImplementedToast,
 };

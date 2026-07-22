@@ -1,4 +1,4 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import {
   IconGrid,
   IconDocs,
@@ -8,8 +8,13 @@ import {
   IconGear,
   IconBell,
   IconChevronRight,
+  IconChevronLeft,
+  IconLogOut,
 } from "../../icons/HeroIcons";
+import { useSidebar } from "../../hooks/useSidebar";
 import React from "react";
+import { useDispatch } from "react-redux";
+import { authActions } from "../../store/authSlice";
 
 const DEFAULT_NAV_ITEMS = [
   { to: "/dashboard", label: "Dashboard", icon: <IconGrid /> },
@@ -24,7 +29,6 @@ const DEFAULT_SECONDARY_ITEMS = [
   { to: "/settings", label: "Settings", icon: <IconGear /> },
 ];
 
-/** Shared app sidebar with an optional page-specific content slot. */
 export default function Sidebar({
   children,
   userName = "Mayank Chauhan",
@@ -35,14 +39,35 @@ export default function Sidebar({
   showUserCard = true,
   logoLabel = "Medocs.",
 }) {
+  const { collapsed, toggleCollapsed } = useSidebar();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  function handleLogout() {
+    dispatch(authActions.logout());
+    navigate("/auth");
+  }
+
   return (
-    <aside className="sidebar">
-      <Link to="/dashboard" className="sidebar__logo">
-        <span className="sidebar__logo-icon">
-          <PlusMark />
-        </span>
-        <span className="sidebar__logo-name">{logoLabel}</span>
-      </Link>
+    <aside className={`sidebar${collapsed ? " sidebar--collapsed" : ""}`}>
+      <div className="sidebar__top">
+        <Link to="/dashboard" className="sidebar__logo">
+          <span className="sidebar__logo-icon">
+            <PlusMark />
+          </span>
+          {!collapsed && (
+            <span className="sidebar__logo-name">{logoLabel}</span>
+          )}
+        </Link>
+        <button
+          type="button"
+          className="sidebar__collapse-btn"
+          onClick={toggleCollapsed}
+          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+        >
+          {collapsed ? <IconChevronRight /> : <IconChevronLeft />}
+        </button>
+      </div>
 
       {navItems.map((item) => (
         <NavLink
@@ -51,17 +76,18 @@ export default function Sidebar({
           className={({ isActive }) =>
             `sidebar__nav-item${isActive ? " active" : ""}`
           }
+          title={collapsed ? item.label : undefined}
         >
           <span className="sidebar__nav-icon">{item.icon}</span>
-          {item.label}
+          {!collapsed && item.label}
         </NavLink>
       ))}
 
-      {React.Children.count(children) > 0 && (
+      {React.Children.count(children) > 0 && !collapsed && (
         <div className="sidebar__divider" />
       )}
 
-      {children}
+      {!collapsed && children}
 
       <div className="sidebar__divider" />
 
@@ -72,9 +98,10 @@ export default function Sidebar({
           className={({ isActive }) =>
             `sidebar__nav-item${isActive ? " active" : ""}`
           }
+          title={collapsed ? item.label : undefined}
         >
           <span className="sidebar__nav-icon">{item.icon}</span>
-          {item.label}
+          {!collapsed && item.label}
           {item.to === "/notifications" && hasUnreadNotifications && (
             <span className="sidebar__unread-dot" />
           )}
@@ -83,14 +110,32 @@ export default function Sidebar({
 
       {showUserCard && (
         <div className="sidebar__bottom">
-          <Link to="/profile" className="sidebar__user">
-            <span className="sidebar__avatar">{userInitials}</span>
-            <span>
-              <span className="sidebar__user-name">{userName}</span>
-              <span className="sidebar__user-link">
-                View profile <IconChevronRight />
-              </span>
+          <button
+            type="button"
+            className="sidebar__logout"
+            onClick={handleLogout}
+            title={collapsed ? "Log out" : undefined}
+          >
+            <span className="sidebar__nav-icon">
+              <IconLogOut />
             </span>
+            {!collapsed && "Log out"}
+          </button>
+
+          <Link
+            to="/profile"
+            className="sidebar__user"
+            title={collapsed ? userName : undefined}
+          >
+            <span className="sidebar__avatar">{userInitials}</span>
+            {!collapsed && (
+              <span>
+                <span className="sidebar__user-name">{userName}</span>
+                <span className="sidebar__user-link">
+                  View profile <IconChevronRight />
+                </span>
+              </span>
+            )}
           </Link>
         </div>
       )}

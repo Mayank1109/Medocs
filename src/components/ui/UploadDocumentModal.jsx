@@ -15,10 +15,9 @@ import "./UploadDocumentModal.css";
 import { ACCEPTED_TYPES, CATEGORIES, MAX_SIZE_MB } from "../../data/modalData";
 import { useFieldValidation } from "../../hooks/useFieldValidation";
 
-import { useDocumentActions } from "../../hooks/useDocuments";
-
 function formatSize(bytes) {
-  return (bytes / (1024 * 1024)).toFixed(1) + " MBUpload ";
+  if (!bytes && bytes !== 0) return "";
+  return (bytes / (1024 * 1024)).toFixed(1) + " MB";
 }
 
 function extOf(filename) {
@@ -33,15 +32,23 @@ function todayFormatted() {
   });
 }
 
-export default function UploadDocumentModal({ isOpen, onClose, onUploaded }) {
-  const [step, setStep] = useState(1);
+export default function UploadDocumentModal({
+  isOpen,
+  onClose,
+  onUploaded,
+  onSaved,
+  document: editDoc,
+}) {
+  const isEditMode = !!editDoc;
+
+  const [step, setStep] = useState(isEditMode ? 2 : 1);
   const [file, setFile] = useState(null);
   const [dragActive, setDragActive] = useState(false);
   const [error, setError] = useState("");
-  const [docName, setDocName] = useState("");
-  const [category, setCategory] = useState("lab");
-  const [docDate, setDocDate] = useState(todayFormatted());
-  const [description, setDescription] = useState("");
+  const [docName, setDocName] = useState(editDoc?.name ?? "");
+  const [category, setCategory] = useState(editDoc?.category ?? "lab");
+  const [docDate, setDocDate] = useState(editDoc?.date ?? todayFormatted());
+  const [description, setDescription] = useState(editDoc?.description ?? "");
   const [success, setSuccess] = useState(false);
   const inputRef = useRef(null);
   const [uploading, setUploading] = useState(false);
@@ -51,30 +58,33 @@ export default function UploadDocumentModal({ isOpen, onClose, onUploaded }) {
 
   useEffect(() => {
     if (!isOpen) {
-      setStep(1);
+      setStep(isEditMode ? 2 : 1);
       setFile(null);
       setError("");
-      setDocName("");
-      setCategory("lab");
-      setDocDate(todayFormatted());
-      setDescription("");
+      setDocName(editDoc?.name ?? "");
+      setCategory(editDoc?.category ?? "lab");
+      setDocDate(editDoc?.date ?? todayFormatted());
+      setDescription(editDoc?.description ?? "");
       setSuccess(false);
       setUploadedDoc(null);
+      setUploadError("");
     }
-  }, [isOpen]);
+  }, [isOpen]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (!isOpen) return;
-
     function handleKeyDown(e) {
-      if (e.key === "Escape") {
-        onClose?.();
-      }
+      if (e.key === "Escape") onClose?.();
     }
-
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
+    window.document.addEventListener("keydown", handleKeyDown);
+    return () => window.document.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
+
+  useEffect(() => {
+    if (isEditMode && success) {
+      onClose?.();
+    }
+  }, [isEditMode, success, onClose]);
 
   if (!isOpen) return null;
 
@@ -103,7 +113,13 @@ export default function UploadDocumentModal({ isOpen, onClose, onUploaded }) {
     validateAndSetFile(f);
   }
 
-  async function handleUpload() {
+  async function handleSubmit() {
+    console.log(
+      "handleSubmit fired, isEditMode:",
+      isEditMode,
+      "onSaved exists:",
+      !!onSaved,
+    );
     const isValid = validateFormHandler({ fileName: docName, description });
     if (!isValid) return;
 
@@ -111,18 +127,30 @@ export default function UploadDocumentModal({ isOpen, onClose, onUploaded }) {
     setUploadError("");
 
     try {
-      const mappedDoc = await onUploaded?.({
-        file,
-        name: docName,
-        category,
-        date: docDate,
-        description,
-      });
-      setUploadedDoc(mappedDoc);
-      setSuccess(true);
+      if (isEditMode) {
+        await onSaved?.({
+          fileName: docName,
+          category,
+          documentDate: docDate,
+          description,
+        });
+        setSuccess(true);
+      } else {
+        const mappedDoc = await onUploaded?.({
+          file,
+          name: docName,
+          category,
+          date: docDate,
+          description,
+        });
+        setUploadedDoc(mappedDoc);
+        setSuccess(true);
+      }
     } catch (err) {
+      console.error("handleSubmit caught:", err);
       setUploadError(
-        err.response?.data?.message || "Upload failed. Please try again.",
+        err.response?.data?.message ||
+          `${isEditMode ? "Save" : "Upload"} failed. Please try again.`,
       );
     } finally {
       setUploading(false);
@@ -130,89 +158,96 @@ export default function UploadDocumentModal({ isOpen, onClose, onUploaded }) {
   }
 
   function handleAskAI(event) {
-    // onClose?.();
     event.stopPropagation();
-    console.log("Now we will open preview Modal");
-    console.log(uploadedDoc);
     modalDisplayHandler(event, "Preview", uploadedDoc);
   }
 
   const accent = getFileAccent({
-    fileType: file ? extOf(file.name).toUpperCase() : "PDF",
+    fileType: isEditMode
+      ? editDoc.fileType
+      : file
+        ? extOf(file.name).toUpperCase()
+        : "PDF",
     category,
   });
-  const isImage = file && ["jpg", "png"].includes(extOf(file.name));
+  const isImage = isEditMode
+    ? editDoc.fileType === "JPG" || editDoc.fileType === "PNG"
+    : file && ["jpg", "png"].includes(extOf(file.name));
 
   return (
     <div className="modal-backdrop" onClick={onClose}>
       {success ? (
-        <div className="upload-success">
-          <button
-            type="button"
-            className="upload-modal__close"
-            onClick={onClose}
-            aria-label="Close"
-          >
-            <IconX />
-          </button>
-
-          <div className="upload-success__badge">
-            <span className="upload-success__dot upload-success__dot--1" />
-            <span className="upload-success__dot upload-success__dot--2" />
-            <span className="upload-success__dot upload-success__dot--3" />
-            <span className="upload-success__dot upload-success__dot--4" />
-            <span className="upload-success__dot upload-success__dot--5" />
-            <span className="upload-success__dot upload-success__dot--6" />
-            <span className="upload-success__check">
-              <IconCheck />
-            </span>
-          </div>
-
-          <h2 className="upload-success__title">Upload complete!</h2>
-          <p className="upload-success__sub">
-            Your document has been uploaded successfully.
-          </p>
-
-          <div className="upload-success__card">
-            <span
-              className={`doc-icon-v2 doc-icon-v2--sm doc-icon-v2--${accent}`}
-            >
-              {isImage ? <IconFileImage /> : <IconFilePdf />}
-            </span>
-            <div className="upload-success__card-info">
-              <div className="upload-success__card-name">
-                {docName || "Document"}
-              </div>
-              <div className="upload-success__card-meta">
-                {file ? extOf(file.name).toUpperCase() : "PDF"} ·{" "}
-                {file ? formatSize(file.size) : ""} · Uploaded just now
-              </div>
-            </div>
-            <IconChevronRight />
-          </div>
-
-          <div className="upload-success__actions">
+        isEditMode ? null : (
+          <div className="upload-success">
             <button
               type="button"
-              className="button button--secondary"
-              onClick={(e) => e.stopPropagation()}
+              className="upload-modal__close"
+              onClick={onClose}
+              aria-label="Close"
             >
-              <IconEye /> View document
+              <IconX />
             </button>
-            <button type="button" className="button" onClick={handleAskAI}>
-              <IconSparkleSmall /> Ask AI
-            </button>
+
+            <div className="upload-success__badge">
+              <span className="upload-success__dot upload-success__dot--1" />
+              <span className="upload-success__dot upload-success__dot--2" />
+              <span className="upload-success__dot upload-success__dot--3" />
+              <span className="upload-success__dot upload-success__dot--4" />
+              <span className="upload-success__dot upload-success__dot--5" />
+              <span className="upload-success__dot upload-success__dot--6" />
+              <span className="upload-success__check">
+                <IconCheck />
+              </span>
+            </div>
+
+            <h2 className="upload-success__title">Upload complete!</h2>
+            <p className="upload-success__sub">
+              Your document has been uploaded successfully.
+            </p>
+
+            <div className="upload-success__card">
+              <span
+                className={`doc-icon-v2 doc-icon-v2--sm doc-icon-v2--${accent}`}
+              >
+                {isImage ? <IconFileImage /> : <IconFilePdf />}
+              </span>
+              <div className="upload-success__card-info">
+                <div className="upload-success__card-name">
+                  {docName || "Document"}
+                </div>
+                <div className="upload-success__card-meta">
+                  {file ? extOf(file.name).toUpperCase() : "PDF"} ·{" "}
+                  {file ? formatSize(file.size) : ""} · Uploaded just now
+                </div>
+              </div>
+              <IconChevronRight />
+            </div>
+
+            <div className="upload-success__actions">
+              <button
+                type="button"
+                className="button button--secondary"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <IconEye /> View document
+              </button>
+              <button type="button" className="button" onClick={handleAskAI}>
+                <IconSparkleSmall /> Ask AI
+              </button>
+            </div>
           </div>
-        </div>
+        )
       ) : (
         <div className="upload-modal" onClick={(e) => e.stopPropagation()}>
           <div className="upload-modal__header">
             <div>
-              <h2>Upload document</h2>
-              <p>
-                Step {step} of 2 —{" "}
-                {step === 1 ? "Select your file" : "Add details"}
-              </p>
+              <h2>{isEditMode ? "Edit document" : "Upload document"}</h2>
+              {!isEditMode && (
+                <p>
+                  Step {step} of 2 —{" "}
+                  {step === 1 ? "Select your file" : "Add details"}
+                </p>
+              )}
             </div>
             <button
               type="button"
@@ -224,24 +259,30 @@ export default function UploadDocumentModal({ isOpen, onClose, onUploaded }) {
             </button>
           </div>
 
-          <div className="upload-stepper">
-            <div className={`upload-stepper__step${step >= 1 ? " done" : ""}`}>
-              <span className="upload-stepper__circle">
-                {step > 1 ? <IconCheck /> : "1"}
-              </span>
-              Select file
+          {!isEditMode && (
+            <div className="upload-stepper">
+              <div
+                className={`upload-stepper__step${step >= 1 ? " done" : ""}`}
+              >
+                <span className="upload-stepper__circle">
+                  {step > 1 ? <IconCheck /> : "1"}
+                </span>
+                Select file
+              </div>
+              <div
+                className={`upload-stepper__line${step > 1 ? " done" : ""}`}
+              />
+              <div
+                className={`upload-stepper__step${step === 2 ? " current" : ""}`}
+              >
+                <span className="upload-stepper__circle">2</span>
+                Add details
+              </div>
             </div>
-            <div className={`upload-stepper__line${step > 1 ? " done" : ""}`} />
-            <div
-              className={`upload-stepper__step${step === 2 ? " current" : ""}`}
-            >
-              <span className="upload-stepper__circle">2</span>
-              Add details
-            </div>
-          </div>
+          )}
 
           <div className="upload-modal__body">
-            {step === 1 ? (
+            {step === 1 && !isEditMode ? (
               <>
                 {!file ? (
                   <div
@@ -307,7 +348,6 @@ export default function UploadDocumentModal({ isOpen, onClose, onUploaded }) {
                     >
                       <IconTrash /> Remove
                     </button>
-
                     <div className="upload-banner">
                       <span className="upload-banner__icon">
                         <IconCheck />
@@ -334,10 +374,15 @@ export default function UploadDocumentModal({ isOpen, onClose, onUploaded }) {
                     {isImage ? <IconFileImage /> : <IconFilePdf />}
                   </span>
                   <div className="file-card__info">
-                    <div className="file-card__name">{file?.name}</div>
+                    <div className="file-card__name">
+                      {isEditMode ? editDoc.name : file?.name}
+                    </div>
                     <div className="file-card__meta">
-                      {file ? extOf(file.name).toUpperCase() : ""} ·{" "}
-                      {file ? formatSize(file.size) : ""}
+                      {isEditMode
+                        ? `${editDoc.fileType} · ${editDoc.size}`
+                        : file
+                          ? `${extOf(file.name).toUpperCase()} · ${formatSize(file.size)}`
+                          : ""}
                     </div>
                   </div>
                 </div>
@@ -412,12 +457,16 @@ export default function UploadDocumentModal({ isOpen, onClose, onUploaded }) {
                     Helps you find this document later.
                   </p>
                 </div>
+
+                {uploadError && (
+                  <p className="upload-modal__error">{uploadError}</p>
+                )}
               </>
             )}
           </div>
 
           <div className="upload-modal__footer">
-            {step === 2 && (
+            {step === 2 && !isEditMode && (
               <button
                 type="button"
                 className="button button--secondary"
@@ -433,7 +482,7 @@ export default function UploadDocumentModal({ isOpen, onClose, onUploaded }) {
             >
               Cancel
             </button>
-            {step === 1 ? (
+            {step === 1 && !isEditMode ? (
               <button
                 type="button"
                 className="button"
@@ -446,10 +495,18 @@ export default function UploadDocumentModal({ isOpen, onClose, onUploaded }) {
               <button
                 type="button"
                 className={`button${uploading ? " button--loading" : ""}`}
-                onClick={handleUpload}
+                onClick={handleSubmit}
                 disabled={uploading}
               >
-                <IconUploadCloud /> Upload document
+                {isEditMode ? (
+                  <>
+                    <IconCheck /> Save changes
+                  </>
+                ) : (
+                  <>
+                    <IconUploadCloud /> Upload document
+                  </>
+                )}
               </button>
             )}
           </div>

@@ -413,6 +413,14 @@ function IconChevronRight() {
   );
 }
 
+function IconChevronLeft() {
+  return (
+    <BaseIcon>
+      <path d="M15 6l-6 6 6 6" />
+    </BaseIcon>
+  );
+}
+
 function IconCalendar() {
   return (
     <BaseIcon>
@@ -512,6 +520,16 @@ function UploadIcon({ size = 20, color = "currentColor" }) {
   );
 }
 
+function IconLogOut() {
+  return (
+    <BaseIcon>
+      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+      <path d="M16 17l5-5-5-5" />
+      <path d="M21 12H9" />
+    </BaseIcon>
+  );
+}
+
 export {
   Logo,
   IconDocs,
@@ -528,6 +546,7 @@ export {
   IconSun,
   IconChevronDown,
   IconChevronRight,
+  IconChevronLeft,
   IconCalendar,
   IconTrend,
   IconTrendUp,
@@ -542,4 +561,5 @@ export {
   IconClockDot,
   IconAlertTriangle,
   UploadIcon,
+  IconLogOut,
 };

@@ -79,6 +79,7 @@
   justify-content: center;
   padding: 2rem 0;
   gap: 0.25rem;
+  text-align: left;
 }
 
 .auth__kicker {
@@ -369,6 +370,10 @@
   padding: 0.6875rem 1rem;
   font-size: var(--normal-font-size);
   margin-bottom: 1.25rem;
+
+  svg {
+    height: 1rem;
+  }
 }
 
 .auth__divider {

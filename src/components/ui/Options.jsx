@@ -5,14 +5,18 @@ import "./Options.css";
 import { useDocumentActions } from "../../hooks/useDocuments";
 import useContextMenuPosition from "../../hooks/useContextMenuPosition";
 import { IconX } from "../../icons/AppIcons";
+import { notImplementedToast } from "../../utility/Functions";
+import { useToast } from "../../hooks/useToast";
 
 const Options = () => {
   const modalRef = useRef(null);
-  const { handleActionClick, deletingId } = useDocumentActions();
+  const { handleActionClick, deletingId, downloadDocHandler } =
+    useDocumentActions();
   const { isOpen, options, anchorposition, payload, closeOptions } =
     useOptions();
   const position = useContextMenuPosition(modalRef, anchorposition, isOpen);
-
+  const NOT_IMPLEMENTED_TYPES = new Set(["Share", "Move", "Favorite"]);
+  const toast = useToast();
   if (!isOpen) return null;
 
   const isDeleting = payload?.id && payload.id === deletingId;
@@ -50,6 +54,16 @@ const Options = () => {
                     className={`options-modal__item${isDanger ? " options-modal__item--danger" : ""}${disabled ? " options-modal__item--loading" : ""}`}
                     onClick={(event) => {
                       if (disabled) return;
+                      if (option.type === "Download") {
+                        downloadDocHandler(event);
+                        closeOptions();
+                        return;
+                      }
+                      if (NOT_IMPLEMENTED_TYPES.has(option.type)) {
+                        notImplementedToast(toast, option.label);
+                        closeOptions();
+                        return;
+                      }
                       handleActionClick(event, option.type);
                     }}
                   >

@@ -5,6 +5,7 @@
   margin: 1.5rem 0rem;
   gap: 1rem;
   flex-wrap: wrap;
+  text-align: left;
 }
 
 .page-header__subtitle {
@@ -176,6 +177,8 @@
 .score-card {
   display: flex;
   align-items: center;
+  flex-direction: row;
+  align-items: center;
   gap: 2.5rem;
   margin-bottom: 1.5rem;
   position: relative;
@@ -248,6 +251,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 180px;
+  height: 180px;
 }
 
 .score-ring__label {
@@ -278,6 +283,7 @@
 .timeline-card {
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 .timeline-card__list {
@@ -544,7 +550,7 @@
 .reports-strip__scroller {
   display: flex;
   gap: 0.75rem;
-  overflow-x: auto;
+  overflow-x: hidden;
   scroll-behavior: smooth;
   padding-bottom: 4px;
 }
@@ -679,7 +685,6 @@
     grid-template-columns: 1fr;
   }
   .score-card {
-    flex-direction: column;
     align-items: stretch;
     gap: 1.25rem;
   }
@@ -687,10 +692,9 @@
     align-items: flex-start;
   }
   .score-card__cta {
-    align-self: flex-start;
+    align-self: center;
   }
 }
-
 @media screen and (max-width: 560px) {
   .stats-grid {
     grid-template-columns: 1fr;
@@ -698,5 +702,18 @@
   .page-header {
     flex-direction: column;
     align-items: stretch;
+  }
+  .score-card {
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+  }
+  .score-card__ring-col {
+    align-items: center;
+    width: 100%;
+  }
+  .score-ring {
+    width: 150px;
+    height: 150px;
   }
 }

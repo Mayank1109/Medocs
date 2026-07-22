@@ -8,7 +8,6 @@ import DeleteDocumentModal from "./DeleteDocumentModal";
 import PreviewDocumentModal from "./PreviewDocumentModal";
 
 const Modal = () => {
-  console.log("Modal component function called");
   const {
     submitHandler,
     deleteDocHandler,
@@ -24,14 +23,6 @@ const Modal = () => {
 
   let modalContent = null;
   const activeDoc = payload || modalData;
-  console.log(
-    "activeDoc:",
-    activeDoc,
-    "| payload:",
-    payload,
-    "| modalData:",
-    modalData,
-  );
 
   switch (actionType) {
     case "Upload":
@@ -56,15 +47,17 @@ const Modal = () => {
       break;
 
     case "Edit":
-      console.log("Edit modal");
-      //   modalContent = (
-
-      //   );
+      modalContent = (
+        <UploadDocumentModal
+          isOpen={isModalVisible}
+          onClose={modalCloseHandler}
+          document={activeDoc}
+          onSaved={(editData) => editDocHandler(null, editData)}
+        />
+      );
       break;
 
     case "Preview":
-      console.log("modalData: ", modalData);
-      console.log("actionType: ", actionType);
       modalContent = (
         <PreviewDocumentModal
           isOpen={isModalVisible}
@@ -75,12 +68,7 @@ const Modal = () => {
       break;
 
     default:
-      modalContent = (
-        <>
-          <h1>This is the default case , just in case</h1>
-          <button className="modal__btn">Close</button>
-        </>
-      );
+      modalContent = null;
       break;
   }
 
