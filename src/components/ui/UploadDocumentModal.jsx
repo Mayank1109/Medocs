@@ -114,12 +114,6 @@ export default function UploadDocumentModal({
   }
 
   async function handleSubmit() {
-    console.log(
-      "handleSubmit fired, isEditMode:",
-      isEditMode,
-      "onSaved exists:",
-      !!onSaved,
-    );
     const isValid = validateFormHandler({ fileName: docName, description });
     if (!isValid) return;
 

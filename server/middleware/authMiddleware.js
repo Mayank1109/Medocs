@@ -3,7 +3,6 @@ const User = require("../models/userModel");
 
 async function authMiddleware(req, res, next) {
   try {
-    console.log("calling it");
     const token =
       req.headers.authorization?.split(" ")[1] || req.cookies?.token;
 

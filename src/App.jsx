@@ -53,7 +53,6 @@ const Router = createBrowserRouter([
 
 function App() {
   const isModalVisible = useSelector((state) => state.modal.isModalVisible);
-  console.log("App.jsx isModalVisible:", isModalVisible);
   const [count, setCount] = useState(0);
 
   return (

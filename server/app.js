@@ -41,10 +41,8 @@ const db = process.env.MONGODB_URL;
 
 mongoose
   .connect(db)
-  .then(() => {
-    console.log("MongoDB Connected....");
-  })
-  .catch((err) => console.log(err));
+  .then(() => {})
+  .catch((err) => console.error(err));
 
 app.get("/", (req, res) => {
   res.send("HELLO Project Medocs!!");

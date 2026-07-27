@@ -11,7 +11,6 @@ const modalSlice = createSlice({
   initialState: initialModalState,
   reducers: {
     display(state, action) {
-      console.log("REDUCER: display reducer running", action.payload);
       state.isModalVisible = true;
       state.actionType = action.payload.actionType;
       state.data = action.payload.payload ?? null;

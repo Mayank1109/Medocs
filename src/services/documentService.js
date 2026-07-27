@@ -14,17 +14,10 @@ const getDocuments = (page, limit, category) => {
 };
 
 const deleteDocument = (id) => {
-  console.log("delete document service called with id:", id);
   return httpService.delete(DOCUMENT_URI.DELETE(id));
 };
 
 const editDocument = (id, updatedData) => {
-  console.log(
-    "edit document service called with id:",
-    id,
-    "and data:",
-    updatedData,
-  );
   return httpService.put(DOCUMENT_URI.EDIT(id), updatedData);
 };
 

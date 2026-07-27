@@ -5,7 +5,6 @@ import store from "../store/store";
 import { createSelector } from "@reduxjs/toolkit";
 
 const showMessage = (status = "error", mssg) => {
-  console.log("Showing message:", status, mssg);
   store.dispatch(popupActions.display({ status, message: mssg }));
 };
 
@@ -31,10 +30,7 @@ const profileCompletionPercentage = createSelector(
 
 const modalDisplayHandler = (event, actionType, payload = null) => {
   event.preventDefault();
-  console.log("modal handler called");
-  console.log("actionType:", actionType);
   store.dispatch(modalActions.display({ actionType, payload }));
-  console.log("dispatch call completed");
 };
 
 // const optionsHandler = (event, id, openOptions) => {

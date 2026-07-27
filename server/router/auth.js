@@ -59,7 +59,7 @@ router.post("/signup", async (req, res, next) => {
       token: authToken,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     next(error);
   }
 });

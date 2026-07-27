@@ -4,8 +4,6 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
   try {
-    console.log("heyyy");
-    //   res.json(docs);
     res.status(200).send("Heyy girl!!!");
   } catch (err) {
     res.send(err);

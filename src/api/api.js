@@ -2,13 +2,12 @@ import axios from "axios";
 import { authActions } from "../store/authSlice";
 import store from "../store/store";
 const api = axios.create({
-  baseURL: "http://localhost:7000",
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:7000",
 });
 
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
-    console.log("Request Interceptor - Token:", token);
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

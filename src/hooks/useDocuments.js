@@ -24,7 +24,6 @@ export const useDocumentActions = () => {
     event.preventDefault();
     console.log(actionType, ": actionType");
     if (actionType === "Open") {
-      console.log("Open action triggered with payload:", payload);
       openDocHandler(event);
       closeOptions();
       return;
@@ -45,7 +44,6 @@ export const useDocumentActions = () => {
 
   const openDocHandler = async (event) => {
     event.preventDefault();
-    console.log("Open document handler called with payload:", payload);
     const result = await prepareDocument(payload);
     if (result.error) {
       dispatch(

@@ -1,8 +1,7 @@
 const BASE_URI = "/api";
 
 const VIEW_URI =
-  import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, "") ||
-  "http://localhost:7000";
+  import.meta.env.VITE_API_URL?.replace(/\/$/, "") || "http://localhost:7000";
 
 const AUTH_URI = {
   LOGIN: "/auth/login",

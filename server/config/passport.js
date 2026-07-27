@@ -28,7 +28,6 @@ passport.use(
             googleId,
             authProviders: { google: true },
           });
-          console.log(user);
         }
         return done(null, user);
       } catch (error) {
