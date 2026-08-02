@@ -14,8 +14,7 @@ import {
 } from "../../icons/AppIcons";
 import { useOptions } from "../../hooks/useOptions";
 import { useDocumentActions } from "../../hooks/useDocuments";
-import { notImplementedToast } from "../../utility/Functions";
-import { useToast } from "../../hooks/useToast";
+
 export default function DocumentRow({
   doc,
   view,
@@ -23,14 +22,12 @@ export default function DocumentRow({
   onToggleStar,
   getAccent,
 }) {
-  const { openOptions } = useOptions();
-  const { handleActionClick } = useDocumentActions();
+  const { openOptions, setDocPayload } = useOptions();
+  const { handleActionClick, downloadDocHandler } = useDocumentActions();
   const accent = getAccent(doc);
-  const { setDocPayload } = useOptions();
   const isImage = ["JPG", "JPEG", "PNG", "GIF", "WEBP"].includes(
     doc.fileType.toUpperCase(),
   );
-  const toast = useToast();
 
   function handleMoreClick(e) {
     openOptions(e, doc, [
@@ -49,15 +46,14 @@ export default function DocumentRow({
     ]);
   }
 
-  function handleShareClick(e) {
-    e.preventDefault();
-    notImplementedToast(toast, "Sharing");
-  }
-
-  function handlePreviewClick(e) {
+  function handleActionButton(e, actionType) {
     e.preventDefault();
     setDocPayload(doc);
-    handleActionClick(e, "Preview");
+    if (actionType === "Download") {
+      downloadDocHandler(e);
+    } else {
+      handleActionClick(e, actionType);
+    }
   }
 
   return (
@@ -97,18 +93,22 @@ export default function DocumentRow({
           <button
             type="button"
             className="doc-row-v2__action"
-            onClick={handlePreviewClick}
+            onClick={(e) => handleActionButton(e, "Preview")}
           >
             <IconEye /> Preview
           </button>
           <button
             type="button"
             className="doc-row-v2__action"
-            onClick={handleShareClick}
+            onClick={(e) => handleActionButton(e, "Share")}
           >
             <IconShare /> Share
           </button>
-          <button type="button" className="doc-row-v2__action">
+          <button
+            type="button"
+            className="doc-row-v2__action"
+            onClick={(e) => handleActionButton(e, "Download")}
+          >
             <IconDownload /> Download
           </button>
         </div>

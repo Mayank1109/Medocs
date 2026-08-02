@@ -15,7 +15,7 @@ const Options = () => {
   const { isOpen, options, anchorposition, payload, closeOptions } =
     useOptions();
   const position = useContextMenuPosition(modalRef, anchorposition, isOpen);
-  const NOT_IMPLEMENTED_TYPES = new Set(["Share", "Move", "Favorite"]);
+  const NOT_IMPLEMENTED_TYPES = new Set(["Move", "Favorite"]);
   const toast = useToast();
   if (!isOpen) return null;
 

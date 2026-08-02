@@ -220,12 +220,15 @@ router.get("/documents/:id/download", async (req, res) => {
     });
     if (!document)
       return res.status(404).json({ message: "Document not found" });
-
     if (!document.storagePath) {
       return res.status(404).json({ message: AI_ERRORS.FILE_NOT_FOUND });
     }
 
-    return res.redirect(document.storagePath);
+    const downloadUrl = document.storagePath.replace(
+      "/upload/",
+      "/upload/fl_attachment/",
+    );
+    return res.redirect(downloadUrl);
   } catch (err) {
     return res.status(500).json({ message: "Unable to download document" });
   }

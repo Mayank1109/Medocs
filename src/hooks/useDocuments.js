@@ -168,8 +168,18 @@ export const useDocumentActions = () => {
     }
   };
 
-  const downloadDocHandler = (e) => {
-    e?.preventDefault();
+  const downloadDocHandler = (event) => {
+    event?.preventDefault();
+    const doc = payload;
+    if (!doc?.storagePath) {
+      toast.error("Download failed", "No document selected.");
+      return;
+    }
+    const downloadUrl = doc.storagePath.replace(
+      "/upload/",
+      "/upload/fl_attachment/",
+    );
+    window.open(downloadUrl, "_blank");
   };
 
   const printDocHandler = (e) => {

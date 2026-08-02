@@ -6,6 +6,7 @@ import UploadDocumentModal from "./UploadDocumentModal";
 import { useOptions } from "../../hooks/useOptions";
 import DeleteDocumentModal from "./DeleteDocumentModal";
 import PreviewDocumentModal from "./PreviewDocumentModal";
+import ShareDocumentModal from "./ShareDocumentModal";
 
 const Modal = () => {
   const {
@@ -63,6 +64,18 @@ const Modal = () => {
           isOpen={isModalVisible}
           onClose={modalCloseHandler}
           document={activeDoc}
+        />
+      );
+      break;
+
+    case "Share":
+      modalContent = (
+        <ShareDocumentModal
+          isOpen={isModalVisible}
+          onClose={modalCloseHandler}
+          document={activeDoc}
+          shareUrl={activeDoc?.storagePath}
+          onDone={modalCloseHandler}
         />
       );
       break;

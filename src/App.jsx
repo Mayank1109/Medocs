@@ -1,4 +1,3 @@
-import { useState } from "react";
 import "./App.css";
 import {
   createBrowserRouter,
@@ -23,37 +22,59 @@ import SettingsPage from "./routes/app/SettingsPage";
 import ProfilePage from "./routes/app/ProfilePage";
 import AccountPage from "./routes/app/AccountPage";
 import { SidebarProvider } from "./hooks/useSidebar";
+import ProtectedRoute from "./routes/auth/ProtectedRoute";
+import PublicOnlyRoute from "./routes/auth/PublicOnlyRoute";
+import RootLayout from "./routes/app/RootLayout";
 
 const Router = createBrowserRouter([
   {
     path: "/",
+    element: <RootLayout />,
     children: [
       { index: true, element: <LandingPage /> },
-      { path: "/login", element: <Navigate to="/auth?mode=login" replace /> },
-      { path: "/signup", element: <Navigate to="/auth?mode=signup" replace /> },
-      { path: "/auth", element: <AuthPage /> },
+
+      {
+        element: <PublicOnlyRoute />,
+        children: [
+          {
+            path: "/login",
+            element: <Navigate to="/auth?mode=login" replace />,
+          },
+          {
+            path: "/signup",
+            element: <Navigate to="/auth?mode=signup" replace />,
+          },
+          { path: "/auth", element: <AuthPage /> },
+        ],
+      },
+
       { path: "/oauth-success", element: <OAuthSuccess /> },
-      { path: "/dashboard", element: <DashboardPage /> },
-      { path: "/documents", element: <DocumentsPage /> },
-      { path: "/ai-assistant", element: <AIAssistantPage /> },
-      { path: "/vitals", element: <WorkInProgress title="Vitals" /> },
+
       {
-        path: "/share-profile",
-        element: <WorkInProgress title="Share profile" />,
+        element: <ProtectedRoute />,
+        children: [
+          { path: "/dashboard", element: <DashboardPage /> },
+          { path: "/documents", element: <DocumentsPage /> },
+          { path: "/ai-assistant", element: <AIAssistantPage /> },
+          { path: "/vitals", element: <WorkInProgress title="Vitals" /> },
+          {
+            path: "/share-profile",
+            element: <WorkInProgress title="Share profile" />,
+          },
+          {
+            path: "/notifications",
+            element: <NotificationsPage />,
+          },
+          { path: "/settings", element: <SettingsPage /> },
+          { path: "/profile", element: <AccountPage /> },
+        ],
       },
-      {
-        path: "/notifications",
-        element: <NotificationsPage />,
-      },
-      { path: "/settings", element: <SettingsPage /> },
-      { path: "/profile", element: <AccountPage /> },
     ],
   },
 ]);
 
 function App() {
   const isModalVisible = useSelector((state) => state.modal.isModalVisible);
-  const [count, setCount] = useState(0);
 
   return (
     <ToastProvider>
