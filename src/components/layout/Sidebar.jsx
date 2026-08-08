@@ -15,6 +15,7 @@ import { useSidebar } from "../../hooks/useSidebar";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { authActions } from "../../store/authSlice";
+import { performLogout } from "../../utility/authHistory";
 
 const DEFAULT_NAV_ITEMS = [
   { to: "/dashboard", label: "Dashboard", icon: <IconGrid /> },
@@ -43,9 +44,8 @@ export default function Sidebar({
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  function handleLogout() {
-    dispatch(authActions.logout());
-    navigate("/auth");
+  async function handleLogout() {
+    await performLogout(dispatch, navigate, authActions.logout());
   }
 
   return (

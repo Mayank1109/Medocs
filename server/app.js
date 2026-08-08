@@ -5,6 +5,8 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const passport = require("./config/passport");
+const mongoSanitize = require("express-mongo-sanitize");
+
 const app = express();
 app.set("trust proxy", 1);
 app.use(
@@ -15,6 +17,7 @@ app.use(
 );
 app.use(express.json());
 app.use(express.urlencoded());
+app.use(mongoSanitize());
 app.use(cookieParser());
 app.use(passport.initialize());
 

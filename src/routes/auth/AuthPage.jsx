@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import AuthLayout from "./AuthLayout";
@@ -19,6 +19,7 @@ import {
 import { authActions } from "../../store/authSlice";
 import { login, signup } from "../../services/authService";
 import { useFieldValidation } from "../../hooks/useFieldValidation";
+import { markSafeEntry } from "../../utility/authHistory";
 
 const initialForm = {
   fullName: "",
@@ -61,6 +62,10 @@ export default function AuthPage() {
 
   const hasLength = form.password.length >= 8;
   const hasNumberOrSymbol = /[0-9]|[^A-Za-z0-9]/.test(form.password);
+
+  useEffect(() => {
+    markSafeEntry();
+  }, []);
 
   function handleChange(e) {
     const { name, value } = e.target;

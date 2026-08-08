@@ -15,9 +15,16 @@ export function useDocumentList() {
       dispatch(docActions.setLoading(true));
       setError("");
       try {
-        const params = category && category !== "all" ? category : undefined;
+        const isFavorites = category === "favorites";
+        const categoryParam =
+          category && category !== "all" && !isFavorites ? category : undefined;
 
-        const response = await getDocuments(page, PAGE_LIMIT, params);
+        const response = await getDocuments(
+          page,
+          PAGE_LIMIT,
+          categoryParam,
+          isFavorites || undefined,
+        );
         const { data, pagination } = response.data;
         const mapped = data.map(mapDocument);
 

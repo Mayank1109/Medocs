@@ -4,7 +4,9 @@ const mongoose = require("mongoose");
 const authMiddleware = require("../middleware/authMiddleware");
 const Document = require("../models/documentModel");
 const DocumentAnalysis = require("../models/documentAnalysisModel");
+const { geminiLimiter } = require("../middleware/rateLimiters");
 const multer = require("multer");
+
 const {
   analyzeDocument,
   askAboutDocument,
@@ -44,9 +46,10 @@ router.get("/documents", async (req, res) => {
   try {
     const page = Math.max(Number(req.query.page) || 1, 1);
     const limit = Math.min(Math.max(Number(req.query.limit) || 20, 1), 100);
-    const { category } = req.query;
+    const { category, favorite } = req.query;
     const filter = { ownerId: req.user._id };
     if (category) filter.category = category;
+    if (favorite !== undefined) filter.favorite = favorite === "true";
     const skip = (page - 1) * limit;
 
     const [docs, total] = await Promise.all([
@@ -234,7 +237,7 @@ router.get("/documents/:id/download", async (req, res) => {
   }
 });
 
-router.post("/documents/:id/analyze", async (req, res) => {
+router.post("/documents/:id/analyze", geminiLimiter, async (req, res) => {
   try {
     const docId = req.params.id;
     if (!mongoose.Types.ObjectId.isValid(docId)) {
@@ -286,7 +289,7 @@ router.post("/documents/:id/analyze", async (req, res) => {
   }
 });
 
-router.post("/documents/:id/ask", async (req, res) => {
+router.post("/documents/:id/ask", geminiLimiter, async (req, res) => {
   try {
     const docId = req.params.id;
     if (!mongoose.Types.ObjectId.isValid(docId)) {
@@ -386,6 +389,45 @@ router.get("/documents/grouped", async (req, res) => {
     res.status(500).json({
       messageType: "Error",
       message: "Failed to fetch grouped documents",
+    });
+  }
+});
+
+router.patch("/documents/:id/favorite", async (req, res) => {
+  try {
+    const docId = req.params.id;
+    if (!mongoose.Types.ObjectId.isValid(docId)) {
+      return res.status(400).json({
+        messageType: "Error",
+        message: "Invalid document ID",
+      });
+    }
+
+    const document = await Document.findOne({
+      _id: docId,
+      ownerId: req.user._id,
+    });
+
+    if (!document) {
+      return res.status(404).json({
+        messageType: "Error",
+        message: "Document not found",
+      });
+    }
+
+    document.favorite = !document.favorite;
+    await document.save();
+
+    return res.status(200).json({
+      messageType: "Success",
+      message: "Favorite status updated!",
+      data: document,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      messageType: "Error",
+      message: "An error occurred while updating favorite status",
     });
   }
 });

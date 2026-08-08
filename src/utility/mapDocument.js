@@ -31,6 +31,7 @@ export function mapDocument(doc) {
     size: formatSize(doc.fileSize),
     description: doc.fileDescription,
     storagePath: doc.storagePath,
+    favorite: !!doc.favorite,
     aiStatus: null, // no per-doc AI-analysis tracking yet — every doc shows "No AI analysis" until wired
   };
 }

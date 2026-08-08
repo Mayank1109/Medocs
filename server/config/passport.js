@@ -19,14 +19,16 @@ passport.use(
           if (!user.googleId) {
             user.googleId = googleId;
             user.authProviders.google = true;
-            await user.save();
           }
+          user.lastLogin = new Date();
+          await user.save();
         } else {
           user = await User.create({
             email: googleEmail,
             userName: profile.displayName,
             googleId,
             authProviders: { google: true },
+            lastLogin: new Date(),
           });
         }
         return done(null, user);

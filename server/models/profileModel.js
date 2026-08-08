@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const MedicalProfileSchema = new mongoose.Schema(
+const ProfileSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -9,7 +9,25 @@ const MedicalProfileSchema = new mongoose.Schema(
       unique: true,
       index: true,
     },
-    bloodGroup: String,
+
+    // personal
+    avatarUrl: String,
+    phone: String,
+    dateOfBirth: Date,
+    gender: {
+      type: String,
+      enum: ["male", "female", "other", "prefer_not_to_say"],
+    },
+    height: Number, // cm
+    weight: Number, // kg
+    occupation: String,
+    location: String,
+
+    // medical
+    bloodGroup: {
+      type: String,
+      enum: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
+    },
     allergies: [String],
     chronicConditions: [String],
     currentMedications: [String],
@@ -19,11 +37,11 @@ const MedicalProfileSchema = new mongoose.Schema(
       phone: String,
       relation: String,
     },
-    notesForDoctor: String,
+    notesForDoctor: { type: String, maxlength: 1000 },
   },
   { timestamps: true },
 );
 
-const Profile = mongoose.model("MedicalProfile", MedicalProfileSchema);
+const Profile = mongoose.model("Profile", ProfileSchema);
 
 module.exports = Profile;

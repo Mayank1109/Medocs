@@ -28,6 +28,11 @@ const docSlice = createSlice({
     setRefresh(state) {
       state.refresh = !state.refresh;
     },
+    setFavoriteStatus: (state, action) => {
+      const { documentId, favorite } = action.payload;
+      const doc = state.documents.find((d) => d._id === documentId);
+      if (doc) doc.favorite = favorite;
+    },
   },
 });
 

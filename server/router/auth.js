@@ -10,8 +10,9 @@ const { createJSONToken } = require("../util/auth");
 const RefreshToken = require("../models/refreshTokenModel");
 const passport = require("passport");
 const authMiddleware = require("../middleware/authMiddleware");
+const { authLimiter, refreshLimiter } = require("../middleware/rateLimiters");
 
-router.post("/signup", async (req, res, next) => {
+router.post("/signup", authLimiter, async (req, res, next) => {
   try {
     const { fullName, email, password } = req.body;
     let errors = {};
@@ -44,7 +45,8 @@ router.post("/signup", async (req, res, next) => {
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "none",
+      path: "/auth/refresh",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -64,7 +66,7 @@ router.post("/signup", async (req, res, next) => {
   }
 });
 
-router.post("/login", async (req, res, next) => {
+router.post("/login", authLimiter, async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
@@ -83,6 +85,9 @@ router.post("/login", async (req, res, next) => {
         errors: { credentials: "Invalid email or Password" },
       });
     }
+
+    user.lastLogin = new Date();
+    await user.save();
 
     await RefreshToken.updateMany(
       { userId: user._id, revoked: false },
@@ -104,7 +109,8 @@ router.post("/login", async (req, res, next) => {
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "none",
+      path: "/auth/refresh",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -119,28 +125,59 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
-router.post("/refresh", async (req, res, next) => {
-  const refreshToken = req.cookies.refreshToken;
+router.post("/refresh", refreshLimiter, async (req, res, next) => {
+  try {
+    const oldRefreshToken = req.cookies.refreshToken;
 
-  if (!refreshToken)
-    return res.status(401).json({
-      message: "Not Authorized.",
+    if (!oldRefreshToken) {
+      return res.status(401).json({ message: "Not Authorized." });
+    }
+
+    const tokenDoc = await RefreshToken.findOne({
+      token: oldRefreshToken,
+      revoked: false,
     });
 
-  const tokenDoc = await RefreshToken.findOne({
-    token: refreshToken,
-    revoked: false,
-  });
+    if (!tokenDoc) {
+      return res.status(403).json({ message: "Forbidden" });
+    }
 
-  if (!tokenDoc) return res.status(403).json({ message: "Forbidden" });
+    // Reuse/expiry check — if this token is past its own expiry, reject
+    if (tokenDoc.expiresAt < new Date()) {
+      return res.status(403).json({ message: "Refresh token expired" });
+    }
 
-  const user = await User.findById(tokenDoc.userId);
-  if (!user) return res.status(401).json({ message: "User not found" });
-  const newAccessToken = createJSONToken(user._id);
+    const user = await User.findById(tokenDoc.userId);
+    if (!user) {
+      return res.status(401).json({ message: "User not found" });
+    }
 
-  res.json({ token: newAccessToken });
+    // Rotate: revoke the old token, issue a new one
+    tokenDoc.revoked = true;
+    await tokenDoc.save();
+
+    const newRefreshToken = crypto.randomBytes(40).toString("hex");
+    const newRefreshTokenDoc = new RefreshToken({
+      userId: user._id,
+      token: newRefreshToken,
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    });
+    await newRefreshTokenDoc.save();
+
+    res.cookie("refreshToken", newRefreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "none",
+      path: "/auth/refresh",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    const newAccessToken = createJSONToken(user._id);
+    res.json({ token: newAccessToken });
+  } catch (error) {
+    next(error);
+  }
 });
-
 router.get(
   "/google",
   passport.authenticate("google", { scope: ["profile", "email"] }),

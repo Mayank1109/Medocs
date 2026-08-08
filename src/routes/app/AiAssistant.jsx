@@ -187,11 +187,7 @@ export default function AIAssistantPage() {
   }
 
   return (
-    <div className="app-shell">
-      <Sidebar>
-        <ChatHistory active={activeId} onSelect={setActiveId} />
-      </Sidebar>
-
+    <>
       <main className="main-content ai-page">
         <div className="chat-header-group">
           <div className="page-header">
@@ -312,6 +308,6 @@ export default function AIAssistantPage() {
           </p>
         </div>
       </main>
-    </div>
+    </>
   );
 }

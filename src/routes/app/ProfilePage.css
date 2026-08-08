@@ -385,6 +385,7 @@
   border-radius: var(--radius-xl);
   padding: 1.25rem;
   color: #0d3325;
+  margin: 1.5rem 0rem;
 }
 
 .premium-banner__icon {
@@ -397,6 +398,13 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+}
+
+.premium-banner div {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
 }
 
 .premium-banner__icon svg {

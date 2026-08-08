@@ -18,19 +18,30 @@ import "./Documents.css";
 import { modalDisplayHandler } from "../../utility/Functions";
 import DocumentListSkeleton from "../../components/ui/DocumentListSkeleton";
 import LoadingScreen from "../../components/ui/LoadingScreen";
+import { useSidebar } from "../../hooks/useSidebar";
 
 export default function DocumentsPage() {
   const [activeCategory, setActiveCategory] = useState("all");
   const [search, setSearch] = useState("");
   const [sortNewestFirst, setSortNewestFirst] = useState(true);
   const [view, setView] = useState("list");
-  const [starred, setStarred] = useState({});
+  const { setSidebarContent } = useSidebar();
 
   const { userDocs, page, totalPages, loading, refresh } = useSelector(
     (s) => s.doc,
   );
   const { fetchPage } = useDocumentList();
   const sentinelRef = useRef(null);
+
+  useEffect(() => {
+    setSidebarContent(
+      <DocumentCategories
+        active={activeCategory}
+        onSelect={setActiveCategory}
+      />,
+    );
+    return () => setSidebarContent(null);
+  }, [activeCategory]);
 
   // fresh load whenever category or refresh flag changes
   useEffect(() => {
@@ -56,11 +67,6 @@ export default function DocumentsPage() {
     return () => observer.disconnect();
   }, [loadMore]);
 
-  function toggleStar(id) {
-    setStarred((s) => ({ ...s, [id]: !s[id] }));
-  }
-
-  // client-side search + sort over what's currently loaded
   const filtered = userDocs
     .filter((d) => d.name.toLowerCase().includes(search.toLowerCase()))
     .sort((a, b) =>
@@ -82,14 +88,7 @@ export default function DocumentsPage() {
   const reachedEnd = page >= totalPages && userDocs.length > 0;
 
   return (
-    <div className="app-shell">
-      <Sidebar>
-        <DocumentCategories
-          active={activeCategory}
-          onSelect={setActiveCategory}
-        />
-      </Sidebar>
-
+    <>
       <main className="main-content">
         <div className="page-header">
           <div>
@@ -180,8 +179,6 @@ export default function DocumentsPage() {
                         key={doc.id}
                         doc={doc}
                         view={view}
-                        isStarred={!!starred[doc.id]}
-                        onToggleStar={toggleStar}
                         getAccent={getAccent}
                       />
                     ))}
@@ -208,6 +205,6 @@ export default function DocumentsPage() {
           </div>
         )}
       </main>
-    </div>
+    </>
   );
 }

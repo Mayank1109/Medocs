@@ -10,30 +10,38 @@ export function SidebarProvider({ children }) {
     () => window.innerWidth < COLLAPSE_BREAKPOINT,
   );
   const [manualOverride, setManualOverride] = useState(false);
+  const [sidebarContent, setSidebarContent] = useState(null);
 
   useEffect(() => {
     function handleResize() {
       const width = window.innerWidth;
       if (width < MOBILE_BREAKPOINT) {
-        setCollapsed(true); // mobile bottom bar is always icon-only
+        setCollapsed(true);
         return;
       }
       if (manualOverride) return;
       setCollapsed(width < COLLAPSE_BREAKPOINT);
     }
     window.addEventListener("resize", handleResize);
-    handleResize(); // run once on mount too, in case the app starts at mobile width
+    handleResize();
     return () => window.removeEventListener("resize", handleResize);
   }, [manualOverride]);
 
   function toggleCollapsed() {
-    if (window.innerWidth < MOBILE_BREAKPOINT) return; // no-op on mobile
+    if (window.innerWidth < MOBILE_BREAKPOINT) return;
     setManualOverride(true);
     setCollapsed((c) => !c);
   }
 
   return (
-    <SidebarContext.Provider value={{ collapsed, toggleCollapsed }}>
+    <SidebarContext.Provider
+      value={{
+        collapsed,
+        toggleCollapsed,
+        sidebarContent,
+        setSidebarContent,
+      }}
+    >
       {children}
     </SidebarContext.Provider>
   );

@@ -49,9 +49,7 @@ export default function AccountPage() {
   const [twoFactorOn] = useState(true);
 
   return (
-    <div className="app-shell">
-      <Sidebar />
-
+    <>
       <main className="main-content">
         <div className="page-header">
           <div>
@@ -296,7 +294,22 @@ export default function AccountPage() {
             Learn more about privacy <IconChevronRight />
           </Link>
         </div>
+
+        <div className="premium-banner">
+          <span className="premium-banner__icon">
+            <IconCrown />
+          </span>
+          <div>
+            <h4>You're on Premium</h4>
+            <p>
+              Enjoy unlimited AI analyses, advanced insights and secure storage.
+            </p>
+            <button type="button" className="button premium-banner__cta">
+              Manage plan
+            </button>
+          </div>
+        </div>
       </main>
-    </div>
+    </>
   );
 }

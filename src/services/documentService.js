@@ -7,9 +7,9 @@ const uploadDocument = (formData, onProgress) => {
   });
 };
 
-const getDocuments = (page, limit, category) => {
+const getDocuments = (page, limit, category, favorite) => {
   return httpService.get(DOCUMENT_URI.LIST, {
-    params: { page, limit, category },
+    params: { page, limit, category, favorite },
   });
 };
 
@@ -63,6 +63,10 @@ const prepareDocument = async (payload) => {
   };
 };
 
+const toggleFavorite = (id) => {
+  return httpService.patch(DOCUMENT_URI.TOGGLE_FAVORITE(id));
+};
+
 export {
   uploadDocument,
   getDocuments,
@@ -72,4 +76,5 @@ export {
   buildFileUrl,
   checkFileExists,
   prepareDocument,
+  toggleFavorite,
 };

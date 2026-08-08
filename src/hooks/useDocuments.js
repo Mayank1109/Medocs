@@ -6,6 +6,7 @@ import {
   deleteDocument,
   editDocument,
   prepareDocument,
+  toggleFavorite,
   uploadDocument,
 } from "../services/documentService";
 import { docActions } from "../store/docSlice";
@@ -192,6 +193,38 @@ export const useDocumentActions = () => {
     notImplementedToast(toast, "Sharing");
   };
 
+  const toggleFavoriteHandler = async (event, documentId) => {
+    event?.preventDefault();
+
+    const idToToggle = documentId || payload?.id;
+    if (!idToToggle) {
+      toast.error("Failed", "No document selected.");
+      return;
+    }
+
+    try {
+      const response = await toggleFavorite(idToToggle);
+      if (response.data.messageType !== "Success") {
+        throw new Error(response.data.message || "Failed to update favorite");
+      }
+
+      toast.success(
+        response.data.data.favorite
+          ? "Added to favorites"
+          : "Removed from favorites",
+        response.data.data.fileName || "",
+      );
+      dispatch(docActions.setRefresh());
+      return response.data;
+    } catch (error) {
+      toast.error(
+        "Failed",
+        error.response?.data?.message || "Could not update favorite status.",
+      );
+      throw error;
+    }
+  };
+
   return {
     handleActionClick,
     deleteDocHandler,
@@ -201,5 +234,6 @@ export const useDocumentActions = () => {
     downloadDocHandler,
     printDocHandler,
     deletingId,
+    toggleFavoriteHandler,
   };
 };

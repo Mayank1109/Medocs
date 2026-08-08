@@ -11,8 +11,9 @@ const googleCallbackHandler = async (req, res) => {
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "none", // if frontend + backend on different domains
+      sameSite: "none",
       path: "/auth/refresh",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // added — this one was missing maxAge entirely
     });
 
     res.redirect(`${process.env.CLIENT_URL}/oauth-success?token=${token}`);

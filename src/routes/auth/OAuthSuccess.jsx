@@ -35,7 +35,6 @@ const OAuthSuccess = () => {
           }),
         );
 
-        window.history.replaceState({}, document.title, "/oauth-success");
         navigate("/dashboard", { replace: true });
       } catch {
         navigate("/auth", { replace: true });

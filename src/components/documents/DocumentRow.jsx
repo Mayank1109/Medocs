@@ -15,15 +15,10 @@ import {
 import { useOptions } from "../../hooks/useOptions";
 import { useDocumentActions } from "../../hooks/useDocuments";
 
-export default function DocumentRow({
-  doc,
-  view,
-  isStarred,
-  onToggleStar,
-  getAccent,
-}) {
+export default function DocumentRow({ doc, view, onToggleStar, getAccent }) {
   const { openOptions, setDocPayload } = useOptions();
-  const { handleActionClick, downloadDocHandler } = useDocumentActions();
+  const { handleActionClick, downloadDocHandler, toggleFavoriteHandler } =
+    useDocumentActions();
   const accent = getAccent(doc);
   const isImage = ["JPG", "JPEG", "PNG", "GIF", "WEBP"].includes(
     doc.fileType.toUpperCase(),
@@ -36,7 +31,11 @@ export default function DocumentRow({
       { type: "Share", label: "Share", icon: IconShare },
       { type: "Edit", label: "Edit", icon: IconEdit },
       { type: "Move", label: "Move to folder", icon: IconFolder },
-      { type: "Favorite", label: "Add to favorites", icon: IconStar },
+      {
+        type: "Favorite",
+        label: doc.favorite ? "Remove from favorites" : "Add to favorites",
+        icon: IconStar,
+      },
       {
         type: "Delete",
         label: "Move to bin",
@@ -51,6 +50,8 @@ export default function DocumentRow({
     setDocPayload(doc);
     if (actionType === "Download") {
       downloadDocHandler(e);
+    } else if (actionType === "Favorite") {
+      toggleFavoriteHandler(e, doc.id);
     } else {
       handleActionClick(e, actionType);
     }
@@ -61,10 +62,13 @@ export default function DocumentRow({
       <button
         type="button"
         className="doc-row-v2__star"
-        onClick={() => onToggleStar(doc.id)}
-        aria-label={isStarred ? "Unstar" : "Star"}
+        onClick={(e) => {
+          e.preventDefault();
+          toggleFavoriteHandler(e, doc.id);
+        }}
+        aria-label={doc.favorite ? "Unstar" : "Star"}
       >
-        <IconStar filled={isStarred} />
+        <IconStar filled={doc.favorite} />
       </button>
 
       <span className={`doc-icon-v2 doc-icon-v2--${accent}`}>

@@ -41,6 +41,11 @@ const DocumentSchema = new mongoose.Schema(
       required: true,
       index: true,
     },
+    favorite: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
     accessList: [
       {
         type: mongoose.Schema.Types.ObjectId,

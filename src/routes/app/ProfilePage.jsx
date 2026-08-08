@@ -111,9 +111,7 @@ export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState(TABS[0]);
 
   return (
-    <div className="app-shell">
-      <Sidebar />
-
+    <>
       <main className="main-content">
         <div className="page-header">
           <div>
@@ -357,6 +355,6 @@ export default function ProfilePage() {
           </div>
         </div>
       </main>
-    </div>
+    </>
   );
 }

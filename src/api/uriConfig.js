@@ -15,6 +15,7 @@ const DOCUMENT_URI = {
   EDIT: (id) => `/dashboard/documents/${id}`,
   ANALYZE: (id) => `/dashboard/documents/${id}/analyze`,
   ASK: (id) => `/dashboard/documents/${id}/ask`,
+  TOGGLE_FAVORITE: (id) => `/dashboard/documents/${id}/favorite`,
 };
 
 export { BASE_URI, AUTH_URI, DOCUMENT_URI, VIEW_URI };

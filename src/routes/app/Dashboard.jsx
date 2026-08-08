@@ -15,9 +15,7 @@ import { modalDisplayHandler } from "../../utility/Functions";
 
 export default function DashboardPage() {
   return (
-    <div className="app-shell">
-      <Sidebar />
-
+    <>
       <main className="main-content">
         <div className="page-header">
           <div>
@@ -60,6 +58,6 @@ export default function DashboardPage() {
 
         <RecentReports />
       </main>
-    </div>
+    </>
   );
 }

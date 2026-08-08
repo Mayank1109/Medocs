@@ -121,9 +121,7 @@ export default function NotificationsPage() {
   })).filter((g) => g.items.length > 0);
 
   return (
-    <div className="app-shell">
-      <Sidebar />
-
+    <>
       <main className="main-content">
         <div className="page-header">
           <div>
@@ -205,6 +203,6 @@ export default function NotificationsPage() {
           </div>
         </div>
       </main>
-    </div>
+    </>
   );
 }

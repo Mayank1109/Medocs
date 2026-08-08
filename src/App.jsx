@@ -25,6 +25,7 @@ import { SidebarProvider } from "./hooks/useSidebar";
 import ProtectedRoute from "./routes/auth/ProtectedRoute";
 import PublicOnlyRoute from "./routes/auth/PublicOnlyRoute";
 import RootLayout from "./routes/app/RootLayout";
+import AppLayout from "./routes/app/AppLayout";
 
 const Router = createBrowserRouter([
   {
@@ -53,20 +54,22 @@ const Router = createBrowserRouter([
       {
         element: <ProtectedRoute />,
         children: [
-          { path: "/dashboard", element: <DashboardPage /> },
-          { path: "/documents", element: <DocumentsPage /> },
-          { path: "/ai-assistant", element: <AIAssistantPage /> },
-          { path: "/vitals", element: <WorkInProgress title="Vitals" /> },
           {
-            path: "/share-profile",
-            element: <WorkInProgress title="Share profile" />,
+            element: <AppLayout />,
+            children: [
+              { path: "/dashboard", element: <DashboardPage /> },
+              { path: "/documents", element: <DocumentsPage /> },
+              { path: "/ai-assistant", element: <AIAssistantPage /> },
+              { path: "/vitals", element: <WorkInProgress title="Vitals" /> },
+              {
+                path: "/share-profile",
+                element: <WorkInProgress title="Share profile" />,
+              },
+              { path: "/notifications", element: <NotificationsPage /> },
+              { path: "/settings", element: <SettingsPage /> },
+              { path: "/profile", element: <AccountPage /> },
+            ],
           },
-          {
-            path: "/notifications",
-            element: <NotificationsPage />,
-          },
-          { path: "/settings", element: <SettingsPage /> },
-          { path: "/profile", element: <AccountPage /> },
         ],
       },
     ],

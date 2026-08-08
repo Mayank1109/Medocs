@@ -82,9 +82,7 @@ export default function SettingsPage() {
   const [aiModel] = useState("GPT-4.1");
 
   return (
-    <div className="app-shell">
-      <Sidebar />
-
+    <>
       <main className="main-content">
         <div className="page-header">
           <div>
@@ -236,7 +234,7 @@ export default function SettingsPage() {
           </div>
         </div>
       </main>
-    </div>
+    </>
   );
 }
 
