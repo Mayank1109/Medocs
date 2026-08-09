@@ -53,10 +53,40 @@ function notImplementedToast(toast, feature = "This feature") {
   );
 }
 
+function formatDate(dateStr) {
+  if (!dateStr) return "—";
+  return new Date(dateStr).toLocaleDateString("en-US", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+function initialsOf(name) {
+  if (!name) return "?";
+  return name
+    .split(" ")
+    .map((w) => w[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+}
+
+function formatBytes(bytes) {
+  if (!bytes) return "0 MB";
+  return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+}
+
+const STORAGE_CAP_BYTES = 1024 * 1024 * 1024;
+
 export {
   modalDisplayHandler,
   profileCompletionPercentage,
   showMessage,
   getFileAccent,
   notImplementedToast,
+  formatDate,
+  initialsOf,
+  formatBytes,
+  STORAGE_CAP_BYTES,
 };

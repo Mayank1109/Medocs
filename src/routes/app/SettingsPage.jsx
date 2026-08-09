@@ -83,157 +83,155 @@ export default function SettingsPage() {
 
   return (
     <>
-      <main className="main-content">
-        <div className="page-header">
-          <div>
-            <h1>Settings</h1>
-            <p className="page-header__subtitle">
-              Manage your account preferences and app settings
-            </p>
-          </div>
+      <div className="page-header">
+        <div>
+          <h1>Settings</h1>
+          <p className="page-header__subtitle">
+            Manage your account preferences and app settings
+          </p>
         </div>
+      </div>
 
-        {/* ---------- Appearance ---------- */}
-        <div className="card settings-card">
-          <SettingsCardHeader
-            icon={<IconMonitor />}
-            title="Appearance"
-            sub="Choose how Medocs looks on your device."
-          />
-          <div className="theme-options">
-            {THEMES.map((t) => (
-              <button
-                type="button"
-                key={t.key}
-                className={`theme-option${theme === t.key ? " active" : ""}`}
-                onClick={() => setTheme(t.key)}
-              >
-                <span className="theme-option__icon">{t.icon}</span>
-                <span className="theme-option__label">{t.label}</span>
-                <span className="theme-option__sub">{t.sub}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* ---------- Notifications ---------- */}
-        <div className="card settings-card">
-          <SettingsCardHeader
-            icon={<IconBell />}
-            title="Notifications"
-            sub="Manage what you want to be notified about."
-          />
-          <div className="pref-rows">
-            {NOTIFICATION_PREFS.map((p) => (
-              <button
-                type="button"
-                className="pref-row"
-                key={p.key}
-                onClick={() => setPrefs((s) => ({ ...s, [p.key]: !s[p.key] }))}
-              >
-                <span
-                  className={`pref-row__check${prefs[p.key] ? " checked" : ""}`}
-                >
-                  {prefs[p.key] && <CheckMark />}
-                </span>
-                <span className="pref-row__body">
-                  <span className="pref-row__title">{p.title}</span>
-                  <span className="pref-row__sub">{p.sub}</span>
-                </span>
-                <IconChevronRight />
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* ---------- AI Preferences ---------- */}
-        <div className="card settings-card">
-          <SettingsCardHeader
-            icon={<IconSparkleSmall />}
-            title="AI Preferences"
-            sub="Configure AI behaviour and preferences."
-          />
-
-          <div className="settings-row">
-            <span className="settings-row__label">Default AI model</span>
-            <div className="model-select">
-              <button type="button" className="model-select__button">
-                {aiModel} <IconChevronDown />
-              </button>
-            </div>
-          </div>
-
-          <div className="settings-row">
-            <span className="settings-row__body">
-              <span className="settings-row__label">
-                Automatically suggest AI analysis
-              </span>
-              <span className="settings-row__sub">
-                Suggest AI analysis for new uploads
-              </span>
-            </span>
+      {/* ---------- Appearance ---------- */}
+      <div className="card settings-card">
+        <SettingsCardHeader
+          icon={<IconMonitor />}
+          title="Appearance"
+          sub="Choose how Medocs looks on your device."
+        />
+        <div className="theme-options">
+          {THEMES.map((t) => (
             <button
               type="button"
-              className={`toggle-switch${autoSuggest ? " on" : ""}`}
-              onClick={() => setAutoSuggest((v) => !v)}
-              aria-pressed={autoSuggest}
+              key={t.key}
+              className={`theme-option${theme === t.key ? " active" : ""}`}
+              onClick={() => setTheme(t.key)}
             >
-              <span className="toggle-switch__knob" />
+              <span className="theme-option__icon">{t.icon}</span>
+              <span className="theme-option__label">{t.label}</span>
+              <span className="theme-option__sub">{t.sub}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* ---------- Notifications ---------- */}
+      <div className="card settings-card">
+        <SettingsCardHeader
+          icon={<IconBell />}
+          title="Notifications"
+          sub="Manage what you want to be notified about."
+        />
+        <div className="pref-rows">
+          {NOTIFICATION_PREFS.map((p) => (
+            <button
+              type="button"
+              className="pref-row"
+              key={p.key}
+              onClick={() => setPrefs((s) => ({ ...s, [p.key]: !s[p.key] }))}
+            >
+              <span
+                className={`pref-row__check${prefs[p.key] ? " checked" : ""}`}
+              >
+                {prefs[p.key] && <CheckMark />}
+              </span>
+              <span className="pref-row__body">
+                <span className="pref-row__title">{p.title}</span>
+                <span className="pref-row__sub">{p.sub}</span>
+              </span>
+              <IconChevronRight />
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* ---------- AI Preferences ---------- */}
+      <div className="card settings-card">
+        <SettingsCardHeader
+          icon={<IconSparkleSmall />}
+          title="AI Preferences"
+          sub="Configure AI behaviour and preferences."
+        />
+
+        <div className="settings-row">
+          <span className="settings-row__label">Default AI model</span>
+          <div className="model-select">
+            <button type="button" className="model-select__button">
+              {aiModel} <IconChevronDown />
             </button>
           </div>
         </div>
 
-        {/* ---------- Storage ---------- */}
-        <div className="card settings-card">
-          <SettingsCardHeader
-            icon={<IconDatabase />}
-            title="Storage"
-            sub="View your storage usage and manage files."
-          />
-          <div className="storage-row">
-            <div className="storage-row__text">
-              <span className="storage-row__value">
-                420 MB <span>/ 1 GB used</span>
-              </span>
-              <span className="storage-row__pct">42% used</span>
-            </div>
-            <Link to="/account" className="button button--secondary">
-              Manage storage
-            </Link>
-          </div>
-          <div className="account-row__progress settings-storage-bar">
-            <div
-              className="account-row__progress-fill"
-              style={{ width: "42%" }}
-            />
-          </div>
+        <div className="settings-row">
+          <span className="settings-row__body">
+            <span className="settings-row__label">
+              Automatically suggest AI analysis
+            </span>
+            <span className="settings-row__sub">
+              Suggest AI analysis for new uploads
+            </span>
+          </span>
+          <button
+            type="button"
+            className={`toggle-switch${autoSuggest ? " on" : ""}`}
+            onClick={() => setAutoSuggest((v) => !v)}
+            aria-pressed={autoSuggest}
+          >
+            <span className="toggle-switch__knob" />
+          </button>
         </div>
+      </div>
 
-        {/* ---------- Privacy & data ---------- */}
-        <div className="card settings-card">
-          <SettingsCardHeader
-            icon={<IconShieldBadge />}
-            title="Privacy &amp; data"
-            sub="Manage your data and privacy settings."
-          />
-          <div className="privacy-rows">
-            {PRIVACY_ROWS.map((r) => (
-              <button
-                type="button"
-                className={`privacy-row${r.danger ? " danger" : ""}`}
-                key={r.title}
-              >
-                <span className="privacy-row__icon">{r.icon}</span>
-                <span className="privacy-row__body">
-                  <span className="privacy-row__title">{r.title}</span>
-                  <span className="privacy-row__sub">{r.sub}</span>
-                </span>
-                <IconChevronRight />
-              </button>
-            ))}
+      {/* ---------- Storage ---------- */}
+      <div className="card settings-card">
+        <SettingsCardHeader
+          icon={<IconDatabase />}
+          title="Storage"
+          sub="View your storage usage and manage files."
+        />
+        <div className="storage-row">
+          <div className="storage-row__text">
+            <span className="storage-row__value">
+              420 MB <span>/ 1 GB used</span>
+            </span>
+            <span className="storage-row__pct">42% used</span>
           </div>
+          <Link to="/account" className="button button--secondary">
+            Manage storage
+          </Link>
         </div>
-      </main>
+        <div className="account-row__progress settings-storage-bar">
+          <div
+            className="account-row__progress-fill"
+            style={{ width: "42%" }}
+          />
+        </div>
+      </div>
+
+      {/* ---------- Privacy & data ---------- */}
+      <div className="card settings-card">
+        <SettingsCardHeader
+          icon={<IconShieldBadge />}
+          title="Privacy &amp; data"
+          sub="Manage your data and privacy settings."
+        />
+        <div className="privacy-rows">
+          {PRIVACY_ROWS.map((r) => (
+            <button
+              type="button"
+              className={`privacy-row${r.danger ? " danger" : ""}`}
+              key={r.title}
+            >
+              <span className="privacy-row__icon">{r.icon}</span>
+              <span className="privacy-row__body">
+                <span className="privacy-row__title">{r.title}</span>
+                <span className="privacy-row__sub">{r.sub}</span>
+              </span>
+              <IconChevronRight />
+            </button>
+          ))}
+        </div>
+      </div>
     </>
   );
 }

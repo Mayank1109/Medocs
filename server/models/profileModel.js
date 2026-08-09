@@ -12,6 +12,7 @@ const ProfileSchema = new mongoose.Schema(
 
     // personal
     avatarUrl: String,
+    avatarCloudinaryId: String,
     phone: String,
     dateOfBirth: Date,
     gender: {

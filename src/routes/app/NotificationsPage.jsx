@@ -122,87 +122,81 @@ export default function NotificationsPage() {
 
   return (
     <>
-      <main className="main-content">
-        <div className="page-header">
-          <div>
-            <h1 style={{ margin: "0rem 0rem 1rem 0rem", textAlign: "left" }}>
-              Notifications
-            </h1>
-            <p className="page-header__subtitle">
-              Stay updated with the latest activity and alerts
-            </p>
-          </div>
-          <button
-            type="button"
-            className="mark-read-link"
-            onClick={markAllRead}
-          >
-            <IconCheck /> Mark all as read
-          </button>
+      <div className="page-header">
+        <div>
+          <h1 style={{ margin: "0rem 0rem 1rem 0rem", textAlign: "left" }}>
+            Notifications
+          </h1>
+          <p className="page-header__subtitle">
+            Stay updated with the latest activity and alerts
+          </p>
         </div>
+        <button type="button" className="mark-read-link" onClick={markAllRead}>
+          <IconCheck /> Mark all as read
+        </button>
+      </div>
 
-        <div className="docs-toolbar">
-          <div className="docs-toolbar__search">
-            <IconSearch />
-            <input
-              type="text"
-              placeholder="Search notifications…"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
-          <button type="button" className="docs-toolbar__btn">
-            <IconFilter /> All types <IconChevronDown />
-          </button>
+      <div className="docs-toolbar">
+        <div className="docs-toolbar__search">
+          <IconSearch />
+          <input
+            type="text"
+            placeholder="Search notifications…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </div>
+        <button type="button" className="docs-toolbar__btn">
+          <IconFilter /> All types <IconChevronDown />
+        </button>
+      </div>
 
-        {filteredGroups.length === 0 ? (
-          <div className="docs-empty">No notifications match your search.</div>
-        ) : (
-          filteredGroups.map((g) => (
-            <div className="docs-group" key={g.group}>
-              <h2 className="docs-group__title">{g.group}</h2>
-              <div className="notif-list">
-                {g.items.map((n) => (
-                  <div
-                    className={`notif-row${isUnread(n) ? " unread" : ""}`}
-                    key={n.id}
+      {filteredGroups.length === 0 ? (
+        <div className="docs-empty">No notifications match your search.</div>
+      ) : (
+        filteredGroups.map((g) => (
+          <div className="docs-group" key={g.group}>
+            <h2 className="docs-group__title">{g.group}</h2>
+            <div className="notif-list">
+              {g.items.map((n) => (
+                <div
+                  className={`notif-row${isUnread(n) ? " unread" : ""}`}
+                  key={n.id}
+                >
+                  <span
+                    className={`notif-row__icon notif-row__icon--${n.tone}`}
                   >
-                    <span
-                      className={`notif-row__icon notif-row__icon--${n.tone}`}
-                    >
-                      {n.icon}
-                    </span>
-                    <div className="notif-row__body">
-                      <div className="notif-row__title-line">
-                        {isUnread(n) && <span className="notif-row__dot" />}
-                        <span className="notif-row__title">{n.title}</span>
-                      </div>
-                      <p className="notif-row__message">{n.message}</p>
+                    {n.icon}
+                  </span>
+                  <div className="notif-row__body">
+                    <div className="notif-row__title-line">
+                      {isUnread(n) && <span className="notif-row__dot" />}
+                      <span className="notif-row__title">{n.title}</span>
                     </div>
-                    <div className="notif-row__meta">
-                      <span className="notif-row__time">{n.time}</span>
-                      {n.action && (
-                        <button type="button" className="notif-row__action">
-                          {n.action}
-                        </button>
-                      )}
-                    </div>
+                    <p className="notif-row__message">{n.message}</p>
                   </div>
-                ))}
-              </div>
+                  <div className="notif-row__meta">
+                    <span className="notif-row__time">{n.time}</span>
+                    {n.action && (
+                      <button type="button" className="notif-row__action">
+                        {n.action}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
-          ))
-        )}
-
-        <div className="docs-end">
-          <IconInboxCheck />
-          <div>
-            <div className="docs-end__title">You've reached the end</div>
-            <div className="docs-end__sub">No more notifications to show</div>
           </div>
+        ))
+      )}
+
+      <div className="docs-end">
+        <IconInboxCheck />
+        <div>
+          <div className="docs-end__title">You've reached the end</div>
+          <div className="docs-end__sub">No more notifications to show</div>
         </div>
-      </main>
+      </div>
     </>
   );
 }

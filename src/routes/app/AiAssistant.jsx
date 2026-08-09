@@ -188,7 +188,7 @@ export default function AIAssistantPage() {
 
   return (
     <>
-      <main className="main-content ai-page">
+      <main className="ai-page">
         <div className="chat-header-group">
           <div className="page-header">
             <div>

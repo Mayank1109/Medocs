@@ -18,4 +18,10 @@ const DOCUMENT_URI = {
   TOGGLE_FAVORITE: (id) => `/dashboard/documents/${id}/favorite`,
 };
 
-export { BASE_URI, AUTH_URI, DOCUMENT_URI, VIEW_URI };
+const PROFILE_URI = {
+  GET: "/profile/me",
+  UPDATE: "/profile/me",
+  UPLOAD_AVATAR: "/profile/me/avatar",
+};
+
+export { BASE_URI, AUTH_URI, DOCUMENT_URI, VIEW_URI, PROFILE_URI };

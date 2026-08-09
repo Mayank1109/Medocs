@@ -89,122 +89,120 @@ export default function DocumentsPage() {
 
   return (
     <>
-      <main className="main-content">
-        <div className="page-header">
-          <div>
-            <h1 style={{ margin: "0rem 0rem 1rem", textAlign: "left" }}>
-              Documents
-            </h1>
-            <p className="page-header__subtitle">
-              {totalCount} documents
-              {aiAvailableCount > 0 && (
-                <>
-                  {" "}
-                  ·{" "}
-                  <span className="text-warning">
-                    {aiAvailableCount} optional AI analyses available
-                  </span>
-                </>
-              )}
-            </p>
-          </div>
-          <button
-            type="button"
-            className="button doc-header__button"
-            onClick={(event) => modalDisplayHandler(event, "Upload")}
-          >
-            <IconUpload />
-            Upload document
-          </button>
+      <div className="page-header">
+        <div>
+          <h1 style={{ margin: "0rem 0rem 1rem", textAlign: "left" }}>
+            Documents
+          </h1>
+          <p className="page-header__subtitle">
+            {totalCount} documents
+            {aiAvailableCount > 0 && (
+              <>
+                {" "}
+                ·{" "}
+                <span className="text-warning">
+                  {aiAvailableCount} optional AI analyses available
+                </span>
+              </>
+            )}
+          </p>
+        </div>
+        <button
+          type="button"
+          className="button doc-header__button"
+          onClick={(event) => modalDisplayHandler(event, "Upload")}
+        >
+          <IconUpload />
+          Upload document
+        </button>
+      </div>
+
+      <div className="docs-toolbar">
+        <div className="docs-toolbar__search">
+          <IconSearch />
+          <input
+            type="text"
+            placeholder="Search documents…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </div>
 
-        <div className="docs-toolbar">
-          <div className="docs-toolbar__search">
-            <IconSearch />
-            <input
-              type="text"
-              placeholder="Search documents…"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
+        <button
+          type="button"
+          className="docs-toolbar__btn"
+          onClick={() => setSortNewestFirst((v) => !v)}
+        >
+          Sort: {sortNewestFirst ? "Newest first" : "Oldest first"}
+          <IconChevronDown />
+        </button>
 
+        <button type="button" className="docs-toolbar__btn">
+          <IconFilter />
+          Filter
+          <IconChevronDown />
+        </button>
+
+        <div className="docs-toolbar__view-toggle">
           <button
             type="button"
-            className="docs-toolbar__btn"
-            onClick={() => setSortNewestFirst((v) => !v)}
+            className={view === "list" ? "active" : ""}
+            onClick={() => setView("list")}
+            aria-label="List view"
           >
-            Sort: {sortNewestFirst ? "Newest first" : "Oldest first"}
-            <IconChevronDown />
+            <IconListView />
           </button>
-
-          <button type="button" className="docs-toolbar__btn">
-            <IconFilter />
-            Filter
-            <IconChevronDown />
+          <button
+            type="button"
+            className={view === "grid" ? "active" : ""}
+            onClick={() => setView("grid")}
+            aria-label="Grid view"
+          >
+            <IconGridView />
           </button>
-
-          <div className="docs-toolbar__view-toggle">
-            <button
-              type="button"
-              className={view === "list" ? "active" : ""}
-              onClick={() => setView("list")}
-              aria-label="List view"
-            >
-              <IconListView />
-            </button>
-            <button
-              type="button"
-              className={view === "grid" ? "active" : ""}
-              onClick={() => setView("grid")}
-              aria-label="Grid view"
-            >
-              <IconGridView />
-            </button>
-          </div>
         </div>
-        {loading && userDocs.length === 0 ? (
-          <DocumentListSkeleton count={3} view={view} />
-        ) : (
-          <>
-            {groups.length === 0 && !loading ? (
-              <div className="docs-empty">No documents match your search.</div>
-            ) : (
-              groups.map(([monthLabel, docs]) => (
-                <div className="docs-group" key={monthLabel}>
-                  <h2 className="docs-group__title">{monthLabel}</h2>
-                  <div className={view === "grid" ? "docs-grid" : "docs-list"}>
-                    {docs.map((doc) => (
-                      <DocumentRow
-                        key={doc.id}
-                        doc={doc}
-                        view={view}
-                        getAccent={getAccent}
-                      />
-                    ))}
-                  </div>
+      </div>
+      {loading && userDocs.length === 0 ? (
+        <DocumentListSkeleton count={3} view={view} />
+      ) : (
+        <>
+          {groups.length === 0 && !loading ? (
+            <div className="docs-empty">No documents match your search.</div>
+          ) : (
+            groups.map(([monthLabel, docs]) => (
+              <div className="docs-group" key={monthLabel}>
+                <h2 className="docs-group__title">{monthLabel}</h2>
+                <div className={view === "grid" ? "docs-grid" : "docs-list"}>
+                  {docs.map((doc) => (
+                    <DocumentRow
+                      key={doc.id}
+                      doc={doc}
+                      view={view}
+                      getAccent={getAccent}
+                    />
+                  ))}
                 </div>
-              ))
-            )}
+              </div>
+            ))
+          )}
 
-            {loading && userDocs.length > 0 && (
-              <LoadingScreen message="Loading more documents…" />
-            )}
-          </>
-        )}
+          {loading && userDocs.length > 0 && (
+            <LoadingScreen message="Loading more documents…" />
+          )}
+        </>
+      )}
 
-        <div ref={sentinelRef} style={{ height: 1 }} />
+      <div ref={sentinelRef} style={{ height: 1 }} />
 
-        {reachedEnd && (
-          <div className="docs-end">
-            <IconInboxCheck />
-            <div>
-              <div className="docs-end__title">You've reached the end</div>
-              <div className="docs-end__sub">No more documents to show</div>
-            </div>
+      {reachedEnd && (
+        <div className="docs-end">
+          <IconInboxCheck />
+          <div>
+            <div className="docs-end__title">You've reached the end</div>
+            <div className="docs-end__sub">No more documents to show</div>
           </div>
-        )}
-      </main>
+        </div>
+      )}
     </>
   );
 }

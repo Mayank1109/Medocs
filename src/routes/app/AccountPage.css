@@ -5,11 +5,16 @@
 
 /*=============== GRID ===============*/
 .account-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
+  columns: 2;
+  column-gap: 1.5rem;
   margin-bottom: 1.5rem;
-  align-items: start;
+}
+
+.account-grid > .card {
+  break-inside: avoid; /* prevents a card's content from splitting across columns */
+  margin-bottom: 1.5rem;
+  width: 100%;
+  display: inline-block; /* required for columns layout to size children correctly */
 }
 
 .account-card__icon {
@@ -346,10 +351,39 @@
   height: 14px;
 }
 
+/*=============== STUB MARKERS ===============*/
+.stub-notice {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: var(--tiny-font-size);
+  color: var(--text-muted);
+  background-color: var(--surface-2);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-md);
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.875rem;
+}
+
+.stub-notice svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+}
+
+.stub-badge {
+  font-size: var(--tiny-font-size);
+  color: var(--warning);
+  background-color: var(--warning-light);
+  border-radius: var(--radius-sm);
+  padding: 0.0625rem 0.375rem;
+  margin-left: 0.5rem;
+  font-weight: var(--font-semi-bold);
+}
 /*=============== RESPONSIVE ===============*/
 @media screen and (max-width: 950px) {
   .account-grid {
-    grid-template-columns: 1fr;
+    columns: 1;
   }
 }
 

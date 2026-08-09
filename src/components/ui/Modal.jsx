@@ -7,6 +7,8 @@ import { useOptions } from "../../hooks/useOptions";
 import DeleteDocumentModal from "./DeleteDocumentModal";
 import PreviewDocumentModal from "./PreviewDocumentModal";
 import ShareDocumentModal from "./ShareDocumentModal";
+import ProfileEditModal from "./ProfileEditModal";
+import { useProfileActions } from "../../hooks/useProfileActions";
 
 const Modal = () => {
   const {
@@ -17,7 +19,11 @@ const Modal = () => {
     downloadDocHandler,
     printDocHandler,
   } = useDocumentActions();
-
+  const {
+    profile,
+    editProfileHandler,
+    modalCloseHandler: closeProfileModal,
+  } = useProfileActions();
   const { actionType, isModalVisible } = useSelector((state) => state.modal);
   const modalData = useSelector((state) => state.modal.data);
   const { payload } = useOptions();
@@ -54,6 +60,42 @@ const Modal = () => {
           onClose={modalCloseHandler}
           document={activeDoc}
           onSaved={(editData) => editDocHandler(null, editData)}
+        />
+      );
+      break;
+
+    case "EditPersonalInfo":
+      modalContent = (
+        <ProfileEditModal
+          isOpen={isModalVisible}
+          onClose={closeProfileModal}
+          onSaved={editProfileHandler}
+          section="personal"
+          profile={profile}
+        />
+      );
+      break;
+
+    case "EditHealthInfo":
+      modalContent = (
+        <ProfileEditModal
+          isOpen={isModalVisible}
+          onClose={closeProfileModal}
+          onSaved={editProfileHandler}
+          section="health"
+          profile={profile}
+        />
+      );
+      break;
+
+    case "EditEmergencyContact":
+      modalContent = (
+        <ProfileEditModal
+          isOpen={isModalVisible}
+          onClose={closeProfileModal}
+          onSaved={editProfileHandler}
+          section="emergencyContact"
+          profile={profile}
         />
       );
       break;
