@@ -25,11 +25,14 @@ const home = require("./router/projects");
 const dashboard = require("./router/dashBoard");
 const authRoutes = require("./router/auth");
 const profileRoutes = require("./router/profile");
+const notificationRoutes = require("./router/notifications");
 
 app.use("/", home);
 app.use("/dashboard", dashboard);
 app.use("/auth", authRoutes);
 app.use("/profile", profileRoutes);
+app.use("/notifications", notificationRoutes);
+
 app.use((error, req, res, next) => {
   if (error.code === "LIMIT_FILE_SIZE") {
     return res

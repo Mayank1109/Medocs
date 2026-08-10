@@ -26,6 +26,7 @@ import ProtectedRoute from "./routes/auth/ProtectedRoute";
 import PublicOnlyRoute from "./routes/auth/PublicOnlyRoute";
 import RootLayout from "./routes/app/RootLayout";
 import AppLayout from "./routes/app/AppLayout";
+import { ThemeProvider } from "./hooks/useTheme";
 
 const Router = createBrowserRouter([
   {
@@ -80,15 +81,17 @@ function App() {
   const isModalVisible = useSelector((state) => state.modal.isModalVisible);
 
   return (
-    <ToastProvider>
-      <SidebarProvider>
-        <OptionsProvider>
-          <RouterProvider router={Router} />
-          {isModalVisible && <Modal />}
-          <Options />
-        </OptionsProvider>
-      </SidebarProvider>
-    </ToastProvider>
+    <ThemeProvider>
+      <ToastProvider>
+        <SidebarProvider>
+          <OptionsProvider>
+            <RouterProvider router={Router} />
+            {isModalVisible && <Modal />}
+            <Options />
+          </OptionsProvider>
+        </SidebarProvider>
+      </ToastProvider>
+    </ThemeProvider>
   );
 }
 

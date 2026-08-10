@@ -6,7 +6,8 @@ const Document = require("../models/documentModel");
 const DocumentAnalysis = require("../models/documentAnalysisModel");
 const { geminiLimiter } = require("../middleware/rateLimiters");
 const multer = require("multer");
-
+const Notification = require("../models/notificationModel");
+const profile = require("../models/profileModel");
 const {
   analyzeDocument,
   askAboutDocument,
@@ -143,6 +144,15 @@ router.post("/upload", upload.single("file"), async (req, res) => {
     });
 
     const savedDoc = await document.save();
+
+    await Notification.create({
+      ownerId: req.user._id,
+      type: "upload",
+      title: "Document uploaded",
+      message: `"${savedDoc.fileName}" was uploaded successfully.`,
+      relatedDocumentId: savedDoc._id,
+    });
+
     return res.status(201).json({
       messageType: "Success",
       message: "File added successfully!",
@@ -271,6 +281,15 @@ router.post("/documents/:id/analyze", geminiLimiter, async (req, res) => {
       analysis.summary = await analyzeDocument(document);
       analysis.status = "completed";
       await analysis.save();
+
+      await Notification.create({
+        ownerId: req.user._id,
+        type: "ai_analysis",
+        title: "AI analysis completed",
+        message: `Your analysis for "${document.fileName}" is ready.`,
+        relatedDocumentId: document._id,
+      });
+
       return res
         .status(201)
         .json({ message: "Document analysis completed.", data: analysis });

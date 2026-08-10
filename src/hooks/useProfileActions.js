@@ -5,14 +5,30 @@ import {
   getProfile,
   updateProfile,
   uploadAvatar,
+  exportData,
+  deleteAccount,
 } from "../services/profileService";
 import { useToast } from "./useToast";
+import { useMemo } from "react";
+import { useNavigate } from "react-router-dom";
+
+const STORAGE_CAP_BYTES = 1024 * 1024 * 1024;
 
 export const useProfileActions = () => {
   const dispatch = useDispatch();
   const toast = useToast();
+  const navigate = useNavigate();
   const profile = useSelector((state) => state.profile.data);
   const loading = useSelector((state) => state.profile.loading);
+
+  const storagePct = useMemo(
+    () =>
+      Math.min(
+        100,
+        Math.round(((profile.storageUsedBytes || 0) / STORAGE_CAP_BYTES) * 100),
+      ),
+    [profile.storageUsedBytes],
+  );
 
   const fetchProfileHandler = async () => {
     dispatch(profileActions.setLoading(true));
@@ -77,12 +93,46 @@ export const useProfileActions = () => {
     }
   };
 
+  const downloadDataHandler = async () => {
+    try {
+      const response = await exportData();
+      const blob = new Blob([response.data], { type: "application/json" });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "medocs-data-export.json";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+      toast.success("Export ready", "Your data export has downloaded.");
+    } catch (error) {
+      toast.error("Export failed", "Could not export your data.");
+    }
+  };
+
+  const deleteAccountHandler = async () => {
+    const response = await deleteAccount();
+    if (response.data.messageType !== "Success") {
+      throw new Error(response.data.message || "Delete failed");
+    }
+    toast.success(
+      "Account deleted",
+      "Your account has been permanently deleted.",
+    );
+    dispatch(modalActions.hide());
+    await performLogout(dispatch, navigate, authActions.logout());
+  };
+
   return {
     profile,
     loading,
+    storagePct,
     fetchProfileHandler,
     editProfileHandler,
     modalCloseHandler,
     uploadAvatarHandler,
+    downloadDataHandler,
+    deleteAccountHandler,
   };
 };

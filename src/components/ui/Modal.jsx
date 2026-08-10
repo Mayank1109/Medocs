@@ -9,6 +9,7 @@ import PreviewDocumentModal from "./PreviewDocumentModal";
 import ShareDocumentModal from "./ShareDocumentModal";
 import ProfileEditModal from "./ProfileEditModal";
 import { useProfileActions } from "../../hooks/useProfileActions";
+import DeleteAccountModal from "./deleteAccountModal";
 
 const Modal = () => {
   const {
@@ -118,6 +119,16 @@ const Modal = () => {
           document={activeDoc}
           shareUrl={activeDoc?.storagePath}
           onDone={modalCloseHandler}
+        />
+      );
+      break;
+
+    case "DeleteAccount":
+      modalContent = (
+        <DeleteAccountModal
+          isOpen={isModalVisible}
+          onClose={closeProfileModal}
+          onConfirm={deleteAccountHandler}
         />
       );
       break;

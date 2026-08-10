@@ -5,6 +5,11 @@ const authMiddleware = require("../middleware/authMiddleware");
 const Profile = require("../models/profileModel");
 const Document = require("../models/documentModel");
 const DocumentAnalysis = require("../models/documentAnalysisModel");
+
+const User = require("../models/userModel");
+const Notification = require("../models/notificationModel");
+const RefreshToken = require("../models/refreshTokenModel");
+
 const {
   uploadToCloudinary,
   deleteFromCloudinary,
@@ -45,6 +50,7 @@ const UPDATABLE_FIELDS = [
   "pastSurgeries",
   "emergencyContact",
   "notesForDoctor",
+  "notificationPreferences",
 ];
 
 const AVATAR_MAX_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
@@ -114,7 +120,7 @@ router.get("/me", async (req, res) => {
         pastSurgeries: profile.pastSurgeries,
         emergencyContact: profile.emergencyContact,
         notesForDoctor: profile.notesForDoctor,
-
+        notificationPreferences: profile.notificationPreferences,
         // usage stats (real)
         documentCount,
         storageUsedBytes,
@@ -224,6 +230,99 @@ router.patch("/me/avatar", avatarUpload.single("avatar"), async (req, res) => {
     return res.status(500).json({
       messageType: "Error",
       message: "An error occurred while uploading the avatar",
+    });
+  }
+});
+
+// GET /profile/me/export — download a JSON snapshot of the user's data
+router.get("/me/export", async (req, res) => {
+  try {
+    const [profile, documents, analyses, notifications] = await Promise.all([
+      Profile.findOne({ userId: req.user._id }),
+      Document.find({ ownerId: req.user._id }).select(
+        "fileName fileType category fileSize documentDate storagePath createdAt",
+      ),
+      DocumentAnalysis.find({
+        ownerId: req.user._id,
+        status: "completed",
+      }).select("documentId summary createdAt"),
+      Notification.find({ ownerId: req.user._id }).select(
+        "type title message read createdAt",
+      ),
+    ]);
+
+    const exportData = {
+      exportedAt: new Date().toISOString(),
+      account: {
+        userName: req.user.userName,
+        email: req.user.email,
+        role: req.user.role,
+        memberSince: req.user.createdAt,
+      },
+      profile: profile || null,
+      documents,
+      aiAnalyses: analyses,
+      notifications,
+    };
+
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=medocs-data-export.json",
+    );
+    res.setHeader("Content-Type", "application/json");
+    return res.status(200).send(JSON.stringify(exportData, null, 2));
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      messageType: "Error",
+      message: "Failed to export data",
+    });
+  }
+});
+
+// DELETE /profile/me — permanently delete the account and all associated data
+router.delete("/me", async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    const documents = await Document.find({ ownerId: userId });
+
+    // best-effort Cloudinary cleanup — one failure shouldn't block the rest
+    await Promise.allSettled(
+      documents.map((doc) => deleteFromCloudinary(doc.cloudinaryId)),
+    );
+
+    const profile = await Profile.findOne({ userId });
+    if (profile?.avatarCloudinaryId) {
+      await deleteFromCloudinary(profile.avatarCloudinaryId).catch(() => {});
+    }
+
+    await Promise.all([
+      Document.deleteMany({ ownerId: userId }),
+      DocumentAnalysis.deleteMany({ ownerId: userId }),
+      Notification.deleteMany({ ownerId: userId }),
+      Profile.deleteOne({ userId }),
+      RefreshToken.deleteMany({ userId }),
+    ]);
+
+    await User.findByIdAndDelete(userId);
+
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "none",
+      path: "/auth/refresh",
+    });
+
+    return res.status(200).json({
+      messageType: "Success",
+      message: "Account deleted successfully.",
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      messageType: "Error",
+      message: "Failed to delete account. Please try again.",
     });
   }
 });

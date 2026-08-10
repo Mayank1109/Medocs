@@ -1,6 +1,9 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Sidebar from "../../components/layout/Sidebar";
+import { useTheme } from "../../hooks/useTheme";
+import { useProfileActions } from "../../hooks/useProfileActions";
+import { formatBytes, modalDisplayHandler } from "../../utility/Functions";
 import {
   IconMonitor,
   IconMoon,
@@ -51,35 +54,63 @@ const NOTIFICATION_PREFS = [
   },
 ];
 
+const DEFAULT_NOTIFICATION_PREFS = {
+  ai: true,
+  viewed: true,
+  upload: true,
+  product: true,
+};
+
 const PRIVACY_ROWS = [
   {
+    key: "download",
     icon: <IconDownload />,
     title: "Download my data",
     sub: "Export all your data and documents",
   },
   {
+    key: "connected",
     icon: <IconLink />,
     title: "Manage connected accounts",
     sub: "Manage your connected accounts",
   },
   {
+    key: "delete",
     icon: <IconTrash />,
     title: "Delete account",
     sub: "Permanently delete your account and all data",
     danger: true,
   },
 ];
-
 export default function SettingsPage() {
-  const [theme, setTheme] = useState("system");
-  const [prefs, setPrefs] = useState({
-    ai: true,
-    viewed: true,
-    upload: true,
-    product: true,
-  });
-  const [autoSuggest, setAutoSuggest] = useState(true);
-  const [aiModel] = useState("GPT-4.1");
+  const { theme, setTheme } = useTheme();
+  const navigate = useNavigate();
+  const {
+    profile,
+    fetchProfileHandler,
+    storagePct,
+    editProfileHandler,
+    downloadDataHandler,
+    deleteAccountHandler,
+  } = useProfileActions();
+
+  useEffect(() => {
+    fetchProfileHandler();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const prefs = profile.notificationPreferences || DEFAULT_NOTIFICATION_PREFS;
+
+  function togglePref(key) {
+    editProfileHandler({
+      notificationPreferences: { ...prefs, [key]: !prefs[key] },
+    });
+  }
+
+  function handlePrivacyAction(key) {
+    if (key === "download") downloadDataHandler();
+    else if (key === "connected") navigate("/profile");
+    else if (key === "delete") modalDisplayHandler(event, "DeleteAccount"); // see note below
+  }
 
   return (
     <>
@@ -128,7 +159,7 @@ export default function SettingsPage() {
               type="button"
               className="pref-row"
               key={p.key}
-              onClick={() => setPrefs((s) => ({ ...s, [p.key]: !s[p.key] }))}
+              onClick={() => togglePref(p.key)}
             >
               <span
                 className={`pref-row__check${prefs[p.key] ? " checked" : ""}`}
@@ -157,7 +188,7 @@ export default function SettingsPage() {
           <span className="settings-row__label">Default AI model</span>
           <div className="model-select">
             <button type="button" className="model-select__button">
-              {aiModel} <IconChevronDown />
+              GPT-4.1 <IconChevronDown />
             </button>
           </div>
         </div>
@@ -171,12 +202,7 @@ export default function SettingsPage() {
               Suggest AI analysis for new uploads
             </span>
           </span>
-          <button
-            type="button"
-            className={`toggle-switch${autoSuggest ? " on" : ""}`}
-            onClick={() => setAutoSuggest((v) => !v)}
-            aria-pressed={autoSuggest}
-          >
+          <button type="button" className="toggle-switch" aria-pressed={false}>
             <span className="toggle-switch__knob" />
           </button>
         </div>
@@ -192,18 +218,18 @@ export default function SettingsPage() {
         <div className="storage-row">
           <div className="storage-row__text">
             <span className="storage-row__value">
-              420 MB <span>/ 1 GB used</span>
+              {formatBytes(profile.storageUsedBytes)} <span>/ 1 GB used</span>
             </span>
-            <span className="storage-row__pct">42% used</span>
+            <span className="storage-row__pct">{storagePct}% used</span>
           </div>
-          <Link to="/account" className="button button--secondary">
+          <Link to="/profile" className="button button--secondary">
             Manage storage
           </Link>
         </div>
         <div className="account-row__progress settings-storage-bar">
           <div
             className="account-row__progress-fill"
-            style={{ width: "42%" }}
+            style={{ width: `${storagePct}%` }}
           />
         </div>
       </div>
@@ -221,6 +247,15 @@ export default function SettingsPage() {
               type="button"
               className={`privacy-row${r.danger ? " danger" : ""}`}
               key={r.title}
+              onClick={(e) => {
+                if (r.key === "delete") {
+                  modalDisplayHandler(e, "DeleteAccount");
+                } else if (r.key === "connected") {
+                  navigate("/profile");
+                } else if (r.key === "download") {
+                  downloadDataHandler();
+                }
+              }}
             >
               <span className="privacy-row__icon">{r.icon}</span>
               <span className="privacy-row__body">

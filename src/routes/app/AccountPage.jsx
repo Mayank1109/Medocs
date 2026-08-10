@@ -31,7 +31,6 @@ import {
   initialsOf,
   modalDisplayHandler,
   formatBytes,
-  STORAGE_CAP_BYTES,
 } from "../../utility/Functions";
 import { useProfileActions } from "../../hooks/useProfileActions";
 
@@ -40,8 +39,13 @@ function joinOrNotSet(list) {
 }
 
 export default function AccountPage() {
-  const { profile, loading, fetchProfileHandler, uploadAvatarHandler } =
-    useProfileActions();
+  const {
+    profile,
+    loading,
+    fetchProfileHandler,
+    uploadAvatarHandler,
+    storagePct,
+  } = useProfileActions();
   const avatarInputRef = useRef(null);
   useEffect(() => {
     fetchProfileHandler();
@@ -54,11 +58,6 @@ export default function AccountPage() {
   function handleAvatarClick() {
     avatarInputRef.current?.click();
   }
-
-  const storagePct = Math.min(
-    100,
-    Math.round(((profile.storageUsedBytes || 0) / STORAGE_CAP_BYTES) * 100),
-  );
 
   function handleAvatarChange(e) {
     const file = e.target.files?.[0];

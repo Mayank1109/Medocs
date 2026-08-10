@@ -13,4 +13,12 @@ const uploadAvatar = (formData) => {
   return httpService.patch(PROFILE_URI.UPLOAD_AVATAR, formData);
 };
 
-export { getProfile, updateProfile, uploadAvatar };
+const exportData = () => {
+  return httpService.get(PROFILE_URI.EXPORT, { responseType: "blob" });
+};
+
+const deleteAccount = () => {
+  return httpService.delete(PROFILE_URI.DELETE_ACCOUNT);
+};
+
+export { getProfile, updateProfile, uploadAvatar, exportData, deleteAccount };

@@ -22,6 +22,22 @@ const PROFILE_URI = {
   GET: "/profile/me",
   UPDATE: "/profile/me",
   UPLOAD_AVATAR: "/profile/me/avatar",
+  EXPORT: "/profile/me/export",
+  DELETE_ACCOUNT: "/profile/me",
 };
 
-export { BASE_URI, AUTH_URI, DOCUMENT_URI, VIEW_URI, PROFILE_URI };
+const NOTIFICATION_URI = {
+  LIST: "/notifications",
+  UNREAD_COUNT: "/notifications/unread-count",
+  MARK_READ: (id) => `/notifications/${id}/read`,
+  MARK_ALL_READ: "/notifications/read-all",
+};
+
+export {
+  BASE_URI,
+  AUTH_URI,
+  DOCUMENT_URI,
+  VIEW_URI,
+  PROFILE_URI,
+  NOTIFICATION_URI,
+};

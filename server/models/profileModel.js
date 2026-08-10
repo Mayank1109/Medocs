@@ -38,6 +38,12 @@ const ProfileSchema = new mongoose.Schema(
       phone: String,
       relation: String,
     },
+    notificationPreferences: {
+      ai: { type: Boolean, default: true },
+      viewed: { type: Boolean, default: true },
+      upload: { type: Boolean, default: true },
+      product: { type: Boolean, default: true },
+    },
     notesForDoctor: { type: String, maxlength: 1000 },
   },
   { timestamps: true },
