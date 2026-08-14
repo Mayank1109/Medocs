@@ -4,6 +4,8 @@ import { useTrackSafeHistory } from "../../hooks/useTrackSafeHistory.js";
 import { useAuthBootstrap } from "../../hooks/useAuthBootstrap.js";
 import { useSelector } from "react-redux";
 import LoadingScreen from "../../components/ui/LoadingScreen.jsx";
+import Modal from "../../components/ui/Modal";
+import Options from "../../components/ui/Options";
 
 export default function RootLayout() {
   useBackNavigationGuard();
@@ -11,10 +13,17 @@ export default function RootLayout() {
   useAuthBootstrap();
 
   const authChecked = useSelector((state) => state.auth.authChecked);
+  const isModalVisible = useSelector((state) => state.modal.isModalVisible);
 
   if (!authChecked) {
     return <LoadingScreen message="Loading…" />;
   }
 
-  return <Outlet />;
+  return (
+    <>
+      <Outlet />
+      {isModalVisible && <Modal />}
+      <Options />
+    </>
+  );
 }

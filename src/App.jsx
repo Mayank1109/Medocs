@@ -8,18 +8,14 @@ import LandingPage from "./routes/app/LandingPage";
 import DashboardPage from "./routes/app/Dashboard";
 import DocumentsPage from "./routes/app/Documents";
 import AIAssistantPage from "./routes/app/AiAssistant";
-import Modal from "./components/ui/Modal";
 import NotificationsPage from "./routes/app/NotificationsPage";
 import { OptionsProvider } from "./hooks/useOptions";
-import { useSelector } from "react-redux";
 import AuthPage from "./routes/auth/AuthPage";
 import OAuthSuccess from "./routes/auth/OAuthSuccess";
 import { ToastProvider } from "./components/ui/ToastProvider";
 import "./components/ui/LoadingStates.css";
-import Options from "./components/ui/Options";
 import WorkInProgress from "./routes/app/WorkInProgress";
 import SettingsPage from "./routes/app/SettingsPage";
-import ProfilePage from "./routes/app/ProfilePage";
 import AccountPage from "./routes/app/AccountPage";
 import { SidebarProvider } from "./hooks/useSidebar";
 import ProtectedRoute from "./routes/auth/ProtectedRoute";
@@ -78,16 +74,12 @@ const Router = createBrowserRouter([
 ]);
 
 function App() {
-  const isModalVisible = useSelector((state) => state.modal.isModalVisible);
-
   return (
     <ThemeProvider>
       <ToastProvider>
         <SidebarProvider>
           <OptionsProvider>
             <RouterProvider router={Router} />
-            {isModalVisible && <Modal />}
-            <Options />
           </OptionsProvider>
         </SidebarProvider>
       </ToastProvider>
