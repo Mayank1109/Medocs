@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { modalDisplayHandler } from "../utils/ui";
-import { useOptions } from "./useOptions";
+import { useOptions } from "../context/OptionsProvider";
 import { useToast } from "./useToast";
 import { useDocumentDelete } from "./data-fetching/useDocumentDelete";
 import { useDocumentPreview } from "./data-fetching/useDocumentPreview";

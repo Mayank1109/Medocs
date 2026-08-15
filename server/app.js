@@ -22,7 +22,7 @@ app.use(cookieParser());
 app.use(passport.initialize());
 
 const home = require("./router/projects.routes");
-const dashboard = require("./router/dashboard");
+const dashboard = require("./router/dashBoard");
 const aiRoutes = require("./router/ai.routes");
 const authRoutes = require("./router/auth.routes");
 const profileRoutes = require("./router/profile.routes");
