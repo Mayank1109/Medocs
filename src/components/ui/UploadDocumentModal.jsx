@@ -10,9 +10,13 @@ import {
   IconSparkleSmall,
 } from "../../icons/AppIcons";
 import { IconCheck, IconEye } from "../../icons/AuthIcons";
-import { getFileAccent, modalDisplayHandler } from "../../utility/Functions";
+import { getFileAccent, modalDisplayHandler } from "../../utils/ui";
 import "./UploadDocumentModal.css";
-import { ACCEPTED_TYPES, CATEGORIES, MAX_SIZE_MB } from "../../data/modalData";
+import {
+  ACCEPTED_TYPES,
+  CATEGORIES,
+  MAX_SIZE_MB,
+} from "../../constants/document";
 import { useFieldValidation } from "../../hooks/useFieldValidation";
 
 function formatSize(bytes) {

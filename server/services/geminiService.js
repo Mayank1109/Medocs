@@ -1,5 +1,10 @@
 const { v2: cloudinary } = require("cloudinary");
-const { SUMMARY_PROMPT, buildAskPrompt } = require("../constants/aiPrompts");
+const {
+  SUMMARY_PROMPT,
+  buildAskPrompt,
+  METRICS_EXTRACTION_PROMPT,
+  CLASSIFICATION_PROMPT,
+} = require("../constants/aiPrompts");
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -26,7 +31,12 @@ async function fetchDocumentBuffer(document) {
   return Buffer.from(arrayBuffer);
 }
 
-async function callGemini(document, fileBuffer, promptText) {
+async function callGemini(
+  document,
+  fileBuffer,
+  promptText,
+  generationConfig = {},
+) {
   const response = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/${process.env.GEMINI_MODEL}:generateContent?key=${process.env.GEMINI_API_KEY}`,
     {
@@ -42,6 +52,7 @@ async function callGemini(document, fileBuffer, promptText) {
             ],
           },
         ],
+        ...(Object.keys(generationConfig).length && { generationConfig }),
       }),
     },
   );
@@ -62,6 +73,40 @@ async function callGemini(document, fileBuffer, promptText) {
     throw new Error("AI provider returned no text");
   }
   return text;
+}
+
+async function extractHealthMetrics(document) {
+  const fileBuffer = await fetchDocumentBuffer(document);
+  const raw = await callGemini(
+    document,
+    fileBuffer,
+    METRICS_EXTRACTION_PROMPT,
+    {
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: "ARRAY",
+        items: {
+          type: "OBJECT",
+          properties: {
+            testName: { type: "STRING" },
+            value: { type: "NUMBER" },
+            unit: { type: "STRING" },
+            date: { type: "STRING" },
+            rawLabel: { type: "STRING" },
+          },
+          required: ["testName", "value", "unit", "rawLabel"],
+        },
+      },
+    },
+  );
+
+  try {
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (err) {
+    console.error("Failed to parse Gemini metrics JSON:", raw);
+    return [];
+  }
 }
 
 async function analyzeDocument(document) {
@@ -96,9 +141,47 @@ async function uploadToCloudinary(buffer) {
   });
 }
 
+async function classifyDocument(document) {
+  const fileBuffer = await fetchDocumentBuffer(document);
+  const raw = await callGemini(document, fileBuffer, CLASSIFICATION_PROMPT, {
+    responseMimeType: "application/json",
+    responseSchema: {
+      type: "OBJECT",
+      properties: {
+        isMedicalDocument: { type: "BOOLEAN" },
+        documentType: {
+          type: "STRING",
+          enum: [
+            "lab_report",
+            "prescription",
+            "doctor_note",
+            "vaccination_record",
+            "medical_certificate",
+            "other",
+          ],
+        },
+        confidence: { type: "STRING", enum: ["high", "medium", "low"] },
+      },
+      required: ["isMedicalDocument", "documentType", "confidence"],
+    },
+  });
+  try {
+    return JSON.parse(raw);
+  } catch (err) {
+    console.error("Failed to parse Gemini classification JSON:", raw);
+    return {
+      isMedicalDocument: false,
+      documentType: "other",
+      confidence: "low",
+    };
+  }
+}
+
 module.exports = {
   analyzeDocument,
   askAboutDocument,
+  extractHealthMetrics,
+  classifyDocument, // add this
   isQuotaError,
   uploadToCloudinary,
   deleteFromCloudinary,

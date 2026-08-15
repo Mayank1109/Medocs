@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { IconX } from "../../icons/AppIcons";
 import { IconCheck } from "../../icons/AuthIcons";
-import { PROFILE_EDIT_SECTIONS } from "../../data/profileEditSections";
+import { PROFILE_EDIT_SECTIONS } from "../profile/ProfileEditSectionsData";
 
 import "./ProfileEditModal.css";
 

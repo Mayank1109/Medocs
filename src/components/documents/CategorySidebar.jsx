@@ -1,4 +1,4 @@
-import { DOCUMENT_CATEGORIES } from "../../data/documentCategories";
+import { DOCUMENT_CATEGORIES } from "./DocumentCategoriesData";
 
 export default function DocumentCategories({ active, onSelect }) {
   return (

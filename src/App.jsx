@@ -4,25 +4,23 @@ import {
   Navigate,
   RouterProvider,
 } from "react-router-dom";
-import LandingPage from "./routes/app/LandingPage";
-import DashboardPage from "./routes/app/Dashboard";
-import DocumentsPage from "./routes/app/Documents";
-import AIAssistantPage from "./routes/app/AiAssistant";
-import NotificationsPage from "./routes/app/NotificationsPage";
-import { OptionsProvider } from "./hooks/useOptions";
+import LandingPage from "./pages/LandingPage";
+import DashboardPage from "./pages/Dashboard";
+import DocumentsPage from "./pages/Documents";
+import AIAssistantPage from "./pages/AiAssistant";
+import NotificationsPage from "./pages/NotificationsPage";
 import AuthPage from "./routes/auth/AuthPage";
 import OAuthSuccess from "./routes/auth/OAuthSuccess";
-import { ToastProvider } from "./components/ui/ToastProvider";
 import "./components/ui/LoadingStates.css";
-import WorkInProgress from "./routes/app/WorkInProgress";
-import SettingsPage from "./routes/app/SettingsPage";
-import AccountPage from "./routes/app/AccountPage";
-import { SidebarProvider } from "./hooks/useSidebar";
+import WorkInProgress from "./pages/WorkInProgress";
+import SettingsPage from "./pages/SettingsPage";
+import AccountPage from "./pages/AccountPage";
 import ProtectedRoute from "./routes/auth/ProtectedRoute";
 import PublicOnlyRoute from "./routes/auth/PublicOnlyRoute";
-import RootLayout from "./routes/app/RootLayout";
-import AppLayout from "./routes/app/AppLayout";
-import { ThemeProvider } from "./hooks/useTheme";
+import RootLayout from "./pages/RootLayout";
+import AppLayout from "./pages/AppLayout";
+import VitalsPage from "./pages/VitalsPage";
+import { AppProviders } from "./context";
 
 const Router = createBrowserRouter([
   {
@@ -57,7 +55,7 @@ const Router = createBrowserRouter([
               { path: "/dashboard", element: <DashboardPage /> },
               { path: "/documents", element: <DocumentsPage /> },
               { path: "/ai-assistant", element: <AIAssistantPage /> },
-              { path: "/vitals", element: <WorkInProgress title="Vitals" /> },
+              { path: "/vitals", element: <VitalsPage /> },
               {
                 path: "/share-profile",
                 element: <WorkInProgress title="Share profile" />,
@@ -75,15 +73,9 @@ const Router = createBrowserRouter([
 
 function App() {
   return (
-    <ThemeProvider>
-      <ToastProvider>
-        <SidebarProvider>
-          <OptionsProvider>
-            <RouterProvider router={Router} />
-          </OptionsProvider>
-        </SidebarProvider>
-      </ToastProvider>
-    </ThemeProvider>
+    <AppProviders>
+      <RouterProvider router={Router} />
+    </AppProviders>
   );
 }
 

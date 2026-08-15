@@ -1,5 +1,5 @@
 import { IconStar } from "../../icons/AppIcons";
-import { DOCUMENT_CATEGORIES } from "../../data/documentCategories";
+import { DOCUMENT_CATEGORIES } from "./DocumentCategoriesData";
 
 export default function DocumentCategories({ active = "all", onSelect }) {
   return (

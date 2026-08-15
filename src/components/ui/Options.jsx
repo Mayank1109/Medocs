@@ -1,11 +1,11 @@
 import ReactDOM from "react-dom";
 import { useRef } from "react";
-import { useOptions } from "../../hooks/useOptions";
+import { useOptions } from "../../context/OptionsProvider";
 import "./Options.css";
 import { useDocumentActions } from "../../hooks/useDocuments";
 import useContextMenuPosition from "../../hooks/useContextMenuPosition";
 import { IconX } from "../../icons/AppIcons";
-import { notImplementedToast } from "../../utility/Functions";
+import { notImplementedToast } from "../../utils/ui";
 import { useToast } from "../../hooks/useToast";
 
 const Options = () => {

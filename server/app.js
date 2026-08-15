@@ -21,14 +21,16 @@ app.use(mongoSanitize());
 app.use(cookieParser());
 app.use(passport.initialize());
 
-const home = require("./router/projects");
-const dashboard = require("./router/dashBoard");
-const authRoutes = require("./router/auth");
-const profileRoutes = require("./router/profile");
-const notificationRoutes = require("./router/notifications");
+const home = require("./router/projects.routes");
+const dashboard = require("./router/dashboard");
+const aiRoutes = require("./router/ai.routes");
+const authRoutes = require("./router/auth.routes");
+const profileRoutes = require("./router/profile.routes");
+const notificationRoutes = require("./router/notifications.routes");
 
 app.use("/", home);
 app.use("/dashboard", dashboard);
+app.use("/dashboard", aiRoutes);
 app.use("/auth", authRoutes);
 app.use("/profile", profileRoutes);
 app.use("/notifications", notificationRoutes);

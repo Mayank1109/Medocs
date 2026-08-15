@@ -19,7 +19,7 @@ import {
 import { authActions } from "../../store/authSlice";
 import { login, signup } from "../../services/authService";
 import { useFieldValidation } from "../../hooks/useFieldValidation";
-import { markSafeEntry } from "../../utility/authHistory";
+import { markSafeEntry } from "../../utils/auth";
 
 const initialForm = {
   fullName: "",

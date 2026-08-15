@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { getSafeIdx } from "../utility/authHistory";
+import { getSafeIdx } from "../utils/auth";
 
 export function useBackNavigationGuard() {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);

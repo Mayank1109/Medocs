@@ -1,4 +1,4 @@
-import { useSidebar } from "../../hooks/useSidebar";
+import { useSidebar } from "../../context/SidebarProvider";
 import { IconMenu } from "../../icons/AppIcons"; // add this icon if missing, see below
 
 export default function MobileHeaderToggle() {

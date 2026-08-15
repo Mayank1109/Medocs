@@ -12,7 +12,7 @@ import {
   IconTrash,
   IconSparkleSmall,
 } from "../../icons/AppIcons";
-import { useOptions } from "../../hooks/useOptions";
+import { useOptions } from "../../context/OptionsProvider";
 import { useDocumentActions } from "../../hooks/useDocuments";
 
 export default function DocumentRow({ doc, view, onToggleStar, getAccent }) {

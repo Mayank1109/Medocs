@@ -3,7 +3,7 @@ import { useDocumentActions } from "../../hooks/useDocuments";
 import { useEffect } from "react";
 import ReactDOM from "react-dom";
 import UploadDocumentModal from "./UploadDocumentModal";
-import { useOptions } from "../../hooks/useOptions";
+import { useOptions } from "../../context/OptionsProvider";
 import DeleteDocumentModal from "./DeleteDocumentModal";
 import PreviewDocumentModal from "./PreviewDocumentModal";
 import ShareDocumentModal from "./ShareDocumentModal";

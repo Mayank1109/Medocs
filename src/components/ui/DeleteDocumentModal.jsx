@@ -6,7 +6,7 @@ import {
   IconFileImage,
 } from "../../icons/AppIcons";
 import { IconCheck } from "../../icons/AuthIcons";
-import { getAccent } from "../../data/documents";
+import { getAccent } from "../../utils/document";
 import "./DeleteDocumentModal.css";
 
 export default function DeleteDocumentModal({

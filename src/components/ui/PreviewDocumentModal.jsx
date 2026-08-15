@@ -10,11 +10,11 @@ import {
   IconSparkleSmall,
 } from "../../icons/AppIcons";
 import ReactMarkdown from "react-markdown";
-import { getAccent } from "../../data/documents";
+import { getAccent } from "../../utils/document";
 import { useDocumentAnalysis } from "../../hooks/useDocumentAnalysis";
 import "./PreviewDocumentModal.css";
 import AIThinkingIndicator from "./AIThinkingIndicator";
-import { notImplementedToast } from "../../utility/Functions";
+import { notImplementedToast } from "../../utils/ui";
 import { useToast } from "../../hooks/useToast";
 export default function PreviewDocumentModal({ isOpen, onClose, document }) {
   const { messages, loading, quotaReached, summarize, ask, reset } =

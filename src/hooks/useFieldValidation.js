@@ -1,4 +1,4 @@
-import { validateField, validateFields } from "../utility/validation";
+import { validateField, validateFields } from "../utils/validation";
 import { useToast } from "./useToast";
 
 export function useFieldValidation() {

@@ -11,11 +11,11 @@ import {
   IconChevronLeft,
   IconLogOut,
 } from "../../icons/HeroIcons";
-import { useSidebar } from "../../hooks/useSidebar";
+import { useSidebar } from "../../context/SidebarProvider";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { authActions } from "../../store/authSlice";
-import { performLogout } from "../../utility/authHistory";
+import { performLogout } from "../../utils/auth";
 
 const DEFAULT_NAV_ITEMS = [
   { to: "/dashboard", label: "Dashboard", icon: <IconGrid /> },

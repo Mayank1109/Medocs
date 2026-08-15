@@ -1,0 +1,317 @@
+/*=============== SUMMARY BANNER ===============*/
+.vitals-summary-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
+  background-color: var(--success-light);
+  border: 1px solid var(--highlight-mid);
+  border-radius: var(--radius-lg);
+  padding: 1rem 1.125rem;
+  margin-bottom: 1.5rem;
+}
+
+.vitals-summary-banner__icon {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-md);
+  background-color: var(--surface);
+  color: var(--highlight-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.vitals-summary-banner__icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.vitals-summary-banner__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.vitals-summary-banner__title {
+  font-size: var(--small-font-size);
+  font-weight: var(--font-bold);
+  color: var(--highlight-color);
+  margin-bottom: 2px;
+}
+
+.vitals-summary-banner__text {
+  font-size: var(--smaller-font-size);
+  color: var(--text-color);
+  line-height: 1.5;
+}
+
+.vitals-summary-banner__close {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.vitals-summary-banner__close svg {
+  width: 15px;
+  height: 15px;
+}
+
+.vitals-summary-banner__close:hover {
+  color: var(--text-color);
+}
+
+/*=============== STAT CARDS ===============*/
+.vitals-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.vitals-stat-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.625rem;
+}
+
+.vitals-stat-card__header h3 {
+  font-size: var(--small-font-size);
+}
+
+.vitals-stat-card__more {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  padding: 2px;
+}
+
+.vitals-stat-card__more svg {
+  width: 15px;
+  height: 15px;
+}
+
+.vitals-stat-card__value {
+  font-family: var(--heading-font);
+  font-size: 1.375rem;
+  font-weight: var(--font-extra-bold);
+  color: var(--title-color);
+  letter-spacing: -0.4px;
+  margin-bottom: 0.25rem;
+}
+
+.vitals-stat-card__value span {
+  font-size: var(--small-font-size);
+  font-weight: var(--font-normal);
+  color: var(--text-muted);
+}
+
+.vitals-stat-card__trend {
+  font-size: var(--tiny-font-size);
+  font-weight: var(--font-semi-bold);
+  margin-bottom: 0.5rem;
+}
+
+.vitals-stat-card__trend--good {
+  color: var(--success);
+}
+.vitals-stat-card__trend--warn {
+  color: var(--warning);
+}
+
+/*----- Sparkline -----*/
+.sparkline {
+  position: relative;
+}
+
+.sparkline__svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.sparkline__axis-y {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: calc(100% - 14px);
+  font-size: 9px;
+  color: var(--text-muted);
+}
+
+.sparkline__axis-x {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  padding-left: 2px;
+}
+
+/*=============== HEALTH TRENDS CHART ===============*/
+.health-trends-card {
+  margin-bottom: 1.5rem;
+}
+
+.vitals-trend-chart__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.vitals-trend-chart__legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4375rem;
+  font-size: var(--smaller-font-size);
+  color: var(--text-color);
+}
+
+.vitals-trend-chart__legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.vitals-trend-chart__canvas {
+  position: relative;
+}
+
+.vitals-trend-chart__svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  cursor: crosshair;
+}
+
+.vitals-trend-chart__tick {
+  font-size: 10px;
+  fill: var(--text-muted);
+  font-family: var(--body-font);
+}
+
+.vitals-trend-chart__tooltip {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  background-color: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  padding: 0.625rem 0.75rem;
+  min-width: 130px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+}
+
+.vitals-trend-chart__tooltip-date {
+  font-size: var(--tiny-font-size);
+  font-weight: var(--font-semi-bold);
+  color: var(--title-color);
+  margin-bottom: 0.375rem;
+}
+
+.vitals-trend-chart__tooltip-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4375rem;
+  font-size: var(--tiny-font-size);
+  color: var(--text-color);
+  margin-bottom: 0.25rem;
+}
+
+.vitals-trend-chart__tooltip-row span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/*=============== MEASUREMENTS TABLE ===============*/
+.measurements-table {
+  display: flex;
+  flex-direction: column;
+}
+
+.measurements-table__row {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr 0.8fr 0.8fr;
+  gap: 0.5rem;
+  padding: 0.875rem 0;
+  border-top: 1px solid var(--border);
+  font-size: var(--small-font-size);
+  color: var(--text-color);
+}
+
+.measurements-table__row--head {
+  border-top: none;
+  padding-top: 0;
+  color: var(--text-muted);
+  font-size: var(--tiny-font-size);
+  font-weight: var(--font-semi-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.measurements-table__row:not(.measurements-table__row--head) span:first-child {
+  font-weight: var(--font-semi-bold);
+  color: var(--title-color);
+}
+
+.measurements-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 1rem;
+  margin-top: 0.5rem;
+  border-top: 1px solid var(--border);
+  font-size: var(--tiny-font-size);
+  color: var(--text-muted);
+  flex-wrap: wrap;
+}
+
+.measurements-footer > span {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.measurements-footer svg {
+  width: 13px;
+  height: 13px;
+  color: var(--highlight-color);
+}
+
+.measurements-footer__add {
+  color: var(--highlight-color);
+  font-weight: var(--font-semi-bold);
+}
+
+/*=============== RESPONSIVE ===============*/
+@media screen and (max-width: 1100px) {
+  .vitals-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .measurements-table__row {
+    grid-template-columns: 1.2fr 1fr 1fr;
+  }
+  .measurements-table__row span:nth-child(4),
+  .measurements-table__row span:nth-child(5) {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 560px) {
+  .vitals-stats-grid {
+    grid-template-columns: 1fr;
+  }
+}

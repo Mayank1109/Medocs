@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import { useDispatch } from "react-redux";
 import { getDocuments } from "../services/documentService";
 import { docActions } from "../store/docSlice";
-import { mapDocument } from "../utility/mapDocument";
+import { mapDocument } from "../utils/index";
 
 const PAGE_LIMIT = 20;
 

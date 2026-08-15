@@ -1,5 +1,5 @@
-const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
+const { validateJSONToken } = require("../services/authService");
 
 async function authMiddleware(req, res, next) {
   try {
@@ -10,7 +10,7 @@ async function authMiddleware(req, res, next) {
       return res.status(401).json({ message: "Not authenticated" });
     }
 
-    const decoded = jwt.verify(token, process.env.API_SECRET);
+    const decoded = validateJSONToken(token);
     const userId = decoded.userId || decoded.email;
     const user = await User.findById(userId).select("-passwordHash");
     if (!user) {
