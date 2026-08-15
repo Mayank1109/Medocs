@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Document = require("../models/documentModel");
 const DocumentAnalysis = require("../models/documentAnalysisModel");
-const HealthMetric = require("../models/healthMetricModel");
+const HealthMetric = require("../models/HealthMetricModel");
 const Notification = require("../models/notificationModel");
 const { PLAUSIBLE_RANGES } = require("../constants/constants");
 const { AI_ERRORS } = require("../constants/errorMessages");
