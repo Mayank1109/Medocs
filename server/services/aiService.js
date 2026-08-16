@@ -8,9 +8,8 @@ const { AI_ERRORS } = require("../constants/errorMessages");
 const {
   analyzeDocument,
   askAboutDocument,
-  extractHealthMetrics,
+  analyzeHealthMetrics,
   isQuotaError,
-  classifyDocument,
 } = require("./geminiService");
 
 function validateDocumentId(docId) {
@@ -27,7 +26,7 @@ function isPlausible(testName, value) {
   return value >= range.min && value <= range.max;
 }
 
-async function analyzeUserDocument({ userId, docId }) {
+async function analyzeUserDocument({ userId, docId, force = false }) {
   validateDocumentId(docId);
 
   const document = await Document.findOne({ _id: docId, ownerId: userId });
@@ -35,6 +34,21 @@ async function analyzeUserDocument({ userId, docId }) {
     const error = new Error("Document not found");
     error.status = 404;
     throw error;
+  }
+
+  // Skip Gemini entirely if we already have a completed analysis and
+  // the caller isn't explicitly asking for a fresh one.
+  if (!force && document.isAnalyzed) {
+    const existing = await DocumentAnalysis.findOne({
+      documentId: document._id,
+      status: "completed",
+    }).sort({ createdAt: -1 });
+
+    if (existing) {
+      return existing;
+    }
+    // isAnalyzed was true but no completed record found (edge case,
+    // e.g. manual DB edit) — fall through and analyze fresh.
   }
 
   if (!process.env.GEMINI_API_KEY || !process.env.GEMINI_MODEL) {
@@ -63,39 +77,40 @@ async function analyzeUserDocument({ userId, docId }) {
     await analysis.save();
 
     try {
-      const classification = await classifyDocument(document);
+      const result = await analyzeHealthMetrics(document);
+      await HealthMetric.deleteMany({ documentId: document._id });
 
       if (
-        classification.isMedicalDocument &&
-        classification.confidence !== "low"
+        result.isMedicalDocument &&
+        result.confidence !== "low" &&
+        result.metrics.length > 0
       ) {
-        const metrics = await extractHealthMetrics(document);
-        await HealthMetric.deleteMany({ documentId: document._id });
+        const metricDocs = result.metrics
+          .filter((m) => m.testName && typeof m.value === "number" && m.unit)
+          .filter((m) => isPlausible(m.testName, m.value))
+          .map((m) => ({
+            documentId: document._id,
+            ownerId: userId,
+            testName: m.testName,
+            value: m.value,
+            unit: m.unit,
+            date: m.date ? new Date(m.date) : document.documentDate,
+            rawLabel: m.rawLabel,
+          }));
 
-        if (metrics.length > 0) {
-          const metricDocs = metrics
-            .filter((m) => m.testName && typeof m.value === "number" && m.unit)
-            .filter((m) => isPlausible(m.testName, m.value))
-            .map((m) => ({
-              documentId: document._id,
-              ownerId: userId,
-              testName: m.testName,
-              value: m.value,
-              unit: m.unit,
-              date: m.date ? new Date(m.date) : document.documentDate,
-              rawLabel: m.rawLabel,
-            }));
-
-          if (metricDocs.length > 0) {
-            await HealthMetric.insertMany(metricDocs);
-          }
+        if (metricDocs.length > 0) {
+          await HealthMetric.insertMany(metricDocs);
         }
-      } else {
-        await HealthMetric.deleteMany({ documentId: document._id });
       }
     } catch (metricErr) {
       console.error("Health metric extraction failed:", metricErr.message);
     }
+
+    // Mark the document as analyzed only after summary succeeds —
+    // metric extraction failure alone shouldn't block this flag.
+    document.isAnalyzed = true;
+    document.lastAnalyzedAt = new Date();
+    await document.save();
 
     await Notification.create({
       ownerId: userId,

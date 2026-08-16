@@ -16,6 +16,7 @@ const DOCUMENT_URI = {
   ANALYZE: (id) => `/dashboard/documents/${id}/analyze`,
   ASK: (id) => `/dashboard/documents/${id}/ask`,
   TOGGLE_FAVORITE: (id) => `/dashboard/documents/${id}/favorite`,
+  METRIC_TRENDS: "/dashboard/documents/metrics/trends",
 };
 
 const PROFILE_URI = {

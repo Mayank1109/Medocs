@@ -8,4 +8,4 @@ const PLAUSIBLE_RANGES = {
   hemoglobin: { min: 3, max: 25 },
 };
 
-export { PLAUSIBLE_RANGES };
+module.exports = { PLAUSIBLE_RANGES };

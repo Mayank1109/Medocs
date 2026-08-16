@@ -82,7 +82,7 @@ export default function DocumentsPage() {
   byGroup.forEach((docs, monthLabel) => groups.push([monthLabel, docs]));
 
   const totalCount = userDocs.length;
-  const aiAvailableCount = userDocs.filter(
+  const analyzedCount = userDocs.filter(
     (d) => d.aiStatus === "available",
   ).length;
   const reachedEnd = page >= totalPages && userDocs.length > 0;
@@ -96,12 +96,12 @@ export default function DocumentsPage() {
           </h1>
           <p className="page-header__subtitle">
             {totalCount} documents
-            {aiAvailableCount > 0 && (
+            {analyzedCount > 0 && (
               <>
                 {" "}
                 ·{" "}
                 <span className="text-warning">
-                  {aiAvailableCount} optional AI analyses available
+                  {analyzedCount} analysed by AI
                 </span>
               </>
             )}

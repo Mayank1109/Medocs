@@ -3,7 +3,6 @@ const {
   SUMMARY_PROMPT,
   buildAskPrompt,
   METRICS_EXTRACTION_PROMPT,
-  CLASSIFICATION_PROMPT,
 } = require("../constants/aiPrompts");
 
 cloudinary.config({
@@ -75,40 +74,6 @@ async function callGemini(
   return text;
 }
 
-async function extractHealthMetrics(document) {
-  const fileBuffer = await fetchDocumentBuffer(document);
-  const raw = await callGemini(
-    document,
-    fileBuffer,
-    METRICS_EXTRACTION_PROMPT,
-    {
-      responseMimeType: "application/json",
-      responseSchema: {
-        type: "ARRAY",
-        items: {
-          type: "OBJECT",
-          properties: {
-            testName: { type: "STRING" },
-            value: { type: "NUMBER" },
-            unit: { type: "STRING" },
-            date: { type: "STRING" },
-            rawLabel: { type: "STRING" },
-          },
-          required: ["testName", "value", "unit", "rawLabel"],
-        },
-      },
-    },
-  );
-
-  try {
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch (err) {
-    console.error("Failed to parse Gemini metrics JSON:", raw);
-    return [];
-  }
-}
-
 async function analyzeDocument(document) {
   const fileBuffer = await fetchDocumentBuffer(document);
   return callGemini(document, fileBuffer, SUMMARY_PROMPT);
@@ -141,38 +106,70 @@ async function uploadToCloudinary(buffer) {
   });
 }
 
-async function classifyDocument(document) {
+async function analyzeHealthMetrics(document) {
   const fileBuffer = await fetchDocumentBuffer(document);
-  const raw = await callGemini(document, fileBuffer, CLASSIFICATION_PROMPT, {
-    responseMimeType: "application/json",
-    responseSchema: {
-      type: "OBJECT",
-      properties: {
-        isMedicalDocument: { type: "BOOLEAN" },
-        documentType: {
-          type: "STRING",
-          enum: [
-            "lab_report",
-            "prescription",
-            "doctor_note",
-            "vaccination_record",
-            "medical_certificate",
-            "other",
-          ],
+  const raw = await callGemini(
+    document,
+    fileBuffer,
+    METRICS_EXTRACTION_PROMPT,
+    {
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: "OBJECT",
+        properties: {
+          isMedicalDocument: { type: "BOOLEAN" },
+          documentType: {
+            type: "STRING",
+            enum: [
+              "lab_report",
+              "prescription",
+              "doctor_note",
+              "vaccination_record",
+              "medical_certificate",
+              "other",
+            ],
+          },
+          confidence: { type: "STRING", enum: ["high", "medium", "low"] },
+          metrics: {
+            type: "ARRAY",
+            items: {
+              type: "OBJECT",
+              properties: {
+                testName: { type: "STRING" },
+                value: { type: "NUMBER" },
+                unit: { type: "STRING" },
+                date: { type: "STRING" },
+                rawLabel: { type: "STRING" },
+              },
+              required: ["testName", "value", "unit", "rawLabel"],
+            },
+          },
         },
-        confidence: { type: "STRING", enum: ["high", "medium", "low"] },
+        required: [
+          "isMedicalDocument",
+          "documentType",
+          "confidence",
+          "metrics",
+        ],
       },
-      required: ["isMedicalDocument", "documentType", "confidence"],
     },
-  });
+  );
+
   try {
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    return {
+      isMedicalDocument: Boolean(parsed.isMedicalDocument),
+      documentType: parsed.documentType || "other",
+      confidence: parsed.confidence || "low",
+      metrics: Array.isArray(parsed.metrics) ? parsed.metrics : [],
+    };
   } catch (err) {
-    console.error("Failed to parse Gemini classification JSON:", raw);
+    console.error("Failed to parse Gemini metrics JSON:", raw);
     return {
       isMedicalDocument: false,
       documentType: "other",
       confidence: "low",
+      metrics: [],
     };
   }
 }
@@ -180,8 +177,7 @@ async function classifyDocument(document) {
 module.exports = {
   analyzeDocument,
   askAboutDocument,
-  extractHealthMetrics,
-  classifyDocument, // add this
+  analyzeHealthMetrics, // replaces extractHealthMetrics + classifyDocument
   isQuotaError,
   uploadToCloudinary,
   deleteFromCloudinary,

@@ -1,32 +1,40 @@
 import { useState, useRef } from "react";
 
-const DATES = ["May 30", "Jun 2", "Jun 5", "Jun 8", "Jun 11", "Jun 14", "Jun 18", "Jun 21", "Jun 24", "Jun 28"];
-
-const SERIES = [
-  { key: "bp", label: "Blood Pressure (mmHg)", color: "#1d9e75", data: [132, 128, 125, 122, 124, 119, 121, 118, 120, 118] },
-  { key: "sugar", label: "Blood Sugar (mg/dL)", color: "#ef9f27", data: [102, 100, 103, 99, 101, 98, 100, 97, 99, 98] },
-  { key: "weight", label: "Weight (kg)", color: "#378add", data: [73, 73, 72, 72, 73, 72, 72, 72, 72, 72] },
-  { key: "heart", label: "Heart Rate (bpm)", color: "#a78bfa", data: [74, 71, 70, 69, 72, 68, 70, 67, 69, 68] },
-];
-
 const W = 900;
 const H = 300;
 const PAD_L = 30;
 const PAD_R = 12;
 const PAD_T = 12;
 const PAD_B = 26;
-const Y_MAX = 160;
-const Y_TICKS = [0, 40, 80, 120, 160];
 
-export default function VitalsTrendChart() {
+export default function VitalsTrendChart({ dates, series }) {
   const [activeIndex, setActiveIndex] = useState(null);
   const svgRef = useRef(null);
 
-  const xFor = (i) => PAD_L + (i / (DATES.length - 1)) * (W - PAD_L - PAD_R);
-  const yFor = (v) => PAD_T + (1 - v / Y_MAX) * (H - PAD_T - PAD_B);
+  if (!dates || dates.length === 0) {
+    return (
+      <div className="vitals-trend-chart__empty">
+        No trend data yet — analyze a document to see vitals here.
+      </div>
+    );
+  }
+
+  const allValues = series.flatMap((s) => s.data.filter((v) => v != null));
+  const yMax = Math.ceil(Math.max(...allValues, 10) / 20) * 20;
+  const yTicks = [0, yMax * 0.25, yMax * 0.5, yMax * 0.75, yMax].map(
+    Math.round,
+  );
+
+  const xFor = (i) =>
+    PAD_L + (i / Math.max(dates.length - 1, 1)) * (W - PAD_L - PAD_R);
+  const yFor = (v) => PAD_T + (1 - v / yMax) * (H - PAD_T - PAD_B);
 
   function buildPath(data) {
-    const pts = data.map((v, i) => ({ x: xFor(i), y: yFor(v) }));
+    // Skip nulls — draw continuous segments only where data exists
+    const pts = data
+      .map((v, i) => (v == null ? null : { x: xFor(i), y: yFor(v) }))
+      .filter(Boolean);
+    if (pts.length === 0) return "";
     let d = `M ${pts[0].x} ${pts[0].y}`;
     for (let i = 0; i < pts.length - 1; i++) {
       const p0 = pts[i];
@@ -43,19 +51,32 @@ export default function VitalsTrendChart() {
     const relX = ((e.clientX - rect.left) / rect.width) * W;
     let nearest = 0;
     let best = Infinity;
-    DATES.forEach((_, i) => {
+    dates.forEach((_, i) => {
       const d = Math.abs(xFor(i) - relX);
-      if (d < best) { best = d; nearest = i; }
+      if (d < best) {
+        best = d;
+        nearest = i;
+      }
     });
     setActiveIndex(nearest);
   }
 
+  const tickIndices = [
+    0,
+    Math.round((dates.length - 1) / 3),
+    Math.round(((dates.length - 1) * 2) / 3),
+    dates.length - 1,
+  ];
+
   return (
     <div className="vitals-trend-chart">
       <div className="vitals-trend-chart__legend">
-        {SERIES.map((s) => (
+        {series.map((s) => (
           <span className="vitals-trend-chart__legend-item" key={s.key}>
-            <span className="vitals-trend-chart__legend-dot" style={{ backgroundColor: s.color }} />
+            <span
+              className="vitals-trend-chart__legend-dot"
+              style={{ backgroundColor: s.color }}
+            />
             {s.label}
           </span>
         ))}
@@ -69,10 +90,24 @@ export default function VitalsTrendChart() {
           onMouseMove={handleMove}
           onMouseLeave={() => setActiveIndex(null)}
         >
-          {Y_TICKS.map((t) => (
+          {yTicks.map((t) => (
             <g key={t}>
-              <line x1={PAD_L} y1={yFor(t)} x2={W - PAD_R} y2={yFor(t)} stroke="var(--border)" strokeDasharray="3 4" />
-              <text x={PAD_L - 8} y={yFor(t) + 3} textAnchor="end" className="vitals-trend-chart__tick">{t}</text>
+              <line
+                x1={PAD_L}
+                y1={yFor(t)}
+                x2={W - PAD_R}
+                y2={yFor(t)}
+                stroke="var(--border)"
+                strokeDasharray="3 4"
+              />
+              <text
+                x={PAD_L - 8}
+                y={yFor(t) + 3}
+                textAnchor="end"
+                className="vitals-trend-chart__tick"
+              >
+                {t}
+              </text>
             </g>
           ))}
 
@@ -87,18 +122,38 @@ export default function VitalsTrendChart() {
             />
           )}
 
-          {SERIES.map((s) => (
+          {series.map((s) => (
             <g key={s.key}>
-              <path d={buildPath(s.data)} fill="none" stroke={s.color} strokeWidth="2.25" strokeLinecap="round" />
-              {activeIndex != null && (
-                <circle cx={xFor(activeIndex)} cy={yFor(s.data[activeIndex])} r="4" fill={s.color} stroke="var(--surface)" strokeWidth="2" />
+              <path
+                d={buildPath(s.data)}
+                fill="none"
+                stroke={s.color}
+                strokeWidth="2.25"
+                strokeLinecap="round"
+                strokeDasharray={s.dashed ? "6 4" : undefined}
+              />
+              {activeIndex != null && s.data[activeIndex] != null && (
+                <circle
+                  cx={xFor(activeIndex)}
+                  cy={yFor(s.data[activeIndex])}
+                  r="4"
+                  fill={s.color}
+                  stroke="var(--surface)"
+                  strokeWidth="2"
+                />
               )}
             </g>
           ))}
 
-          {[0, Math.round((DATES.length - 1) / 3), Math.round(((DATES.length - 1) * 2) / 3), DATES.length - 1].map((i) => (
-            <text key={i} x={xFor(i)} y={H - 6} textAnchor="middle" className="vitals-trend-chart__tick">
-              {DATES[i]}
+          {tickIndices.map((i) => (
+            <text
+              key={i}
+              x={xFor(i)}
+              y={H - 6}
+              textAnchor="middle"
+              className="vitals-trend-chart__tick"
+            >
+              {dates[i]}
             </text>
           ))}
         </svg>
@@ -108,13 +163,18 @@ export default function VitalsTrendChart() {
             className="vitals-trend-chart__tooltip"
             style={{ left: `${(xFor(activeIndex) / W) * 100}%` }}
           >
-            <div className="vitals-trend-chart__tooltip-date">{DATES[activeIndex]}</div>
-            {SERIES.map((s) => (
-              <div className="vitals-trend-chart__tooltip-row" key={s.key}>
-                <span style={{ backgroundColor: s.color }} />
-                {s.data[activeIndex]}
-              </div>
-            ))}
+            <div className="vitals-trend-chart__tooltip-date">
+              {dates[activeIndex]}
+            </div>
+            {series.map(
+              (s) =>
+                s.data[activeIndex] != null && (
+                  <div className="vitals-trend-chart__tooltip-row" key={s.key}>
+                    <span style={{ backgroundColor: s.color }} />
+                    {s.data[activeIndex]}
+                  </div>
+                ),
+            )}
           </div>
         )}
       </div>

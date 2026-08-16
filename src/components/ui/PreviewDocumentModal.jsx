@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   IconX,
   IconDownload,
@@ -16,15 +16,34 @@ import "./PreviewDocumentModal.css";
 import AIThinkingIndicator from "./AIThinkingIndicator";
 import { notImplementedToast } from "../../utils/ui";
 import { useToast } from "../../hooks/useToast";
-export default function PreviewDocumentModal({ isOpen, onClose, document }) {
+export default function PreviewDocumentModal({
+  isOpen,
+  onClose,
+  document,
+  autoAnalyze = false,
+}) {
   const { messages, loading, quotaReached, summarize, ask, reset } =
     useDocumentAnalysis();
   const [input, setInput] = useState("");
+  const autoAnalyzedDocumentId = useRef(null);
   const toast = useToast();
+
   useEffect(() => {
     reset();
     setInput("");
-  }, [document?.id]);
+
+    if (
+      autoAnalyze &&
+      document?.id &&
+      autoAnalyzedDocumentId.current !== document.id
+    ) {
+      autoAnalyzedDocumentId.current = document.id;
+      summarize(document.id);
+    }
+    // The modal should reset and optionally analyze only when its document or
+    // requested action changes, not whenever the hook recreates its handlers.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [document?.id, autoAnalyze]);
 
   if (!isOpen || !document) return null;
 

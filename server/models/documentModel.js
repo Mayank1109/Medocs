@@ -46,6 +46,15 @@ const DocumentSchema = new mongoose.Schema(
       default: false,
       index: true,
     },
+    isAnalyzed: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
+    lastAnalyzedAt: {
+      type: Date,
+      default: null,
+    },
     accessList: [
       {
         type: mongoose.Schema.Types.ObjectId,

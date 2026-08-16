@@ -1,23 +1,27 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { analyzeDocument, askAboutDocument } from "../services/analysisService";
 import { useToast } from "./useToast";
+import { docActions } from "../store/docSlice";
 
 function isQuotaMessage(err) {
   return err.response?.status === 429;
 }
 
 export function useDocumentAnalysis() {
+  const dispatch = useDispatch();
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [quotaReached, setQuotaReached] = useState(false);
   const toast = useToast();
 
-  async function summarize(docId) {
+  async function summarize(docId, force = false) {
     setLoading(true);
     try {
-      const response = await analyzeDocument(docId);
+      const response = await analyzeDocument(docId, force);
       const summary = response.data.data.summary;
       setMessages((m) => [...m, { role: "ai", text: summary }]);
+      dispatch(docActions.setRefresh());
     } catch (err) {
       handleFailure(err, "Analysis failed");
     } finally {

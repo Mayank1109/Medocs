@@ -25,19 +25,22 @@ export const useDocumentActions = () => {
   const { openDocHandler } = useDocumentPreview();
   const { submitHandler } = useDocumentUpload();
   const { editDocHandler, toggleFavoriteHandler } = useDocumentMeta();
-  const { downloadDocHandler, printDocHandler, shareDocHandler } =
+  const {
+    downloadDocHandler: downloadDocument,
+    printDocHandler,
+    shareDocHandler,
+  } =
     useDocumentInteractions();
 
-  const handleActionClick = async (event, actionType) => {
+  const handleActionClick = async (event, actionType, document = payload) => {
     event.preventDefault();
-    console.log(actionType, ": actionType");
     if (actionType === "Open") {
-      await openDocHandler(payload);
+      await openDocHandler(document);
       closeOptions();
       return;
     }
 
-    modalDisplayHandler(event, actionType, payload);
+    modalDisplayHandler(event, actionType, document);
     closeOptions();
   };
 
@@ -52,7 +55,7 @@ export const useDocumentActions = () => {
     modalCloseHandler,
     submitHandler,
     editDocHandler: (editdata) => editDocHandler(payload?.id, editdata),
-    downloadDocHandler: () => downloadDocHandler(payload),
+    downloadDocHandler: (document = payload) => downloadDocument(document),
     printDocHandler,
     deletingId,
     toggleFavoriteHandler: (documentId) =>

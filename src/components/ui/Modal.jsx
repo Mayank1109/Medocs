@@ -30,7 +30,9 @@ const Modal = () => {
   const { payload } = useOptions();
 
   let modalContent = null;
-  const activeDoc = payload || modalData;
+  // Actions that explicitly provide modal data (such as a newly uploaded
+  // document) must not be overridden by the document left in the options menu.
+  const activeDoc = modalData ?? payload;
 
   switch (actionType) {
     case "Upload":
@@ -107,6 +109,17 @@ const Modal = () => {
           isOpen={isModalVisible}
           onClose={modalCloseHandler}
           document={activeDoc}
+        />
+      );
+      break;
+
+    case "Analyze":
+      modalContent = (
+        <PreviewDocumentModal
+          isOpen={isModalVisible}
+          onClose={modalCloseHandler}
+          document={activeDoc}
+          autoAnalyze
         />
       );
       break;

@@ -19,6 +19,6 @@ export function mapDocument(doc) {
     description: doc.fileDescription,
     storagePath: doc.storagePath,
     favorite: !!doc.favorite,
-    aiStatus: null, // no per-doc AI-analysis tracking yet — every doc shows "No AI analysis" until wired
+    aiStatus: doc.isAnalyzed ? "available" : null,
   };
 }

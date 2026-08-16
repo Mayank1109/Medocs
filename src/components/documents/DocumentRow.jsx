@@ -16,7 +16,7 @@ import { useOptions } from "../../context/OptionsProvider";
 import { useDocumentActions } from "../../hooks/useDocuments";
 
 export default function DocumentRow({ doc, view, onToggleStar, getAccent }) {
-  const { openOptions, setDocPayload } = useOptions();
+  const { openOptions } = useOptions();
   const { handleActionClick, downloadDocHandler, toggleFavoriteHandler } =
     useDocumentActions();
   const accent = getAccent(doc);
@@ -47,13 +47,12 @@ export default function DocumentRow({ doc, view, onToggleStar, getAccent }) {
 
   function handleActionButton(e, actionType) {
     e.preventDefault();
-    setDocPayload(doc);
     if (actionType === "Download") {
-      downloadDocHandler(e);
+      downloadDocHandler(doc);
     } else if (actionType === "Favorite") {
-      toggleFavoriteHandler(e, doc.id);
+      toggleFavoriteHandler(doc.id);
     } else {
-      handleActionClick(e, actionType);
+      handleActionClick(e, actionType, doc);
     }
   }
 
@@ -83,7 +82,7 @@ export default function DocumentRow({ doc, view, onToggleStar, getAccent }) {
         </div>
         {doc.aiStatus === "available" ? (
           <span className="badge badge--amber doc-row-v2__ai-badge">
-            <IconSparkleSmall /> AI analysis available
+            <IconSparkleSmall /> AI analysed
           </span>
         ) : (
           <span className="badge doc-row-v2__ai-badge doc-row-v2__ai-badge--none">

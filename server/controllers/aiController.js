@@ -5,6 +5,7 @@ async function analyzeDocument(req, res) {
     const analysis = await aiService.analyzeUserDocument({
       userId: req.user._id,
       docId: req.params.id,
+      force: req.query.force === "true",
     });
 
     return res.status(201).json({
@@ -17,7 +18,6 @@ async function analyzeDocument(req, res) {
     });
   }
 }
-
 async function askDocumentQuestion(req, res) {
   try {
     const result = await aiService.askDocumentQuestion({

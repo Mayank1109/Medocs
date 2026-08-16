@@ -157,6 +157,11 @@ export default function UploadDocumentModal({
 
   function handleAskAI(event) {
     event.stopPropagation();
+    modalDisplayHandler(event, "Analyze", uploadedDoc);
+  }
+
+  function handleViewDocument(event) {
+    event.stopPropagation();
     modalDisplayHandler(event, "Preview", uploadedDoc);
   }
 
@@ -225,7 +230,7 @@ export default function UploadDocumentModal({
               <button
                 type="button"
                 className="button button--secondary"
-                onClick={(e) => e.stopPropagation()}
+                onClick={handleViewDocument}
               >
                 <IconEye /> View document
               </button>
